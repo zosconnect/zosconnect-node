@@ -2,3 +2,8 @@
 
 Wrapper to use services defined in z/OS Connect.
 
+### Installing
+
+```
+npm install zosconnect-node
+```
