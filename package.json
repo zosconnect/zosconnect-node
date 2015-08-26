@@ -1,0 +1,18 @@
+{
+  "name": "zosconnect-node",
+  "version": "1.0.0",
+  "description": "Simple node.js wrapper for z/OS Connect Services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git007@gitlab-shared.hursley.ibm.com:smithson-uk/zosconnect-node.git"
+  },
+  "keywords": [
+    "z/OS"
+  ],
+  "author": "Andrew Smithson",
+  "license": "Apache"
+}
