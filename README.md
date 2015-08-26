@@ -1,6 +1,13 @@
 ## z/OS Connect Node.js client
 
-Wrapper to use services defined in z/OS Connect.
+A wrapper service for z/OS Connect, enabling node applications to discover and access zSystems resources 
+that are service enabled by z/OS Connect. 
+
+Services are identified by name that is unique within the scope of the target z/OS Connect instance 
+(or cluster). The node application uses pre-existing knowledge of the service name, or discovers it 
+dynamically by retrieving a list of available services. The z/OS Connect node wrapper provides access 
+to JSON request and response schemas for the specific z/OS Conenct service, enabling the node 
+application to invoke that service and process the response.
 
 ### Installing
 
@@ -32,11 +39,11 @@ var service = zosconnect.getService('serviceName');
 
 ```
 var service = zosconnect.getService('serviceName');
-service.invoke('PUT', JSON.stringify({'firstName':'Joe','lastName':'Bloggs'}), function(data, err){
+service.invoke({action: 'PUT', JSON.stringify({firstName:'Joe',lastName:'Bloggs'}), function(data, err){
         if(err){
            console.log(err);
         } else {
-           //do nothing as update was successful 
+           //do nothing as update was successful
         }
 });
 ```
