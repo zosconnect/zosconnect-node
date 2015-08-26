@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Simple node.js wrapper for z/OS Connect Services",
   "main": "index.js",
+  "dependencies": {
+      "async":"1.4.2",
+      "request":"2.61.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
