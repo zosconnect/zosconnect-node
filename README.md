@@ -35,7 +35,7 @@ var services = zosconnect.getServices();
 var service = zosconnect.getService('serviceName');
 ```
 
-### Invoke a service
+#### Invoke a service
 
 ```
 var service = zosconnect.getService('serviceName');
