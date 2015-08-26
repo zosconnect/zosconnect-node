@@ -26,7 +26,9 @@ var zosconnect = require('zosconnect-node')('http://mainframe:8080');
 #### Retrieve a list of services
 
 ```
-var services = zosconnect.getServices();
+zosconnect.getServices(function(error, services){
+    console.log(services);
+});
 ```
 
 #### Get a service
