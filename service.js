@@ -20,4 +20,24 @@ module.exports = function(uri, serviceName, invokeUri){
           }
         )
     }
+
+    this.getRequestSchema = function(callback){
+        request.get(this.uri.href + '?action=getRequestSchema', function(error, response, body){
+            if(error || response.statusCode != 200){
+                callback(error, null);
+            } else {
+                callback(null, body);
+            }
+        })
+    }
+
+    this.getResponseSchema = function(callback){
+        request.get(this.uri.href + '?action=getResponseSchema', function(error, response, body){
+            if(error || response.statusCode != 200){
+                callback(error, null);
+            } else {
+                callback(null, body);
+            }
+        })
+    }
 }
