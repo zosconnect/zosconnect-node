@@ -48,8 +48,9 @@ zosconnect.getService('dateTimeService', function(error, service){
     service.invoke(JSON.stringify({input:'data'}), function(error, response){
         if(error){
             console.log(error);
-        } else
+        } else {
             console.log(response);
+        }
     });
 );
 ```
@@ -61,8 +62,9 @@ zosconnect.getService('dateTimeService', function(error, service){
     service.getRequestSchema(function(error, schema){
         if(error){
             console.log(error);
-        } else
+        } else {
             console.log(schema);
+        }
     });
 );
 ```
@@ -74,8 +76,9 @@ zosconnect.getService('dateTimeService', function(error, service){
     service.getResponseSchema(function(error, schema){
         if(error){
             console.log(error);
-        } else
+        } else {
             console.log(schema);
+        }
     });
 );
 ```
