@@ -53,3 +53,29 @@ zosconnect.getService('dateTimeService', function(error, service){
     });
 );
 ```
+
+#### Get the request schema
+
+```
+zosconnect.getService('dateTimeService', function(error, service){
+    service.getRequestSchema(function(error, schema){
+        if(error){
+            console.log(error);
+        } else
+            console.log(schema);
+    });
+);
+```
+
+#### Get the response schema
+
+```
+zosconnect.getService('dateTimeService', function(error, service){
+    service.getResponseSchema(function(error, schema){
+        if(error){
+            console.log(error);
+        } else
+            console.log(schema);
+    });
+);
+```
