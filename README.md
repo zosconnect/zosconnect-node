@@ -35,18 +35,21 @@ zosconnect.getServices(function(error, services){
 #### Get a service
 
 ```
-var service = zosconnect.getService('serviceName');
+zosconnect.getService('dateTimeService', function(error, service){
+    console.log(service);
+    //normally this would then go on and work with the service
+}
 ```
 
 #### Invoke a service
 
 ```
-var service = zosconnect.getService('serviceName');
-service.invoke({action: 'PUT', JSON.stringify({firstName:'Joe',lastName:'Bloggs'}), function(data, err){
-        if(err){
-           console.log(err);
-        } else {
-           //do nothing as update was successful
-        }
-});
+zosconnect.getService('dateTimeService', function(error, service){
+    service.invoke(JSON.stringify({input:'data'}), function(error, response){
+        if(error){
+            console.log(error);
+        } else
+            console.log(response);
+    });
+);
 ```
