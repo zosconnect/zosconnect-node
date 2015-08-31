@@ -7,8 +7,10 @@ module.exports = function(uri){
 
     this.getServices = function(callback){
         request.get(this.uri + '/zosConnect/services', function(error, response, body){
-            if(error || response.statusCode != 200){
+            if(error){
                 callback(error, null);
+            } else if(response.statusCode != 200){
+                callback(new Error('Failed to get list of services (' + response.statusCode + ')'), null);
             } else {
                 var json = JSON.parse(body);
                 var services = [];
@@ -28,8 +30,10 @@ module.exports = function(uri){
 
     this.getService = function(serviceName, callback){
         request.get(this.uri + '/zosConnect/services/' + serviceName, function(error, response, body){
-            if(error || response.statusCode != 200){
+            if(error){
                 callback(error, null);
+            } else if(response.statusCode != 200){
+                callback(new Error('Unable to get service (' + response.statusCode + ')'), null);
             } else {
                 var serviceData = JSON.parse(body);
                 callback(null, new Service(this.uri, serviceName, serviceData.zosConnect.serviceInvokeURL));
