@@ -10,15 +10,7 @@ module.exports = function(uri, serviceName, invokeUri){
             { method: 'PUT'
             , uri: this.invokeUri
             , body: data
-            }
-        , function(error, response, body){
-    if(error || response.statusCode != 200){
-        callback(error, null);
-    } else {
-        callback(null, body);
-    }
-          }
-        )
+            }, callback)
     }
 
     this.getRequestSchema = function(callback){

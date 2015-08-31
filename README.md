@@ -45,11 +45,13 @@ zosconnect.getService('dateTimeService', function(error, service){
 
 ```
 zosconnect.getService('dateTimeService', function(error, service){
-    service.invoke(JSON.stringify({input:'data'}), function(error, response){
+    service.invoke(JSON.stringify({input:'data'}), function(error, response, body){
         if(error){
             console.log(error);
+        } else if(response.statusCode != 200) {
+            console.log('Invoke failed with respCode = ' + response.statusCode);
         } else {
-            console.log(response);
+            console.log(body);
         }
     });
 );
