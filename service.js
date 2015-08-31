@@ -15,8 +15,10 @@ module.exports = function(uri, serviceName, invokeUri){
 
     this.getRequestSchema = function(callback){
         request.get(this.uri.href + '?action=getRequestSchema', function(error, response, body){
-            if(error || response.statusCode != 200){
-                callback(error, null);
+            if(error) {
+                callback(error, null)
+            } else if(response.statusCode != 200){
+                callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
             } else {
                 callback(null, body);
             }
@@ -25,8 +27,10 @@ module.exports = function(uri, serviceName, invokeUri){
 
     this.getResponseSchema = function(callback){
         request.get(this.uri.href + '?action=getResponseSchema', function(error, response, body){
-            if(error || response.statusCode != 200){
+            if(error){
                 callback(error, null);
+            } else if(response.statusCode != 200){
+                callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
             } else {
                 callback(null, body);
             }
