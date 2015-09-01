@@ -1,6 +1,6 @@
 {
   "name": "zosconnect-node",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Simple node.js wrapper for z/OS Connect Services",
   "main": "index.js",
   "dependencies": {
@@ -8,7 +8,7 @@
       "request":"2.61.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
