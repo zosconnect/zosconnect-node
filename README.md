@@ -21,7 +21,16 @@ npm install zosconnect-node
 
 ```js
 var ZosConnect = require('zosconnect-node');
-var zosconnect = new ZosConnect('http://mainframe:8080');
+var options = {
+   uri:'http://mainframe:8080', /*required*/
+   user:'username',             /*optional*/
+   password:'password',         /*optional*/
+   certFile:'client.crt',       /*optional*/
+   keyFile:'client.key',        /*optional*/
+   caFile:'ca.cert.pem',        /*optional*/
+   keyPass:'password'           /*optional*/
+}
+var zosconnect = new ZosConnect(options);
 ```
 
 #### Retrieve a list of services
