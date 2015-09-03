@@ -7,8 +7,13 @@
       "async":"1.4.2",
       "request":"2.61.0"
   },
+  "devDependencies": {
+      "mocha":"2.3.0",
+      "should":"7.1.0",
+      "nock":"2.10.0"
+  },
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
