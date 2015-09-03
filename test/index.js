@@ -7,7 +7,7 @@ var ZosConnect = require('../index.js');
 describe('zosconnect', function(){
     describe('#getservices', function(){
         it('should return a list of services', function(done){
-            zosconnect = new ZosConnect('http://test:9080');
+            zosconnect = new ZosConnect({uri:'http://test:9080'});
             nock('http://test:9080')
                 .get('/zosConnect/services')
                 .reply(200, {
@@ -26,7 +26,7 @@ describe('zosconnect', function(){
             })
         })
         it('should return an error', function(done){
-            zosconnect = new ZosConnect('http://test:9080');
+            zosconnect = new ZosConnect({uri:'http://test:9080'});
             nock('http://test:9080')
                 .get('zosConnect/services')
                 .reply(403);
@@ -39,7 +39,7 @@ describe('zosconnect', function(){
     })
     describe('#getservice', function(){
         it('should return a service', function(done){
-            zosconnect = new ZosConnect('http://test:9080');
+            zosconnect = new ZosConnect({uri:'http://test:9080'});
             nock('http://test:9080')
                 .get('/zosConnect/services/dateTimeService')
                 .reply(200, {
@@ -62,7 +62,7 @@ describe('zosconnect', function(){
             });
         })
         it('should return an error', function(){
-            zosconnect = new ZosConnect('http://test:9080');
+            zosconnect = new ZosConnect({uri:'http://test:9080'});
             nock('http://test:9080')
                 .get('/zosConnect/services/unknown')
                 .reply(404);

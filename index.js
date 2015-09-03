@@ -2,11 +2,14 @@ var request = require('request');
 var async = require('async');
 var Service = require('./service.js');
 
-module.exports = function(uri){
-    this.uri = uri;
+module.exports = function(options){
+    if(options.uri == null){
+        throw new Error('Required uri not specified');
+    }
+    this.options = options;
 
     this.getServices = function(callback){
-        request.get(this.uri + '/zosConnect/services', function(error, response, body){
+        request.get(this.options.uri + '/zosConnect/services', function(error, response, body){
             if(error){
                 callback(error, null);
             } else if(response.statusCode != 200){
@@ -29,7 +32,7 @@ module.exports = function(uri){
     }
 
     this.getService = function(serviceName, callback){
-        request.get(this.uri + '/zosConnect/services/' + serviceName, function(error, response, body){
+        request.get(this.options.uri + '/zosConnect/services/' + serviceName, function(error, response, body){
             if(error){
                 callback(error, null);
             } else if(response.statusCode != 200){
