@@ -19,14 +19,14 @@ npm install zosconnect-node
 
 #### Connecting to z/OS Connect
 
-```
+```js
 var ZosConnect = require('zosconnect-node');
 var zosconnect = new ZosConnect('http://mainframe:8080');
 ```
 
 #### Retrieve a list of services
 
-```
+```js
 zosconnect.getServices(function(error, services){
     console.log(services);
 });
@@ -34,7 +34,7 @@ zosconnect.getServices(function(error, services){
 
 #### Get a service
 
-```
+```js
 zosconnect.getService('dateTimeService', function(error, service){
     console.log(service);
     //normally this would then go on and work with the service
@@ -43,7 +43,7 @@ zosconnect.getService('dateTimeService', function(error, service){
 
 #### Invoke a service
 
-```
+```js
 zosconnect.getService('dateTimeService', function(error, service){
     service.invoke(JSON.stringify({input:'data'}), function(error, response, body){
         if(error){
@@ -59,7 +59,7 @@ zosconnect.getService('dateTimeService', function(error, service){
 
 #### Get the request schema
 
-```
+```js
 zosconnect.getService('dateTimeService', function(error, service){
     service.getRequestSchema(function(error, schema){
         if(error){
@@ -73,7 +73,7 @@ zosconnect.getService('dateTimeService', function(error, service){
 
 #### Get the response schema
 
-```
+```js
 zosconnect.getService('dateTimeService', function(error, service){
     service.getResponseSchema(function(error, schema){
         if(error){
