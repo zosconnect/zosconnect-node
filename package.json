@@ -10,7 +10,8 @@
   "devDependencies": {
       "mocha":"2.3.0",
       "should":"7.1.0",
-      "nock":"2.10.0"
+      "nock":"2.10.0",
+      "doctoc":"0.15.0"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"

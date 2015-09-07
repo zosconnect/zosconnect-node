@@ -1,3 +1,19 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [z/OS Connect Node.js client](#zos-connect-nodejs-client)
+  - [Installing](#installing)
+  - [Usage](#usage)
+    - [Connecting to z/OS Connect](#connecting-to-zos-connect)
+    - [Retrieve a list of services](#retrieve-a-list-of-services)
+    - [Get a service](#get-a-service)
+    - [Invoke a service](#invoke-a-service)
+    - [Get the request schema](#get-the-request-schema)
+    - [Get the response schema](#get-the-response-schema)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## z/OS Connect Node.js client
 
 A wrapper service for z/OS Connect, enabling node applications to discover and access zSystems resources 
