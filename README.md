@@ -47,7 +47,7 @@ zosconnect.getServices(function(error, services){
 zosconnect.getService('dateTimeService', function(error, service){
     console.log(service);
     //normally this would then go on and work with the service
-}
+});
 ```
 
 #### Invoke a service
@@ -63,7 +63,7 @@ zosconnect.getService('dateTimeService', function(error, service){
             console.log(body);
         }
     });
-);
+});
 ```
 
 #### Get the request schema
@@ -77,7 +77,7 @@ zosconnect.getService('dateTimeService', function(error, service){
             console.log(schema);
         }
     });
-);
+});
 ```
 
 #### Get the response schema
@@ -91,5 +91,5 @@ zosconnect.getService('dateTimeService', function(error, service){
             console.log(schema);
         }
     });
-);
+});
 ```
