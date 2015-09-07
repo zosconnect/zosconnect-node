@@ -9,6 +9,7 @@ module.exports = function(uri, serviceName, invokeUri){
         request(
             { method: 'PUT'
             , uri: this.invokeUri
+            , json: true
             , body: data
             }, callback)
     }
