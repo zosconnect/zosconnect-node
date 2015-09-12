@@ -4,17 +4,19 @@
   "description": "Simple node.js wrapper for z/OS Connect Services",
   "main": "index.js",
   "dependencies": {
-      "async":"1.4.2",
-      "request":"2.61.0"
+    "async": "1.4.2",
+    "codecov.io": "^0.1.6",
+    "request": "2.61.0"
   },
   "devDependencies": {
-      "mocha":"2.3.0",
-      "should":"7.1.0",
-      "nock":"2.10.0",
-      "doctoc":"0.15.0"
+    "mocha": "2.3.0",
+    "should": "7.1.0",
+    "nock": "2.10.0",
+    "doctoc": "0.15.0",
+    "codecov.io": "^0.1.6"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js"
   },
   "repository": {
     "type": "git",
