@@ -11,6 +11,7 @@
     - [Invoke a service](#invoke-a-service)
     - [Get the request schema](#get-the-request-schema)
     - [Get the response schema](#get-the-response-schema)
+  - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
