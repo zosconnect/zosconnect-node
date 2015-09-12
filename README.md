@@ -16,13 +16,13 @@
 
 ## z/OS Connect Node.js client
 
-A wrapper service for z/OS Connect, enabling node applications to discover and access zSystems resources 
-that are service enabled by z/OS Connect. 
+A wrapper service for z/OS Connect, enabling node applications to discover and access zSystems resources
+that are service enabled by z/OS Connect.
 
-Services are identified by name that is unique within the scope of the target z/OS Connect instance 
-(or cluster). The node application uses pre-existing knowledge of the service name, or discovers it 
-dynamically by retrieving a list of available services. The z/OS Connect node wrapper provides access 
-to JSON request and response schemas for the specific z/OS Conenct service, enabling the node 
+Services are identified by name that is unique within the scope of the target z/OS Connect instance
+(or cluster). The node application uses pre-existing knowledge of the service name, or discovers it
+dynamically by retrieving a list of available services. The z/OS Connect node wrapper provides access
+to JSON request and response schemas for the specific z/OS Conenct service, enabling the node
 application to invoke that service and process the response.
 
 ### Installing
@@ -102,4 +102,19 @@ zosconnect.getService('dateTimeService', function(error, service){
         }
     });
 });
+```
+
+### License
+```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
