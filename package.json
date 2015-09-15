@@ -13,7 +13,8 @@
     "should": "7.1.0",
     "nock": "2.10.0",
     "doctoc": "0.15.0",
-    "codecov.io": "^0.1.6"
+    "codecov.io": "^0.1.6",
+    "istanbul": "^0.3.20"
   },
   "scripts": {
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js"
