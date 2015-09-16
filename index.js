@@ -16,16 +16,24 @@ limitations under the License.
 
 var request = require('request');
 var async = require('async');
+var extend = require('extend');
 var Service = require('./service.js');
+
+var defaultOptions = {
+   strictSSL: true
+}
 
 module.exports = function(options){
     if(options.uri == null){
         throw new Error('Required uri not specified');
     }
-    this.options = options;
+    this.options = extend(defaultOptions, options);
 
     this.getServices = function(callback){
-        request.get(this.options.uri + '/zosConnect/services', function(error, response, body){
+        var options = {};
+        options = extend(options, this.options);
+        options.uri += '/zosConnect/services';
+        request.get(options, function(error, response, body){
             if(error){
                 callback(error, null);
             } else if(response.statusCode != 200){
@@ -48,14 +56,18 @@ module.exports = function(options){
     }
 
     this.getService = function(serviceName, callback){
-        request.get(this.options.uri + '/zosConnect/services/' + serviceName, function(error, response, body){
+        var self = this;
+        var options = {};
+        options = extend(options, this.options);
+        options.uri += '/zosConnect/services/' + serviceName;
+        request.get(options, function(error, response, body){
             if(error){
                 callback(error, null);
             } else if(response.statusCode != 200){
                 callback(new Error('Unable to get service (' + response.statusCode + ')'), null);
             } else {
                 var serviceData = JSON.parse(body);
-                callback(null, new Service(this.uri, serviceName, serviceData.zosConnect.serviceInvokeURL));
+                callback(null, new Service(options, serviceName, serviceData.zosConnect.serviceInvokeURL));
             }
         })
     }
