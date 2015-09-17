@@ -56,7 +56,6 @@ module.exports = function(options){
     }
 
     this.getService = function(serviceName, callback){
-        var self = this;
         var options = {};
         options = extend(options, this.options);
         options.uri += '/zosConnect/services/' + serviceName;
