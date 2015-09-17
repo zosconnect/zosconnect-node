@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "async": "1.4.2",
-    "request": "2.61.0"
+    "request": "2.61.0",
+    "extend": "^3.0.0"
   },
   "devDependencies": {
     "mocha": "2.3.0",

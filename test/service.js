@@ -21,7 +21,7 @@ var url = require('url');
 
 var service = require('../service.js');
 describe('service', function(){
-    var dateTimeService = new service(url.parse('http://test:9080/zosConnect/services/dateTimeService'), 'dateTimeService', 'http://test:9080/zosConnect/services/dateTimeService?action=invoke');
+    var dateTimeService = new service({uri: 'http://test:9080/zosConnect/services/dateTimeService'}, 'dateTimeService', 'http://test:9080/zosConnect/services/dateTimeService?action=invoke');
     describe('#invoke', function(){
         it('should invoke the service', function(done){
             nock('http://test:9080')
