@@ -10,6 +10,7 @@
   - [Installing](#installing)
   - [Usage](#usage)
     - [Connecting to z/OS Connect](#connecting-to-zos-connect)
+      - [HTTPs Support](#https-support)
     - [Retrieve a list of services](#retrieve-a-list-of-services)
     - [Get a service](#get-a-service)
     - [Invoke a service](#invoke-a-service)
@@ -43,9 +44,28 @@ npm install zosconnect-node
 ```js
 var ZosConnect = require('zosconnect-node');
 var options = {
-   uri:'http://mainframe:8080', /*required*/
+   uri:'http://mainframe:8080'
 }
 var zosconnect = new ZosConnect(options);
+```
+The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri parameter is mandatory.
+
+##### HTTPs Support
+Create the options object with locations for the CA certificate file and optionally the client certificate and client private key (if using client authentication). If the strictSSL option is set to false then invalid SSL certificates can be used which may be of use in development environments.
+```js
+var fs = require('fs');
+var path = require('path');
+var caFile = path.resolve(__dirname, 'ca.pem');
+var certFile = path.resolve(__dirname, 'cert.pem');
+var keyFile = path.resolve(__dirname, 'key.pem');
+var options = {
+   uri:'https://mainframe:9443',
+   ca: fs.readFileSync(caFile),
+   cert: fs.readFileSync(certFile),
+   key: fs.readFileSync(keyFile),
+   passphrase: 'passw0rd',
+   strictSSL: true
+}
 ```
 
 #### Retrieve a list of services
