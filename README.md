@@ -11,6 +11,7 @@
   - [Usage](#usage)
     - [Connecting to z/OS Connect](#connecting-to-zos-connect)
       - [HTTPs Support](#https-support)
+      - [Basic Authentication](#basic-authentication)
     - [Retrieve a list of services](#retrieve-a-list-of-services)
     - [Get a service](#get-a-service)
     - [Invoke a service](#invoke-a-service)
@@ -65,6 +66,18 @@ var options = {
    key: fs.readFileSync(keyFile),
    passphrase: 'passw0rd',
    strictSSL: true
+}
+```
+
+##### Basic Authentication
+Add the authentication credentials to the options object.
+```js
+var options = {
+   uri: 'http://mainframe:9080',
+   auth: {
+      user: 'userId',
+      pass: 'password'
+   }
 }
 ```
 
