@@ -17,48 +17,48 @@ limitations under the License.
 var request = require('request');
 var extend = require('extend');
 
-module.exports = function(options, serviceName, invokeUri){
-    this.options = options;
-    this.serviceName = serviceName;
-    this.invokeUri = invokeUri;
+module.exports = function(options, serviceName, invokeUri) {
+  this.options = options;
+  this.serviceName = serviceName;
+  this.invokeUri = invokeUri;
 
-    this.invoke = function(data, callback){
-        var options = {};
-        options = extend(options, this.options);
-        options.method = 'PUT';
-        options.uri = this.invokeUri;
-        options.json = true;
-        options.body = data;
-        request(options, callback)
-    }
+  this.invoke = function(data, callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.method = 'PUT';
+    options.uri = this.invokeUri;
+    options.json = true;
+    options.body = data;
+    request(options, callback)
+  }
 
-    this.getRequestSchema = function(callback){
-        var options = {};
-        options = extend(options, this.options);
-        options.uri += '?action=getRequestSchema';
-        request.get(options, function(error, response, body){
-            if(error) {
-                callback(error, null)
-            } else if(response.statusCode != 200){
-                callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
-            } else {
-                callback(null, body);
-            }
-        })
-    }
+  this.getRequestSchema = function(callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?action=getRequestSchema';
+    request.get(options, function(error, response, body) {
+      if (error) {
+        callback(error, null)
+      } else if (response.statusCode != 200) {
+        callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
+      } else {
+        callback(null, body);
+      }
+    })
+  }
 
-    this.getResponseSchema = function(callback){
+  this.getResponseSchema = function(callback) {
       var options = {};
       options = extend(options, this.options);
       options.uri += '?action=getResponseSchema';
-      request.get(options, function(error, response, body){
-            if(error){
-                callback(error, null);
-            } else if(response.statusCode != 200){
-                callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
-            } else {
-                callback(null, body);
-            }
-        })
+      request.get(options, function(error, response, body) {
+        if (error) {
+          callback(error, null);
+        } else if (response.statusCode != 200) {
+          callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
+        } else {
+          callback(null, body);
+        }
+      })
     }
 }
