@@ -26,8 +26,8 @@ describe('service', function() {
     it('should invoke the service', function(done) {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
-          .query({'action':'invoke'})
-          .reply(200, {'time':'2:32:01 PM','config':'','date':'Sep 4, 2015'});
+          .query({action:'invoke'})
+          .reply(200, {time:'2:32:01 PM',config:'',date:'Sep 4, 2015'});
       dateTimeService.invoke('', function(error, response, body) {
         should.not.exist(error);
         response.statusCode.should.equal(200);
@@ -39,7 +39,7 @@ describe('service', function() {
     it('should return a security error', function(done) {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
-          .query({'action':'invoke'})
+          .query({action:'invoke'})
           .reply(401);
       dateTimeService.invoke('', function(error, response, body) {
         should.not.exist(error);
@@ -52,7 +52,7 @@ describe('service', function() {
     it('should return an error', function(done) {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
-          .query({'action':'invoke'})
+          .query({action:'invoke'})
           .replyWithError('something fatal happened');
       dateTimeService.invoke('', function(error, response, body) {
         should.exist(error);
@@ -67,7 +67,7 @@ describe('service', function() {
     it('should retrieve the request schema', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getRequestSchema'})
+          .query({action:'getRequestSchema'})
           .reply(200, {});
       dateTimeService.getRequestSchema(function(error, schema) {
         should.not.exist(error);
@@ -79,7 +79,7 @@ describe('service', function() {
     it('should return a security error', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getRequestSchema'})
+          .query({action:'getRequestSchema'})
           .reply(401);
       dateTimeService.getRequestSchema(function(error, schema) {
         should.exist(error);
@@ -91,7 +91,7 @@ describe('service', function() {
     it('should return an error', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getRequestSchema'})
+          .query({action:'getRequestSchema'})
           .replyWithError('something fatal happened');
       dateTimeService.getRequestSchema(function(error, schema) {
         should.exist(error);
@@ -105,8 +105,8 @@ describe('service', function() {
     it('should retrieve the response schema', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getResponseSchema'})
-          .reply(200, {'title':'Reference Schema','properties':{'time':{'type':'string'},'date':{'type':'string'}},'required':['date','time'],'type':'object'});
+          .query({action:'getResponseSchema'})
+          .reply(200, {title:'Reference Schema',properties:{time:{type:'string'},date:{type:'string'}},required:['date','time'],type:'object'});
       dateTimeService.getResponseSchema(function(error, schema) {
         should.not.exist(error);
         should.exist(schema);
@@ -117,7 +117,7 @@ describe('service', function() {
     it('should return a security error', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getResponseSchema'})
+          .query({action:'getResponseSchema'})
           .reply(401);
       dateTimeService.getResponseSchema(function(error, schema) {
         should.exist(error);
@@ -129,7 +129,7 @@ describe('service', function() {
     it('should return an error', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
-          .query({'action':'getResponseSchema'})
+          .query({action:'getResponseSchema'})
           .replyWithError('something fatal happened');
       dateTimeService.getResponseSchema(function(error, schema) {
         should.exist(error);

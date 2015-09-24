@@ -36,12 +36,12 @@ describe('zosconnect', function() {
       nock('http://test:9080')
           .get('/zosConnect/services')
                 .reply(200, {
-                  'zosConnectServices': [
+                  zosConnectServices: [
                         {
-                          'ServiceDescription': 'Get the date and time from the server',
-                          'ServiceName': 'dateTimeService',
-                          'ServiceProvider': 'zOSConnect Reference Service Provider',
-                          'ServiceURL': 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
+                          ServiceDescription: 'Get the date and time from the server',
+                          ServiceName: 'dateTimeService',
+                          ServiceProvider: 'zOSConnect Reference Service Provider',
+                          ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
                         },
                     ],
                 });
@@ -82,16 +82,16 @@ describe('zosconnect', function() {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
                 .reply(200, {
-                  'dateTimeService': {
-                    'configParm': '',
+                  dateTimeService: {
+                    configParm: '',
                   },
-                  'zosConnect': {
-                    'dataXformProvider': 'DATA_UNAVAILABLE',
-                    'serviceDescription': 'Get the date and time from the server',
-                    'serviceInvokeURL': 'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
-                    'serviceName': 'dateTimeService',
-                    'serviceProvider': 'zOSConnect Reference Service Provider',
-                    'serviceURL': 'http://test:9080/zosConnect/services/dateTimeService',
+                  zosConnect: {
+                    dataXformProvider: 'DATA_UNAVAILABLE',
+                    serviceDescription: 'Get the date and time from the server',
+                    serviceInvokeURL: 'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+                    serviceName: 'dateTimeService',
+                    serviceProvider: 'zOSConnect Reference Service Provider',
+                    serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
                   },
                 }
             );
