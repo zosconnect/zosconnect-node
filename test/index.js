@@ -24,7 +24,12 @@ var ZosConnect = require('../index.js');
 
 describe('zosconnect', function() {
   describe('#ctor', function() {
-    it('should throw an error', function(done) {
+    it('should throw an error for no object', function(done) {
+      (function() {new ZosConnect();}).should.throw(new Error('An options object is required'));
+      done();
+    });
+
+    it('should throw an error if no uri specified', function(done) {
       (function() {new ZosConnect({});}).should.throw(new Error('Required uri not specified'));
       done();
     });
