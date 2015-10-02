@@ -19,13 +19,19 @@ require('mocha-jscs')();
 var assert = require('assert');
 var nock = require('nock');
 var should = require('should');
+var url = require('url');
 
 var ZosConnect = require('../index.js');
 
 describe('zosconnect', function() {
   describe('#ctor', function() {
-    it('should throw an error', function(done) {
-      (function() {new ZosConnect({});}).should.throw(new Error('Required uri not specified'));
+    it('should throw an error for no object', function(done) {
+      (function() {new ZosConnect();}).should.throw(new Error('An options object is required'));
+      done();
+    });
+
+    it('should throw an error if no uri or url specified', function(done) {
+      (function() {new ZosConnect({});}).should.throw(new Error('Required uri or url not specified'));
       done();
     });
   });
@@ -33,6 +39,26 @@ describe('zosconnect', function() {
   describe('#getservices', function() {
     it('should return a list of services', function(done) {
       var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      nock('http://test:9080')
+          .get('/zosConnect/services')
+                .reply(200, {
+                  zosConnectServices: [
+                        {
+                          ServiceDescription: 'Get the date and time from the server',
+                          ServiceName: 'dateTimeService',
+                          ServiceProvider: 'zOSConnect Reference Service Provider',
+                          ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
+                        },
+                    ],
+                });
+      zosconnect.getServices(function(error, services) {
+        services[0].should.equal('dateTimeService');
+        done(error);
+      });
+    });
+
+    it('should return a list of services (url in ctor)', function(done) {
+      var zosconnect = new ZosConnect({url: url.parse('http://test:9080')});
       nock('http://test:9080')
           .get('/zosConnect/services')
                 .reply(200, {

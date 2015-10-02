@@ -24,8 +24,19 @@ var defaultOptions = {
 };
 
 module.exports = function(options) {
+  if (options == null) {
+    throw new Error('An options object is required');
+  }
+
+  if (options.uri == null && options.url == null) {
+    throw new Error('Required uri or url not specified');
+  }
+
   if (options.uri == null) {
-    throw new Error('Required uri not specified');
+    var uri = options.url.protocol;
+    uri += '//';
+    uri += options.url.host;
+    options.uri = uri;
   }
 
   this.options = extend(defaultOptions, options);
