@@ -138,4 +138,42 @@ describe('service', function() {
       });
     });
   });
+
+  describe('#getStatus', function() {
+    it('should return the status', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/services/dateTimeService')
+          .query({action:'status'})
+          .reply(200, {zosConnect:{dataXformProvider:'DATA_UNAVAILABLE',serviceDescription:'Get the date and time from the server',serviceInvokeURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService?action=invoke',serviceName:'dateTimeService',serviceProvider:'zOSConnect Reference Service Provider',serviceStatus:'Started',serviceURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService'}});
+      dateTimeService.getStatus(function(error, status) {
+        should.not.exist(error);
+        status.should.equal('Started');
+        done();
+      });
+    });
+
+    it('should return a security error', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/services/dateTimeService')
+          .query({action:'status'})
+          .reply(401);
+      dateTimeService.getStatus(function(error, schema) {
+        should.exist(error);
+        should.not.exist(schema);
+        done();
+      });
+    });
+
+    it('should return an error', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/services/dateTimeService')
+          .query({action:'status'})
+          .replyWithError('something fatal happened');
+      dateTimeService.getStatus(function(error, schema) {
+        should.exist(error);
+        should.not.exist(schema);
+        done();
+      });
+    });
+  });
 });

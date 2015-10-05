@@ -61,4 +61,21 @@ module.exports = function(options, serviceName, invokeUri) {
         }
       });
     };
+
+  this.getStatus = function(callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?action=status';
+    request.get(options, function(error, response, body) {
+      if (error) {
+        callback(error, null);
+      } else if (response.statusCode != 200) {
+        callback(new Error('Failed to get status (' + response.statusCode + ')'), null);
+      } else {
+        var json = JSON.parse(body);
+        var status = json.zosConnect.serviceStatus;
+        callback(null, status);
+      }
+    });
+  };
 };
