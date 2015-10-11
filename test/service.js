@@ -27,7 +27,7 @@ describe('service', function() {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
           .query({action:'invoke'})
-          .reply(200, {time:'2:32:01 PM',config:'',date:'Sep 4, 2015'});
+          .reply(200, {time:'2:32:01 PM', config:'', date:'Sep 4, 2015'});
       dateTimeService.invoke('', function(error, response, body) {
         should.not.exist(error);
         response.statusCode.should.equal(200);
@@ -106,7 +106,7 @@ describe('service', function() {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({action:'getResponseSchema'})
-          .reply(200, {title:'Reference Schema',properties:{time:{type:'string'},date:{type:'string'}},required:['date','time'],type:'object'});
+          .reply(200, {title:'Reference Schema', properties:{time:{type:'string'}, date:{type:'string'}}, required:['date', 'time'], type:'object'});
       dateTimeService.getResponseSchema(function(error, schema) {
         should.not.exist(error);
         should.exist(schema);
@@ -144,7 +144,7 @@ describe('service', function() {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({action:'status'})
-          .reply(200, {zosConnect:{dataXformProvider:'DATA_UNAVAILABLE',serviceDescription:'Get the date and time from the server',serviceInvokeURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService?action=invoke',serviceName:'dateTimeService',serviceProvider:'zOSConnect Reference Service Provider',serviceStatus:'Started',serviceURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService'}});
+          .reply(200, {zosConnect:{dataXformProvider:'DATA_UNAVAILABLE', serviceDescription:'Get the date and time from the server', serviceInvokeURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService?action=invoke', serviceName:'dateTimeService', serviceProvider:'zOSConnect Reference Service Provider', serviceStatus:'Started', serviceURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService'}});
       dateTimeService.getStatus(function(error, status) {
         should.not.exist(error);
         status.should.equal('Started');
