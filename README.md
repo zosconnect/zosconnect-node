@@ -17,6 +17,7 @@
     - [Invoke a service](#invoke-a-service)
     - [Get the request schema](#get-the-request-schema)
     - [Get the response schema](#get-the-response-schema)
+    - [Get the status of the service](#get-the-status-of-the-service)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -137,6 +138,20 @@ zosconnect.getService('dateTimeService', function(error, service){
             console.log(error);
         } else {
             console.log(schema);
+        }
+    });
+});
+```
+
+#### Get the status of the service
+
+```js
+zosconnect.getService('dateTimeService', function(error, service){
+    service.getStatus(function(error, status){
+        if(error){
+            console.log(error);
+        } else {
+            console.log(status);
         }
     });
 });
