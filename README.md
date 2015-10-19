@@ -22,9 +22,9 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## z/OS Connect Node.js client
+## z/OS&reg; Connect Node.js client
 
-A wrapper service for z/OS Connect, enabling node applications to discover and access zSystems resources
+A wrapper service for z/OS&reg; Connect, enabling node applications to discover and access zSystems resources
 that are service enabled by z/OS Connect.
 
 Services are identified by name that is unique within the scope of the target z/OS Connect instance
@@ -50,7 +50,7 @@ var options = {
 }
 var zosconnect = new ZosConnect(options);
 ```
-The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri parameter is mandatory.
+The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri or url parameter must be specified.
 
 ##### HTTPs Support
 Create the options object with locations for the CA certificate file and optionally the client certificate and client private key (if using client authentication). If the strictSSL option is set to false then invalid SSL certificates can be used which may be of use in development environments.
