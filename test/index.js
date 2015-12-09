@@ -151,4 +151,70 @@ describe('zosconnect', function() {
       });
     });
   });
+
+  describe('#getApis', function() {
+    it('should return a list of services', function(done) {
+      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      nock('http://test:9080')
+          .get('/zosConnect/apis')
+          .reply(200, {
+            apis: [
+              {
+                adminUrl: 'http://winmvs24:19080/zosConnect/apis/healthApi',
+                description: 'Health API',
+                name: 'healthApi',
+                version: '1.0.0',
+              },
+            ],
+          });
+      zosconnect.getApis(function(error, apis) {
+        apis[0].should.equal('healthApi');
+        done(error);
+      });
+    });
+
+    it('should return a list of services (url in ctor)', function(done) {
+      var zosconnect = new ZosConnect({url: url.parse('http://test:9080')});
+      nock('http://test:9080')
+          .get('/zosConnect/apis')
+          .reply(200, {
+            apis: [
+              {
+                adminUrl: 'http://winmvs24:19080/zosConnect/apis/healthApi',
+                description: 'Health API',
+                name: 'healthApi',
+                version: '1.0.0',
+              },
+            ],
+          });
+      zosconnect.getApis(function(error, apis) {
+        apis[0].should.equal('healthApi');
+        done(error);
+      });
+    });
+
+    it('should return an error for a security problem', function(done) {
+      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      nock('http://test:9080')
+          .get('/zosConnect/apis')
+          .reply(403);
+      zosconnect.getApis(function(error, apis) {
+        error.should.not.be.null;
+        should(apis).be.null;
+        done();
+      });
+    });
+
+    it('should return an error', function(done) {
+      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      nock('http://test:9080')
+          .get('/zosConnect/apis')
+          .replyWithError('bad things occurred');
+      zosconnect.getApis(function(error, apis) {
+        error.should.not.be.null;
+        should(apis).be.null;
+        done();
+      });
+    });
+  });
 });

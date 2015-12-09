@@ -83,4 +83,31 @@ module.exports = function(options) {
       }
     });
   };
+
+  this.getApis = function(callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '/zosConnect/apis';
+    request.get(options, function(error, response, body) {
+      if (error) {
+        callback(error, null);
+      } else if (response.statusCode != 200) {
+        callback(new Error('Unable to get list of APIs (' + response.statusCode + ')'), null);
+      } else {
+        var json = JSON.parse(body);
+        var apis = [];
+        var asyncTasks = [];
+        json.apis.forEach(function(api) {
+          asyncTasks.push(function(asyncCallback) {
+            apis.push(api.name);
+            asyncCallback();
+          });
+        });
+
+        async.parallel(asyncTasks, function() {
+          callback(null, apis);
+        });
+      }
+    });
+  };
 };
