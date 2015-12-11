@@ -18,6 +18,7 @@ var request = require('request');
 var async = require('async');
 var extend = require('extend');
 var Service = require('./service.js');
+var Api = require('./api.js');
 
 var defaultOptions = {
   strictSSL: true,
@@ -107,6 +108,22 @@ module.exports = function(options) {
         async.parallel(asyncTasks, function() {
           callback(null, apis);
         });
+      }
+    });
+  };
+
+  this.getApi = function(apiName, callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '/zosConnect/apis/' + apiName;
+    request.get(options, function(error, response, body) {
+      if (error) {
+        callback(error, null);
+      } else if (response.statusCode != 200) {
+        callback(new Error('Unable to get API information (' + response.statusCode + ')'), null);
+      } else {
+        var json = JSON.parse(body);
+        callback(null, new Api(options, apiName, json.apiUrl));
       }
     });
   };
