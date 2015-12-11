@@ -217,4 +217,48 @@ describe('zosconnect', function() {
       });
     });
   });
+
+  describe('#getApi', function() {
+    var zosconnect = new ZosConnect({uri:'http://test:9080'});
+    it('should return an API', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/apis/healthApi')
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/health',
+                        description: 'Health API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/health/api-docs',
+                        },
+                        name: 'healthApi',
+                        version: '1.0.0',
+                      });
+      zosconnect.getApi('healthApi', function(error, api) {
+        should(error).be.null;
+        api.should.not.be.null;
+        done();
+      });
+    });
+
+    it('should return an error for a security problem', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/apis/healthApi')
+          .reply(403);
+      zosconnect.getApis(function(error, api) {
+        error.should.not.be.null;
+        should(api).be.null;
+        done();
+      });
+    });
+
+    it('should return an error', function(done) {
+      nock('http://test:9080')
+          .get('/zosConnect/apis/healthApi')
+          .replyWithError('bad things occurred');
+      zosconnect.getApis(function(error, api) {
+        error.should.not.be.null;
+        should(api).be.null;
+        done();
+      });
+    });
+  });
 });
