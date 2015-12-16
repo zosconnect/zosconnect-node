@@ -30,7 +30,7 @@ that are service enabled by z/OS&reg; Connect.
 Services are identified by name that is unique within the scope of the target z/OS&reg; Connect instance
 (or cluster). The node application uses pre-existing knowledge of the service name, or discovers it
 dynamically by retrieving a list of available services. The z/OS&reg; Connect node wrapper provides access
-to JSON request and response schemas for the specific z/OS&reg; Conenct service, enabling the node
+to JSON request and response schemas for the specific z/OS&reg; Connect service, enabling the node
 application to invoke that service and process the response.
 
 ### Installing
