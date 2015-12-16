@@ -1,7 +1,7 @@
 {
   "name": "zosconnect-node",
-  "version": "0.1.0",
-  "description": "Simple node.js wrapper for z/OS Connect Services",
+  "version": "0.2.0",
+  "description": "Node zosconnect",
   "main": "index.js",
   "dependencies": {
     "async": "1.4.2",
@@ -26,8 +26,9 @@
     "url": "https://github.com/zosconnect/zosconnect-node.git"
   },
   "keywords": [
-    "z/OS"
+    "z/OS",
+    "z/OS Connect"
   ],
-  "author": "Andrew Smithson",
+  "author": "",
   "license": "Apache-2.0"
 }

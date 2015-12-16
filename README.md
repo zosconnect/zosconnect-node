@@ -6,7 +6,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [z/OS Connect Node.js client](#zos-connect-nodejs-client)
+- [Node zosconnect](#node-zosconnect)
   - [Installing](#installing)
   - [Usage](#usage)
     - [Connecting to z/OS Connect](#connecting-to-zos-connect)
@@ -22,7 +22,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## z/OS&reg; Connect Node.js client
+## Node zosconnect
 
 A wrapper service for z/OS&reg; Connect, enabling node applications to discover and access zSystems resources
 that are service enabled by z/OS&reg; Connect.
@@ -30,7 +30,7 @@ that are service enabled by z/OS&reg; Connect.
 Services are identified by name that is unique within the scope of the target z/OS&reg; Connect instance
 (or cluster). The node application uses pre-existing knowledge of the service name, or discovers it
 dynamically by retrieving a list of available services. The z/OS&reg; Connect node wrapper provides access
-to JSON request and response schemas for the specific z/OS&reg; Conenct service, enabling the node
+to JSON request and response schemas for the specific z/OS&reg; Connect service, enabling the node
 application to invoke that service and process the response.
 
 ### Installing
