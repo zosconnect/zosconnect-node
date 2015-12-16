@@ -6,7 +6,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [z/OS Connect Node.js client](#zos-connect-nodejs-client)
+- [Node zosconnect](#node-zosconnect)
   - [Installing](#installing)
   - [Usage](#usage)
     - [Connecting to z/OS Connect](#connecting-to-zos-connect)
@@ -22,7 +22,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## z/OS&reg; Connect Node.js client
+## Node zosconnect
 
 A wrapper service for z/OS&reg; Connect, enabling node applications to discover and access zSystems resources
 that are service enabled by z/OS&reg; Connect.
