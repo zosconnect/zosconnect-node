@@ -243,7 +243,7 @@ describe('zosconnect', function() {
       nock('http://test:9080')
           .get('/zosConnect/apis/healthApi')
           .reply(403);
-      zosconnect.getApis(function(error, api) {
+      zosconnect.getApi('healthApi', function(error, api) {
         error.should.not.be.null;
         should(api).be.null;
         done();
@@ -254,7 +254,7 @@ describe('zosconnect', function() {
       nock('http://test:9080')
           .get('/zosConnect/apis/healthApi')
           .replyWithError('bad things occurred');
-      zosconnect.getApis(function(error, api) {
+      zosconnect.getApi('healthApi', function(error, api) {
         error.should.not.be.null;
         should(api).be.null;
         done();
