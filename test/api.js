@@ -115,4 +115,42 @@ describe('api', function() {
       });
     });
   });
+
+  describe('#invoke', function() {
+    it('should invoke the API', function(done) {
+      nock('http://test:9080')
+          .get('/dateTime/info')
+          .reply(200, {time:'2:32:01 PM', config:'', date:'Sep 4, 2015'});
+      api.invoke('info', 'GET', '', function(error, response, body) {
+        should.not.exist(error);
+        response.statusCode.should.equal(200);
+        should.exist(body);
+        done();
+      });
+    });
+
+    it('should return a security error', function(done) {
+      nock('http://test:9080')
+          .get('/dateTime/info')
+          .reply(401);
+      api.invoke('info', 'GET', '', function(error, response, body) {
+        should.not.exist(error);
+        response.statusCode.should.equal(401);
+        should.not.exist(body);
+        done();
+      });
+    });
+
+    it('should return an error', function(done) {
+      nock('http://test:9080')
+          .get('/dateTime/info')
+          .replyWithError('something fatal happened');
+      api.invoke('info', 'GET', '', function(error, response, body) {
+        should.exist(error);
+        should.not.exist(response);
+        should.not.exist(body);
+        done();
+      });
+    });
+  });
 });
