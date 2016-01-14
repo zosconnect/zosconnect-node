@@ -42,7 +42,10 @@ module.exports = function(options, apiName, basePath) {
     options = extend(options, this.options);
     options.uri = basePath + '/' + resource;
     options.method = method;
-    options.body = content;
+    if (content != null) {
+      options.body = content;
+    }
+
     options.json = true;
     request(options, callback);
   };
