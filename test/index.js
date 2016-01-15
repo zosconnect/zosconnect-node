@@ -38,7 +38,7 @@ describe('zosconnect', function() {
 
   describe('#getservices', function() {
     it('should return a list of services', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services')
                 .reply(200, {
@@ -58,7 +58,7 @@ describe('zosconnect', function() {
     });
 
     it('should return a list of services (url in ctor)', function(done) {
-      var zosconnect = new ZosConnect({url: url.parse('http://test:9080')});
+      var zosconnect = new ZosConnect({ url: url.parse('http://test:9080') });
       nock('http://test:9080')
           .get('/zosConnect/services')
                 .reply(200, {
@@ -78,7 +78,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error for a security problem', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services')
           .reply(403);
@@ -90,7 +90,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services')
           .replyWithError('bad things occurred');
@@ -104,7 +104,7 @@ describe('zosconnect', function() {
 
   describe('#getservice', function() {
     it('should return a service', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
                 .reply(200, {
@@ -128,7 +128,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error for unknown service', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services/unknown')
           .reply(404);
@@ -140,7 +140,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error for network error', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .replyWithError('something fatal occurred');
