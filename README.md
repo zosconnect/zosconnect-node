@@ -12,12 +12,18 @@
     - [Connecting to z/OS Connect](#connecting-to-zos-connect)
       - [HTTPs Support](#https-support)
       - [Basic Authentication](#basic-authentication)
-    - [Retrieve a list of services](#retrieve-a-list-of-services)
-    - [Get a service](#get-a-service)
-    - [Invoke a service](#invoke-a-service)
-    - [Get the request schema](#get-the-request-schema)
-    - [Get the response schema](#get-the-response-schema)
-    - [Get the status of the service](#get-the-status-of-the-service)
+    - [APIs](#apis)
+      - [Retrieve a list of APIs](#retrieve-a-list-of-apis)
+      - [Get an API](#get-an-api)
+      - [Call an API](#call-an-api)
+      - [Get the Swagger document for an API](#get-the-swagger-document-for-an-api)
+    - [Services](#services)
+      - [Retrieve a list of services](#retrieve-a-list-of-services)
+      - [Get a service](#get-a-service)
+      - [Invoke a service](#invoke-a-service)
+      - [Get the request schema](#get-the-request-schema)
+      - [Get the response schema](#get-the-response-schema)
+      - [Get the status of the service](#get-the-status-of-the-service)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -46,7 +52,7 @@ npm install zosconnect-node
 ```js
 var ZosConnect = require('zosconnect-node');
 var options = {
-   uri:'http://mainframe:8080'
+  uri:'http://mainframe:8080'
 }
 var zosconnect = new ZosConnect(options);
 ```
@@ -61,12 +67,12 @@ var caFile = path.resolve(__dirname, 'ca.pem');
 var certFile = path.resolve(__dirname, 'cert.pem');
 var keyFile = path.resolve(__dirname, 'key.pem');
 var options = {
-   uri:'https://mainframe:9443',
-   ca: fs.readFileSync(caFile),
-   cert: fs.readFileSync(certFile),
-   key: fs.readFileSync(keyFile),
-   passphrase: 'passw0rd',
-   strictSSL: true
+  uri:'https://mainframe:9443',
+  ca: fs.readFileSync(caFile),
+  cert: fs.readFileSync(certFile),
+  key: fs.readFileSync(keyFile),
+  passphrase: 'passw0rd',
+  strictSSL: true
 }
 ```
 
@@ -74,86 +80,132 @@ var options = {
 Add the authentication credentials to the options object.
 ```js
 var options = {
-   uri: 'http://mainframe:9080',
-   auth: {
-      user: 'userId',
-      pass: 'password'
-   }
+  uri: 'http://mainframe:9080',
+  auth: {
+    user: 'userId',
+    pass: 'password'
+  }
 }
 ```
 
-#### Retrieve a list of services
+#### APIs
+
+##### Retrieve a list of APIs
+
+```js
+zosconnect.getApis(function(error, apis){
+  console.log(apis);
+})
+```
+
+##### Get an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  console.log(api);
+})
+```
+
+##### Call an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  api.invoke('patient/12345', 'GET', null, function(error, response, body){
+    if(error){
+      console.log(error);
+    } else if(response.statusCode != 200) {
+      console.log('Invoke failed with respCode = ' + response.statusCode);
+    } else {
+      console.log(body);
+    }
+  })
+})
+```
+
+##### Get the Swagger document for an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  api.getApiDoc(function(error, swagger){
+    console.log(swagger);
+  })
+})
+```
+
+#### Services
+
+##### Retrieve a list of services
 
 ```js
 zosconnect.getServices(function(error, services){
-    console.log(services);
+  console.log(services);
 });
 ```
 
-#### Get a service
+##### Get a service
 
 ```js
 zosconnect.getService('dateTimeService', function(error, service){
-    console.log(service);
-    //normally this would then go on and work with the service
+  console.log(service);
+  //normally this would then go on and work with the service
 });
 ```
 
-#### Invoke a service
+##### Invoke a service
 
 ```js
 zosconnect.getService('dateTimeService', function(error, service){
-    service.invoke({input:'data'}, function(error, response, body){
-        if(error){
-            console.log(error);
-        } else if(response.statusCode != 200) {
-            console.log('Invoke failed with respCode = ' + response.statusCode);
-        } else {
-            console.log(body);
-        }
-    });
+  service.invoke({input:'data'}, function(error, response, body){
+    if(error){
+      console.log(error);
+    } else if(response.statusCode != 200) {
+      console.log('Invoke failed with respCode = ' + response.statusCode);
+    } else {
+      console.log(body);
+    }
+  });
 });
 ```
 
-#### Get the request schema
+##### Get the request schema
 
 ```js
 zosconnect.getService('dateTimeService', function(error, service){
-    service.getRequestSchema(function(error, schema){
-        if(error){
-            console.log(error);
-        } else {
-            console.log(schema);
-        }
-    });
+  service.getRequestSchema(function(error, schema){
+    if(error){
+      console.log(error);
+    } else {
+      console.log(schema);
+    }
+  });
 });
 ```
 
-#### Get the response schema
+##### Get the response schema
 
 ```js
 zosconnect.getService('dateTimeService', function(error, service){
-    service.getResponseSchema(function(error, schema){
-        if(error){
-            console.log(error);
-        } else {
-            console.log(schema);
-        }
-    });
+  service.getResponseSchema(function(error, schema){
+    if(error){
+      console.log(error);
+    } else {
+      console.log(schema);
+    }
+  });
 });
 ```
 
-#### Get the status of the service
+##### Get the status of the service
 
 ```js
 zosconnect.getService('dateTimeService', function(error, service){
-    service.getStatus(function(error, status){
-        if(error){
-            console.log(error);
-        } else {
-            console.log(status);
-        }
-    });
+  service.getStatus(function(error, status){
+    if(error){
+      console.log(error);
+    } else {
+      console.log(status);
+    }
+  });
 });
 ```
 
