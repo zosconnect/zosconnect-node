@@ -21,12 +21,12 @@ var url = require('url');
 var Api = require('../api.js');
 
 describe('api', function() {
-  var api = new Api({uri: 'http://test:9080/zosConnect/apis/dateApi'}, 'healthApi', 'http://test:9080/dateTime');
+  var api = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi', 'http://test:9080/dateTime');
   describe('#getApiDoc', function() {
     it('should retrieve the Swagger Doc', function(done) {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
-          .reply(200, {swagger:'2.0',
+          .reply(200, { swagger:'2.0',
                        info:{
                          version:'1.0.0',
                          title:'Date Time API',
@@ -120,7 +120,7 @@ describe('api', function() {
     it('should invoke the API', function(done) {
       nock('http://test:9080')
           .get('/dateTime/info')
-          .reply(200, {time:'2:32:01 PM', config:'', date:'Sep 4, 2015'});
+          .reply(200, { time:'2:32:01 PM', config:'', date:'Sep 4, 2015' });
       api.invoke('info', 'GET', '', function(error, response, body) {
         should.not.exist(error);
         response.statusCode.should.equal(200);
