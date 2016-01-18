@@ -154,7 +154,7 @@ describe('zosconnect', function() {
 
   describe('#getApis', function() {
     it('should return a list of services', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/apis')
           .reply(200, {
@@ -174,7 +174,7 @@ describe('zosconnect', function() {
     });
 
     it('should return a list of services (url in ctor)', function(done) {
-      var zosconnect = new ZosConnect({url: url.parse('http://test:9080')});
+      var zosconnect = new ZosConnect({ url: url.parse('http://test:9080') });
       nock('http://test:9080')
           .get('/zosConnect/apis')
           .reply(200, {
@@ -194,7 +194,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error for a security problem', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/apis')
           .reply(403);
@@ -206,7 +206,7 @@ describe('zosconnect', function() {
     });
 
     it('should return an error', function(done) {
-      var zosconnect = new ZosConnect({uri:'http://test:9080'});
+      var zosconnect = new ZosConnect({ uri:'http://test:9080' });
       nock('http://test:9080')
           .get('/zosConnect/apis')
           .replyWithError('bad things occurred');
@@ -219,7 +219,7 @@ describe('zosconnect', function() {
   });
 
   describe('#getApi', function() {
-    var zosconnect = new ZosConnect({uri:'http://test:9080'});
+    var zosconnect = new ZosConnect({ uri:'http://test:9080' });
     it('should return an API', function(done) {
       nock('http://test:9080')
           .get('/zosConnect/apis/healthApi')
