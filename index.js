@@ -24,7 +24,7 @@ var defaultOptions = {
   strictSSL: true,
 };
 
-module.exports = function(options) {
+module.exports = function (options) {
   if (options == null) {
     throw new Error('An options object is required');
   }
@@ -42,11 +42,11 @@ module.exports = function(options) {
 
   this.options = extend(defaultOptions, options);
 
-  this.getServices = function(callback) {
+  this.getServices = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/services';
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {
@@ -55,25 +55,25 @@ module.exports = function(options) {
         var json = JSON.parse(body);
         var services = [];
         var asyncTasks = [];
-        json.zosConnectServices.forEach(function(service) {
-          asyncTasks.push(function(asyncCallback) {
+        json.zosConnectServices.forEach(function (service) {
+          asyncTasks.push(function (asyncCallback) {
             services.push(service.ServiceName);
             asyncCallback();
           });
         });
 
-        async.parallel(asyncTasks, function() {
+        async.parallel(asyncTasks, function () {
           callback(null, services);
         });
       }
     });
   };
 
-  this.getService = function(serviceName, callback) {
+  this.getService = function (serviceName, callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/services/' + serviceName;
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {
@@ -85,11 +85,11 @@ module.exports = function(options) {
     });
   };
 
-  this.getApis = function(callback) {
+  this.getApis = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/apis';
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {
@@ -98,25 +98,25 @@ module.exports = function(options) {
         var json = JSON.parse(body);
         var apis = [];
         var asyncTasks = [];
-        json.apis.forEach(function(api) {
-          asyncTasks.push(function(asyncCallback) {
+        json.apis.forEach(function (api) {
+          asyncTasks.push(function (asyncCallback) {
             apis.push(api.name);
             asyncCallback();
           });
         });
 
-        async.parallel(asyncTasks, function() {
+        async.parallel(asyncTasks, function () {
           callback(null, apis);
         });
       }
     });
   };
 
-  this.getApi = function(apiName, callback) {
+  this.getApi = function (apiName, callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/apis/' + apiName;
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {

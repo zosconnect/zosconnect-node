@@ -17,27 +17,28 @@
 var request = require('request');
 var extend = require('extend');
 
-module.exports = function(options, apiName, basePath) {
+module.exports = function (options, apiName, basePath) {
   this.options = options;
   this.apiName = apiName;
   this.basePath = basePath;
 
-  this.getApiDoc = function(callback) {
+  this.getApiDoc = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri = basePath + '/api-docs';
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error != null) {
         callback(error, null);
       } else if (response.statusCode != 200) {
-        callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'), null);
+        callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'),
+                 null);
       } else {
         callback(null, body);
       }
     });
   };
 
-  this.invoke = function(resource, method, content, callback) {
+  this.invoke = function (resource, method, content, callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri = basePath + '/' + resource;
