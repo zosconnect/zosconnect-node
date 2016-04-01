@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 IBM Corp. All Rights Reserved.
+ * Copyright 2016 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,31 @@
 var request = require('request');
 var extend = require('extend');
 
-module.exports = function (options, apiName, basePath) {
+module.exports = function (options, apiName, basePath, documentation) {
   this.options = options;
   this.apiName = apiName;
   this.basePath = basePath;
+  this.documentation = documentation;
 
-  this.getApiDoc = function (callback) {
+  this.getApiDoc = function (type, callback) {
     var options = {};
-    options = extend(options, this.options);
-    options.uri = basePath + '/api-docs';
-    request.get(options, function (error, response, body) {
-      if (error != null) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'),
-                 null);
-      } else {
-        callback(null, body);
-      }
-    });
+    var documentationUri = documentation[type];
+    if (documentationUri == undefined) {
+      callback(new Error('Documentation not available'), null);
+    } else {
+      options = extend(options, this.options);
+      options.uri = documentationUri;
+      request.get(options, function (error, response, body) {
+        if (error != null) {
+          callback(error, null);
+        } else if (response.statusCode != 200) {
+          callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'),
+                   null);
+        } else {
+          callback(null, body);
+        }
+      });
+    }
   };
 
   this.invoke = function (resource, method, content, callback) {

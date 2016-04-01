@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 IBM Corp. All Rights Reserved.
+ * Copyright 2015, 2016 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ module.exports = function (options) {
         callback(new Error('Unable to get API information (' + response.statusCode + ')'), null);
       } else {
         var json = JSON.parse(body);
-        callback(null, new Api(options, apiName, json.apiUrl));
+        callback(null, new Api(options, apiName, json.apiUrl, json.documentation));
       }
     });
   };

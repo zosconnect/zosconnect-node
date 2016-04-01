@@ -22,7 +22,8 @@ var Api = require('../api.js');
 
 describe('api', function () {
   var api = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
-                    'http://test:9080/dateTime');
+                    'http://test:9080/dateTime',
+                    { swagger: 'http://test:9080/dateTime/api-docs' });
   describe('#getApiDoc', function () {
     it('should retrieve the Swagger Doc', function (done) {
       nock('http://test:9080')
@@ -87,7 +88,7 @@ describe('api', function () {
                          },
                        },
                      });
-      api.getApiDoc(function (error, doc) {
+      api.getApiDoc('swagger', function (error, doc) {
         should.not.exist(error);
         should.exist(doc);
         done();
@@ -98,7 +99,7 @@ describe('api', function () {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
           .reply(401);
-      api.getApiDoc(function (error, doc) {
+      api.getApiDoc('swagger', function (error, doc) {
         should.exist(error);
         should.not.exist(doc);
         done();
@@ -109,7 +110,15 @@ describe('api', function () {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
           .replyWithError('something fatal happened');
-      api.getApiDoc(function (error, doc) {
+      api.getApiDoc('swagger', function (error, doc) {
+        should.exist(error);
+        should.not.exist(doc);
+        done();
+      });
+    });
+
+    it('should return an error for unknown doc-type', function (done) {
+      api.getApiDoc('raml', function (error, doc) {
         should.exist(error);
         should.not.exist(doc);
         done();
