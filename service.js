@@ -17,12 +17,12 @@
 var request = require('request');
 var extend = require('extend');
 
-module.exports = function(options, serviceName, invokeUri) {
+module.exports = function (options, serviceName, invokeUri) {
   this.options = options;
   this.serviceName = serviceName;
   this.invokeUri = invokeUri;
 
-  this.invoke = function(data, callback) {
+  this.invoke = function (data, callback) {
     var options = {};
     options = extend(options, this.options);
     options.method = 'PUT';
@@ -32,11 +32,11 @@ module.exports = function(options, serviceName, invokeUri) {
     request(options, callback);
   };
 
-  this.getRequestSchema = function(callback) {
+  this.getRequestSchema = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '?action=getRequestSchema';
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {
@@ -47,11 +47,11 @@ module.exports = function(options, serviceName, invokeUri) {
     });
   };
 
-  this.getResponseSchema = function(callback) {
+  this.getResponseSchema = function (callback) {
       var options = {};
       options = extend(options, this.options);
       options.uri += '?action=getResponseSchema';
-      request.get(options, function(error, response, body) {
+      request.get(options, function (error, response, body) {
         if (error) {
           callback(error, null);
         } else if (response.statusCode != 200) {
@@ -62,11 +62,11 @@ module.exports = function(options, serviceName, invokeUri) {
       });
     };
 
-  this.getStatus = function(callback) {
+  this.getStatus = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '?action=status';
-    request.get(options, function(error, response, body) {
+    request.get(options, function (error, response, body) {
       if (error) {
         callback(error, null);
       } else if (response.statusCode != 200) {
