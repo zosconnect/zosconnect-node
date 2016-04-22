@@ -126,7 +126,7 @@ zosconnect.getApi('healthApi', function(error, api){
 
 ```js
 zosconnect.getApi('healthApi', function(error, api){
-  api.getApiDoc(function(error, swagger){
+  api.getApiDoc('swagger', function(error, swagger){
     console.log(swagger);
   })
 })
