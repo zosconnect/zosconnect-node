@@ -15,6 +15,7 @@
     - [APIs](#apis)
       - [Retrieve a list of APIs](#retrieve-a-list-of-apis)
       - [Get an API](#get-an-api)
+      - [Create an API](#create-an-api)
       - [Call an API](#call-an-api)
       - [Get the Swagger document for an API](#get-the-swagger-document-for-an-api)
     - [Services](#services)
@@ -102,6 +103,14 @@ zosconnect.getApis(function(error, apis){
 
 ```js
 zosconnect.getApi('healthApi', function(error, api){
+  console.log(api);
+})
+```
+
+##### Create an API
+
+```js
+zosconnect.createApi(fs.readFileSync('api.aar'), function(error, api){
   console.log(api);
 })
 ```
