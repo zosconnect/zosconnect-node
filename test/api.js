@@ -28,66 +28,66 @@ describe('api', function () {
     it('should retrieve the Swagger Doc', function (done) {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
-          .reply(200, { swagger:'2.0',
-                       info:{
-                         version:'1.0.0',
-                         title:'Date Time API',
-                         description:'API to return date and time',
-                       },
-                       host:'test:9080',
-                       basePath:'/dateTime',
-                       schemes:['http', 'https'],
-                       produces:['application/json'],
-                       paths:{
-                         '/':{
-                           get:{
-                             description:'Get current date and time',
-                             operationId:'getDateTime',
-                             responses:{
-                               200:{
-                                 description:'normal response',
-                                 schema:{
-                                   $ref:'#/definitions/getDateTimeOutput',
-                                 },
-                               },
-                               default:{
-                                 description:'unexpected error',
-                                 schema:{
-                                   $ref:'#/definitions/errorModel',
-                                 },
-                               },
-                             },
-                           },
-                         },
-                       },
-                       definitions:{
-                         getDateTimeOutput:{
-                           required:['date', 'time'],
-                           properties:{
-                             date:{
-                               maxLength:10,
-                               type:'string',
-                             },
-                             time:{
-                               maxLength:10,
-                               type:'string',
-                             },
-                           },
-                         },
-                         errorModel:{
-                           required:['code', 'message'],
-                           properties:{
-                             code:{
-                               type:'integer',
-                               format:'int32',
-                             },
-                             message:{
-                               type:'string',
-                             },
-                           },
-                         },
-                       },
-                     });
+          .reply(200, { swagger: '2.0',
+                      info: {
+                        version: '1.0.0',
+                        title: 'Date Time API',
+                        description: 'API to return date and time',
+                      },
+                      host: 'test:9080',
+                      basePath: '/dateTime',
+                      schemes: ['http', 'https'],
+                      produces: ['application/json'],
+                      paths: {
+                        '/': {
+                          get: {
+                            description: 'Get current date and time',
+                            operationId: 'getDateTime',
+                            responses: {
+                              200: {
+                                description: 'normal response',
+                                schema: {
+                                  $ref: '#/definitions/getDateTimeOutput',
+                                },
+                              },
+                              default: {
+                                description: 'unexpected error',
+                                schema: {
+                                  $ref: '#/definitions/errorModel',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      definitions: {
+                        getDateTimeOutput: {
+                          required: ['date', 'time'],
+                          properties: {
+                            date: {
+                              maxLength: 10,
+                              type: 'string',
+                            },
+                            time: {
+                              maxLength: 10,
+                              type: 'string',
+                            },
+                          },
+                        },
+                        errorModel: {
+                          required: ['code', 'message'],
+                          properties: {
+                            code: {
+                              type: 'integer',
+                              format: 'int32',
+                            },
+                            message: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    });
       api.getApiDoc('swagger', function (error, doc) {
         should.not.exist(error);
         should.exist(doc);
@@ -130,7 +130,7 @@ describe('api', function () {
     it('should invoke the API', function (done) {
       nock('http://test:9080')
           .get('/dateTime/info')
-          .reply(200, { time:'2:32:01 PM', config:'', date:'Sep 4, 2015' });
+          .reply(200, { time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' });
       api.invoke('info', 'GET', null, function (error, response, body) {
         should.not.exist(error);
         response.statusCode.should.equal(200);
