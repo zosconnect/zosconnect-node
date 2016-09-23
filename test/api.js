@@ -163,4 +163,92 @@ describe('api', function () {
       });
     });
   });
+
+  describe('#start', function () {
+    it('should start the api', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'started',
+                        version: '1.0.0',
+                      });
+      api.start(function (error) {
+        should.not.exist(error);
+        done();
+      });
+    });
+
+    it('should return not found', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .reply(404);
+      api.start(function (error) {
+        error.should.equal(404);
+        done();
+      });
+    });
+
+    it('should return an error', function (done) {
+      nock('http://test:9080')
+          .put('zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .replyWithError('somthing fatal happened');
+      api.start(function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+  });
+
+  describe('#stop', function () {
+    it('should stop the api', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      api.stop(function (error) {
+        should.not.exist(error);
+        done();
+      });
+    });
+
+    it('should return not found', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(404);
+      api.stop(function (error) {
+        error.should.equal(404);
+        done();
+      });
+    });
+
+    it('should return an error', function (done) {
+      nock('http://test:9080')
+          .put('zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .replyWithError('somthing fatal happened');
+      api.stop(function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+  });
 });

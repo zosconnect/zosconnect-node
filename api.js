@@ -56,4 +56,38 @@ module.exports = function (options, apiName, basePath, documentation) {
     options.json = true;
     request(options, callback);
   };
+
+  this.start = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?status=started';
+    options.method = 'PUT';
+    delete options.body;
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(response.statusCode);
+      } else {
+        callback(null);
+      }
+    });
+  };
+
+  this.stop = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?status=stopped';
+    options.method = 'PUT';
+    delete options.body;
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(response.statusCode);
+      } else {
+        callback(null);
+      }
+    });
+  };
 };
