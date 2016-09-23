@@ -90,4 +90,37 @@ module.exports = function (options, apiName, basePath, documentation) {
       }
     });
   };
+
+  this.update = function (aarFile, callback) {
+    var options = {};
+    options = extend(options, this.options);
+    this.stop(function (error) {
+      if (error != null) {
+        if (error instanceof Error) {
+          callback(error);
+        } else {
+          callback(new Error('Unable to stop API'));
+        }
+      } else {
+        options.method = 'PUT';
+        options.uri += '?status=started';
+        options.body = aarFile;
+        options.headers = {
+          'Content-Type': 'application/zip',
+        };
+        request(options, function (error, response, body) {
+          if (error) {
+            callback(error, null);
+          } else if (response.statusCode != 200) {
+            callback(new Error('Unable to create API (' + response.statusCode + ')'), null);
+          } else {
+            var json = JSON.parse(body);
+            this.basePath = json.apiUrl;
+            this.documentation = json.documentation;
+            callback(null);
+          }
+        });
+      }
+    });
+  };
 };

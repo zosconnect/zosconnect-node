@@ -251,4 +251,109 @@ describe('api', function () {
       });
     });
   });
+
+  describe('#update', function () {
+    it('should update the API', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      api.update('foo', function (error) {
+        should.not.exist(error);
+        done();
+      });
+    });
+
+    it('should fail to stop the API', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(404);
+      api.update('foo', function (error) {
+        error.message.should.equal('Unable to stop API');
+        done();
+      });
+    });
+
+    it('should fail to stop the API due to error', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .replyWithError('something fatal happened');
+      api.update('foo', function (error) {
+        error.message.should.equal('something fatal happened');
+        done();
+      });
+    });
+
+    it('should fail the update', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .reply(404);
+      api.update('foo', function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+
+    it('should fail the update due to error', function (done) {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .replyWithError('Something fatal happened');
+      api.update('foo', function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+  });
 });
