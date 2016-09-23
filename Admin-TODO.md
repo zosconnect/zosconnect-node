@@ -1,7 +1,7 @@
 #### API Admin functions to implement
 
 * ~~create~~
-* start
-* stop
+* ~~start~~
+* ~~stop~~
 * update
 * delete
