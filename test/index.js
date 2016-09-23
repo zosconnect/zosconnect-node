@@ -212,6 +212,7 @@ describe('zosconnect', function () {
                           swagger: 'http://192.168.99.100:9080/health/api-docs',
                         },
                         name: 'healthApi',
+                        status: 'started',
                         version: '1.0.0',
                       });
       zosconnect.getApi('healthApi', function (error, api) {
@@ -256,6 +257,7 @@ describe('zosconnect', function () {
                           swagger: 'http://192.168.99.100:9080/health/api-docs',
                         },
                         name: 'healthApi',
+                        status: 'started',
                         version: '1.0.0',
                       });
       zosconnect.createApi('foo', function (error, api) {
