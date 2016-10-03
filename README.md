@@ -18,6 +18,8 @@
       - [Create an API](#create-an-api)
       - [Call an API](#call-an-api)
       - [Get the Swagger document for an API](#get-the-swagger-document-for-an-api)
+      - [Start or Stop an API](#start-or-stop-an-api)
+      - [Update an API](#update-an-api)
     - [Services](#services)
       - [Retrieve a list of services](#retrieve-a-list-of-services)
       - [Get a service](#get-a-service)
@@ -137,6 +139,35 @@ zosconnect.getApi('healthApi', function(error, api){
 zosconnect.getApi('healthApi', function(error, api){
   api.getApiDoc('swagger', function(error, swagger){
     console.log(swagger);
+  })
+})
+```
+
+##### Start or Stop an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  api.stop(function(error){
+    if(error){
+      console.log(error);
+    }
+  });
+  api.start(function(error){
+    if(error){
+      console.log(error);
+    }
+  })
+})
+```
+
+##### Update an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  api.update(fs.readFileSync('healthApi.aar'), function(error){
+    if(error){
+      console.log(error);
+    }
   })
 })
 ```
