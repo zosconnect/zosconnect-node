@@ -172,6 +172,18 @@ zosconnect.getApi('healthApi', function(error, api){
 })
 ```
 
+##### Delete an API
+
+```js
+zosconnect.getApi('healthApi', function(error, api){
+  api.delete(function(error){
+    if(error){
+      console.log(error);
+    }
+  })
+})
+```
+
 #### Services
 
 ##### Retrieve a list of services

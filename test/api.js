@@ -356,4 +356,38 @@ describe('api', function () {
       });
     });
   });
+
+  describe('#update', function () {
+    it('should delete the api', function (done) {
+      nock('http://test:9080')
+          .delete('/zosConnect/apis/dateApi')
+          .reply(200, {
+                        name: 'dateTime',
+                      });
+      api.delete(function (error) {
+        should.not.exist(error);
+        done();
+      });
+    });
+
+    it('should fail the delete', function (done) {
+      nock('http://test:9080')
+          .delete('/zosConnect/apis/dateApi')
+          .reply(403);
+      api.delete(function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+
+    it('should fail due to error', function (done) {
+      nock('http://test:9080')
+          .delete('/zosConnect/apis/dateApi')
+          .replyWithError('Something fatal happened');
+      api.delete(function (error) {
+        should.exist(error);
+        done();
+      });
+    });
+  });
 });

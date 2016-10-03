@@ -110,9 +110,9 @@ module.exports = function (options, apiName, basePath, documentation) {
         };
         request(options, function (error, response, body) {
           if (error) {
-            callback(error, null);
+            callback(error);
           } else if (response.statusCode != 200) {
-            callback(new Error('Unable to create API (' + response.statusCode + ')'), null);
+            callback(new Error('Unable to create API (' + response.statusCode + ')'));
           } else {
             var json = JSON.parse(body);
             this.basePath = json.apiUrl;
@@ -120,6 +120,21 @@ module.exports = function (options, apiName, basePath, documentation) {
             callback(null);
           }
         });
+      }
+    });
+  };
+
+  this.delete = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.method = 'DELETE';
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(new Error('Unable to delete API (' + response.statusCode + ')'));
+      } else {
+        callback(null);
       }
     });
   };

@@ -4,4 +4,4 @@
 * ~~start~~
 * ~~stop~~
 * ~~update~~
-* delete
+* ~~delete~~
