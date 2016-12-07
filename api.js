@@ -56,4 +56,86 @@ module.exports = function (options, apiName, basePath, documentation) {
     options.json = true;
     request(options, callback);
   };
+
+  this.start = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?status=started';
+    options.method = 'PUT';
+    delete options.body;
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(response.statusCode);
+      } else {
+        callback(null);
+      }
+    });
+  };
+
+  this.stop = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '?status=stopped';
+    options.method = 'PUT';
+    delete options.body;
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(response.statusCode);
+      } else {
+        callback(null);
+      }
+    });
+  };
+
+  this.update = function (aarFile, callback) {
+    var options = {};
+    options = extend(options, this.options);
+    this.stop(function (error) {
+      if (error != null) {
+        if (error instanceof Error) {
+          callback(error);
+        } else {
+          callback(new Error('Unable to stop API'));
+        }
+      } else {
+        options.method = 'PUT';
+        options.uri += '?status=started';
+        options.body = aarFile;
+        options.headers = {
+          'Content-Type': 'application/zip',
+        };
+        request(options, function (error, response, body) {
+          if (error) {
+            callback(error);
+          } else if (response.statusCode != 200) {
+            callback(new Error('Unable to create API (' + response.statusCode + ')'));
+          } else {
+            var json = JSON.parse(body);
+            this.basePath = json.apiUrl;
+            this.documentation = json.documentation;
+            callback(null);
+          }
+        });
+      }
+    });
+  };
+
+  this.delete = function (callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.method = 'DELETE';
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error);
+      } else if (response.statusCode != 200) {
+        callback(new Error('Unable to delete API (' + response.statusCode + ')'));
+      } else {
+        callback(null);
+      }
+    });
+  };
 };

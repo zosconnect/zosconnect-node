@@ -127,4 +127,25 @@ module.exports = function (options) {
       }
     });
   };
+
+  this.createApi = function (aarFile, callback) {
+    var options = {};
+    options = extend(options, this.options);
+    options.uri += '/zosConnect/apis';
+    options.method = 'POST';
+    options.body = aarFile;
+    options.headers = {
+      'Content-Type': 'application/zip',
+    };
+    request(options, function (error, response, body) {
+      if (error) {
+        callback(error, null);
+      } else if (response.statusCode != 201) {
+        callback(new Error('Unable to create API (' + response.statusCode + ')'), null);
+      } else {
+        var json = JSON.parse(body);
+        callback(null, new Api(options, json.name, json.apiUrl, json.documentation));
+      }
+    });
+  };
 };
