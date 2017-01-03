@@ -26,13 +26,13 @@ module.exports = function (options, apiName, basePath, documentation) {
   this.getApiDoc = function (type, callback) {
     var options = {};
     var documentationUri = documentation[type];
-    if (documentationUri == undefined) {
+    if (documentationUri === undefined) {
       callback(new Error('Documentation not available'), null);
     } else {
       options = extend(options, this.options);
       options.uri = documentationUri;
       request.get(options, function (error, response, body) {
-        if (error != null) {
+        if (error !== null) {
           callback(error, null);
         } else if (response.statusCode != 200) {
           callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'),
@@ -49,7 +49,7 @@ module.exports = function (options, apiName, basePath, documentation) {
     options = extend(options, this.options);
     options.uri = basePath + '/' + resource;
     options.method = method;
-    if (content != null) {
+    if (content !== null) {
       options.body = content;
     }
 
@@ -95,7 +95,7 @@ module.exports = function (options, apiName, basePath, documentation) {
     var options = {};
     options = extend(options, this.options);
     this.stop(function (error) {
-      if (error != null) {
+      if (error !== null) {
         if (error instanceof Error) {
           callback(error);
         } else {

@@ -15,7 +15,6 @@
  */
 
 var request = require('request');
-var async = require('async');
 var extend = require('extend');
 var Service = require('./service.js');
 var Api = require('./api.js');
@@ -25,15 +24,15 @@ var defaultOptions = {
 };
 
 module.exports = function (options) {
-  if (options == null) {
+  if (options === null || options === undefined) {
     throw new Error('An options object is required');
   }
 
-  if (options.uri == null && options.url == null) {
+  if (options.uri === undefined && options.url === undefined) {
     throw new Error('Required uri or url not specified');
   }
 
-  if (options.uri == null) {
+  if (options.uri === undefined) {
     var uri = options.url.protocol;
     uri += '//';
     uri += options.url.host;
@@ -54,17 +53,11 @@ module.exports = function (options) {
       } else {
         var json = JSON.parse(body);
         var services = [];
-        var asyncTasks = [];
-        json.zosConnectServices.forEach(function (service) {
-          asyncTasks.push(function (asyncCallback) {
-            services.push(service.ServiceName);
-            asyncCallback();
-          });
-        });
+        for (let service of json.zosConnectServices) {
+          services.push(service.ServiceName);
+        }
 
-        async.parallel(asyncTasks, function () {
-          callback(null, services);
-        });
+        callback(null, services);
       }
     });
   };
@@ -97,17 +90,11 @@ module.exports = function (options) {
       } else {
         var json = JSON.parse(body);
         var apis = [];
-        var asyncTasks = [];
-        json.apis.forEach(function (api) {
-          asyncTasks.push(function (asyncCallback) {
-            apis.push(api.name);
-            asyncCallback();
-          });
-        });
+        for (let api of json.apis) {
+          apis.push(api.name);
+        }
 
-        async.parallel(asyncTasks, function () {
-          callback(null, apis);
-        });
+        callback(null, apis);
       }
     });
   };
