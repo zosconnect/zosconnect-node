@@ -41,81 +41,91 @@ module.exports = function (options) {
 
   this.options = extend(defaultOptions, options);
 
-  this.getServices = function (callback) {
+  this.getServices = function () {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/services';
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Failed to get list of services (' + response.statusCode + ')'), null);
-      } else {
-        var json = JSON.parse(body);
-        var services = [];
-        for (let service of json.zosConnectServices) {
-          services.push(service.ServiceName);
-        }
 
-        callback(null, services);
-      }
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Failed to get list of services (' + response.statusCode + ')'));
+        } else {
+          var json = JSON.parse(body);
+          var services = [];
+          for (let service of json.zosConnectServices) {
+            services.push(service.ServiceName);
+          }
+
+          resolve(services);
+        }
+      });
     });
   };
 
-  this.getService = function (serviceName, callback) {
+  this.getService = function (serviceName) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/services/' + serviceName;
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Unable to get service (' + response.statusCode + ')'), null);
-      } else {
-        var serviceData = JSON.parse(body);
-        callback(null, new Service(options, serviceName, serviceData.zosConnect.serviceInvokeURL));
-      }
+
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Unable to get service (' + response.statusCode + ')'));
+        } else {
+          var serviceData = JSON.parse(body);
+          resolve(new Service(options, serviceName, serviceData.zosConnect.serviceInvokeURL));
+        }
+      });
     });
   };
 
-  this.getApis = function (callback) {
+  this.getApis = function () {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/apis';
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Unable to get list of APIs (' + response.statusCode + ')'), null);
-      } else {
-        var json = JSON.parse(body);
-        var apis = [];
-        for (let api of json.apis) {
-          apis.push(api.name);
-        }
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Unable to get list of APIs (' + response.statusCode + ')'));
+        } else {
+          var json = JSON.parse(body);
+          var apis = [];
+          for (let api of json.apis) {
+            apis.push(api.name);
+          }
 
-        callback(null, apis);
-      }
+          resolve(apis);
+        }
+      });
     });
   };
 
-  this.getApi = function (apiName, callback) {
+  this.getApi = function (apiName) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/apis/' + apiName;
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Unable to get API information (' + response.statusCode + ')'), null);
-      } else {
-        var json = JSON.parse(body);
-        callback(null, new Api(options, apiName, json.apiUrl, json.documentation));
-      }
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Unable to get API information (' + response.statusCode + ')'));
+        } else {
+          var json = JSON.parse(body);
+          resolve(new Api(options, apiName, json.apiUrl, json.documentation));
+        }
+      });
     });
   };
 
-  this.createApi = function (aarFile, callback) {
+  this.createApi = function (aarFile) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '/zosConnect/apis';
@@ -124,15 +134,17 @@ module.exports = function (options) {
     options.headers = {
       'Content-Type': 'application/zip',
     };
-    request(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 201) {
-        callback(new Error('Unable to create API (' + response.statusCode + ')'), null);
-      } else {
-        var json = JSON.parse(body);
-        callback(null, new Api(options, json.name, json.apiUrl, json.documentation));
-      }
+    return new Promise(function (resolve, reject) {
+      request(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 201) {
+          reject(new Error('Unable to create API (' + response.statusCode + ')'));
+        } else {
+          var json = JSON.parse(body);
+          resolve(new Api(options, json.name, json.apiUrl, json.documentation));
+        }
+      });
     });
   };
 };

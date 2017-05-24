@@ -16,7 +16,12 @@
 
 var assert = require('assert');
 var nock = require('nock');
-var should = require('should');
+
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+
+chai.use(chaiAsPromised);
+var should = chai.should();
 var url = require('url');
 var Api = require('../api.js');
 
