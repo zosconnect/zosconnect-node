@@ -34,9 +34,9 @@ describe('service', function () {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
           .query({ action:'invoke' })
-          .reply(200, { time:'2:32:01 PM', config:'', date:'Sep 4, 2015' });
-      return dateTimeService.invoke('').should.eventually.have.deep.property('body',
-        { time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' });
+          .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      return dateTimeService.invoke('').should.eventually.have.property('body',
+        "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
     });
 
     it('should return a security error', function () {
