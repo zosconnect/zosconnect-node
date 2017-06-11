@@ -29,21 +29,31 @@ module.exports = function (options, serviceName, invokeUri) {
     options.uri = this.invokeUri;
     options.json = true;
     options.body = data;
-    request(options, callback);
+    return new Promise(function (resolve, reject) {
+      request(options, function (error, response, data) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      });
+    });
   };
 
   this.getRequestSchema = function (callback) {
     var options = {};
     options = extend(options, this.options);
     options.uri += '?action=getRequestSchema';
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
-      } else {
-        callback(null, body);
-      }
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Failed to get schema (' + response.statusCode + ')'));
+        } else {
+          resolve(body);
+        }
+      });
     });
   };
 
@@ -51,31 +61,35 @@ module.exports = function (options, serviceName, invokeUri) {
       var options = {};
       options = extend(options, this.options);
       options.uri += '?action=getResponseSchema';
-      request.get(options, function (error, response, body) {
-        if (error) {
-          callback(error, null);
-        } else if (response.statusCode != 200) {
-          callback(new Error('Failed to get schema (' + response.statusCode + ')'), null);
-        } else {
-          callback(null, body);
-        }
+      return new Promise(function (resolve, reject) {
+        request.get(options, function (error, response, body) {
+          if (error) {
+            reject(error);
+          } else if (response.statusCode != 200) {
+            reject(new Error('Failed to get schema (' + response.statusCode + ')'));
+          } else {
+            resolve(body);
+          }
+        });
       });
     };
 
-  this.getStatus = function (callback) {
+  this.getStatus = function () {
     var options = {};
     options = extend(options, this.options);
     options.uri += '?action=status';
-    request.get(options, function (error, response, body) {
-      if (error) {
-        callback(error, null);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Failed to get status (' + response.statusCode + ')'), null);
-      } else {
-        var json = JSON.parse(body);
-        var status = json.zosConnect.serviceStatus;
-        callback(null, status);
-      }
+    return new Promise(function (resolve, reject) {
+      request.get(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode != 200) {
+          reject(new Error('Failed to get status (' + response.statusCode + ')'));
+        } else {
+          var json = JSON.parse(body);
+          var status = json.zosConnect.serviceStatus;
+          resolve(status);
+        }
+      });
     });
   };
 };

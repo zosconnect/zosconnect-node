@@ -30,90 +30,62 @@ describe('service', function () {
                               'dateTimeService',
                               'http://test:9080/zosConnect/services/dateTimeService?action=invoke');
   describe('#invoke', function () {
-    it('should invoke the service', function (done) {
+    it('should invoke the service', function () {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
           .query({ action:'invoke' })
           .reply(200, { time:'2:32:01 PM', config:'', date:'Sep 4, 2015' });
-      dateTimeService.invoke('', function (error, response, body) {
-        should.not.exist(error);
-        response.statusCode.should.equal(200);
-        should.exist(body);
-        done();
-      });
+      return dateTimeService.invoke('').should.eventually.have.deep.property('body',
+        { time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' });
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
           .query({ action:'invoke' })
           .reply(401);
-      dateTimeService.invoke('', function (error, response, body) {
-        should.not.exist(error);
-        response.statusCode.should.equal(401);
-        should.not.exist(body);
-        done();
-      });
+      return dateTimeService.invoke('').should.eventually.have.property('statusCode', 401);
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .put('/zosConnect/services/dateTimeService')
           .query({ action:'invoke' })
           .replyWithError('something fatal happened');
-      dateTimeService.invoke('', function (error, response, body) {
-        should.exist(error);
-        should.not.exist(response);
-        should.not.exist(body);
-        done();
-      });
+      return dateTimeService.invoke('').should.be.rejectedWith('something fatal happened');
     });
   });
 
   describe('#getRequestSchema', function () {
-    it('should retrieve the request schema', function (done) {
+    it('should retrieve the request schema', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'getRequestSchema' })
           .reply(200, {});
-      dateTimeService.getRequestSchema(function (error, schema) {
-        should.not.exist(error);
-        should.exist(schema);
-        done();
-      });
+      return dateTimeService.getRequestSchema().should.eventually.equal('{}');
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'getRequestSchema' })
           .reply(401);
-      dateTimeService.getRequestSchema(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getRequestSchema().should.be.
+        rejectedWith('Failed to get schema (401)');
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'getRequestSchema' })
           .replyWithError('something fatal happened');
-      dateTimeService.getRequestSchema(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getRequestSchema().should.be.rejectedWith('something fatal happened');
     });
   });
 
   describe('#getResponseSchema', function () {
-    it('should retrieve the response schema', function (done) {
-      nock('http://test:9080')
-          .get('/zosConnect/services/dateTimeService')
-          .query({ action:'getResponseSchema' })
-          .reply(200, {
+    it('should retrieve the response schema', function () {
+      var schema = {
             title:'Reference Schema',
             properties:{
               time:{ type:'string' },
@@ -121,41 +93,34 @@ describe('service', function () {
             },
             required:['date', 'time'],
             type:'object',
-          });
-      dateTimeService.getResponseSchema(function (error, schema) {
-        should.not.exist(error);
-        should.exist(schema);
-        done();
-      });
+          };
+      nock('http://test:9080')
+          .get('/zosConnect/services/dateTimeService')
+          .query({ action:'getResponseSchema' })
+          .reply(200, schema);
+      return dateTimeService.getResponseSchema().should.eventually.equal(JSON.stringify(schema));
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'getResponseSchema' })
           .reply(401);
-      dateTimeService.getResponseSchema(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getResponseSchema().should.be.
+        rejectedWith('Failed to get schema (401)');
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'getResponseSchema' })
           .replyWithError('something fatal happened');
-      dateTimeService.getResponseSchema(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getResponseSchema().should.be.rejectedWith('something fatal happened');
     });
   });
 
   describe('#getStatus', function () {
-    it('should return the status', function (done) {
+    it('should return the status', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'status' })
@@ -171,35 +136,23 @@ describe('service', function () {
               serviceURL:'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
             },
           });
-      dateTimeService.getStatus(function (error, status) {
-        should.not.exist(error);
-        status.should.equal('Started');
-        done();
-      });
+      return dateTimeService.getStatus().should.eventually.equal('Started');
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'status' })
           .reply(401);
-      dateTimeService.getStatus(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getStatus().should.be.rejectedWith('Failed to get status (401)');
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .get('/zosConnect/services/dateTimeService')
           .query({ action:'status' })
           .replyWithError('something fatal happened');
-      dateTimeService.getStatus(function (error, schema) {
-        should.exist(error);
-        should.not.exist(schema);
-        done();
-      });
+      return dateTimeService.getStatus().should.be.rejectedWith('something fatal happened');
     });
   });
 });
