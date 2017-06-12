@@ -14,82 +14,82 @@
  * limitations under the License.
  */
 
-var request = require('request');
-var extend = require('extend');
+const request = require('request');
+const extend = require('extend');
 
-module.exports = function (options, serviceName, invokeUri) {
+module.exports = function Service(options, serviceName, invokeUri) {
   this.options = options;
   this.serviceName = serviceName;
   this.invokeUri = invokeUri;
 
-  this.invoke = function (data, callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.method = 'PUT';
-    options.uri = this.invokeUri;
-    options.json = true;
-    options.body = data;
-    return new Promise(function (resolve, reject) {
-      request(options, function (error, response, data) {
+  this.invoke = (data) => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = 'PUT';
+    opOptions.uri = this.invokeUri;
+    opOptions.json = true;
+    opOptions.body = data;
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response) => {
         if (error) {
           reject(error);
         } else {
           resolve(response);
         }
       });
-    });
+    }));
   };
 
-  this.getRequestSchema = function (callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.uri += '?action=getRequestSchema';
-    return new Promise(function (resolve, reject) {
-      request.get(options, function (error, response, body) {
+  this.getRequestSchema = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?action=getRequestSchema';
+    return new Promise(((resolve, reject) => {
+      request.get(opOptions, (error, response, body) => {
         if (error) {
           reject(error);
-        } else if (response.statusCode != 200) {
-          reject(new Error('Failed to get schema (' + response.statusCode + ')'));
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to get schema (${response.statusCode})`));
         } else {
           resolve(body);
         }
       });
-    });
+    }));
   };
 
-  this.getResponseSchema = function (callback) {
-      var options = {};
-      options = extend(options, this.options);
-      options.uri += '?action=getResponseSchema';
-      return new Promise(function (resolve, reject) {
-        request.get(options, function (error, response, body) {
-          if (error) {
-            reject(error);
-          } else if (response.statusCode != 200) {
-            reject(new Error('Failed to get schema (' + response.statusCode + ')'));
-          } else {
-            resolve(body);
-          }
-        });
-      });
-    };
-
-  this.getStatus = function () {
-    var options = {};
-    options = extend(options, this.options);
-    options.uri += '?action=status';
-    return new Promise(function (resolve, reject) {
-      request.get(options, function (error, response, body) {
+  this.getResponseSchema = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?action=getResponseSchema';
+    return new Promise(((resolve, reject) => {
+      request.get(opOptions, (error, response, body) => {
         if (error) {
           reject(error);
-        } else if (response.statusCode != 200) {
-          reject(new Error('Failed to get status (' + response.statusCode + ')'));
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to get schema (${response.statusCode})`));
         } else {
-          var json = JSON.parse(body);
-          var status = json.zosConnect.serviceStatus;
+          resolve(body);
+        }
+      });
+    }));
+  };
+
+  this.getStatus = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?action=status';
+    return new Promise(((resolve, reject) => {
+      request.get(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to get status (${response.statusCode})`));
+        } else {
+          const json = JSON.parse(body);
+          const status = json.zosConnect.serviceStatus;
           resolve(status);
         }
       });
-    });
+    }));
   };
 };
