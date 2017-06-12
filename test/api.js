@@ -30,7 +30,7 @@ describe('api', function () {
                     'http://test:9080/dateTime',
                     { swagger: 'http://test:9080/dateTime/api-docs' });
   describe('#getApiDoc', function () {
-    it('should retrieve the Swagger Doc', function (done) {
+    it('should retrieve the Swagger Doc', function () {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
           .reply(200, { swagger: '2.0',
@@ -93,84 +93,54 @@ describe('api', function () {
                         },
                       },
                     });
-      api.getApiDoc('swagger', function (error, doc) {
-        should.not.exist(error);
-        should.exist(doc);
-        done();
-      });
+      return api.getApiDoc('swagger').should.be.fulfilled;
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
           .reply(401);
-      api.getApiDoc('swagger', function (error, doc) {
-        should.exist(error);
-        should.not.exist(doc);
-        done();
-      });
+      api.getApiDoc('swagger').should.be.rejectedWith(401);
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .get('/dateTime/api-docs')
           .replyWithError('something fatal happened');
-      api.getApiDoc('swagger', function (error, doc) {
-        should.exist(error);
-        should.not.exist(doc);
-        done();
-      });
+      api.getApiDoc('swagger').should.be.rejectedWith('something fatal happened');
     });
 
-    it('should return an error for unknown doc-type', function (done) {
-      api.getApiDoc('raml', function (error, doc) {
-        should.exist(error);
-        should.not.exist(doc);
-        done();
-      });
+    it('should return an error for unknown doc-type', function () {
+      api.getApiDoc('raml').should.be.rejectedWith('Documentation not available');
     });
   });
 
   describe('#invoke', function () {
-    it('should invoke the API', function (done) {
+    it('should invoke the API', function () {
       nock('http://test:9080')
           .get('/dateTime/info')
-          .reply(200, { time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' });
-      api.invoke('info', 'GET', null, function (error, response, body) {
-        should.not.exist(error);
-        response.statusCode.should.equal(200);
-        should.exist(body);
-        done();
-      });
+          .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      return api.invoke('info', 'GET', null).should.eventually.have.deep.property('body',
+        "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
     });
 
-    it('should return a security error', function (done) {
+    it('should return a security error', function () {
       nock('http://test:9080')
           .get('/dateTime/info')
           .reply(401);
-      api.invoke('info', 'GET', null, function (error, response, body) {
-        should.not.exist(error);
-        response.statusCode.should.equal(401);
-        should.not.exist(body);
-        done();
-      });
+      return api.invoke('info', 'GET', null).should.eventually.have.property('statusCode', 401);
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .post('/dateTime/info')
           .replyWithError('something fatal happened');
-      api.invoke('info', 'POST', '{}', function (error, response, body) {
-        should.exist(error);
-        should.not.exist(response);
-        should.not.exist(body);
-        done();
-      });
+      return api.invoke('info', 'POST', '{}').should.be.rejectedWith('something fatal happened');
     });
   });
 
   describe('#start', function () {
-    it('should start the api', function (done) {
+    it('should start the api', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'started' })
@@ -184,37 +154,28 @@ describe('api', function () {
                         status: 'started',
                         version: '1.0.0',
                       });
-      api.start(function (error) {
-        should.not.exist(error);
-        done();
-      });
+      return api.start().should.be.fulfilled;
     });
 
-    it('should return not found', function (done) {
+    it('should return not found', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'started' })
           .reply(404);
-      api.start(function (error) {
-        error.should.equal(404);
-        done();
-      });
+      return api.start().should.be.rejectedWith(404);
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
-          .put('zosConnect/apis/dateApi')
+          .put('/zosConnect/apis/dateApi')
           .query({ status: 'started' })
-          .replyWithError('somthing fatal happened');
-      api.start(function (error) {
-        should.exist(error);
-        done();
-      });
+          .replyWithError('something fatal happened');
+      return api.start().should.be.rejectedWith('something fatal happened');
     });
   });
 
   describe('#stop', function () {
-    it('should stop the api', function (done) {
+    it('should stop the api', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'stopped' })
@@ -228,92 +189,74 @@ describe('api', function () {
                         status: 'stopped',
                         version: '1.0.0',
                       });
-      api.stop(function (error) {
-        should.not.exist(error);
-        done();
-      });
+      return api.stop().should.be.fulfilled;
     });
 
-    it('should return not found', function (done) {
+    it('should return not found', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'stopped' })
           .reply(404);
-      api.stop(function (error) {
-        error.should.equal(404);
-        done();
-      });
+      api.stop().should.be.rejectedWith(404);
     });
 
-    it('should return an error', function (done) {
-      nock('http://test:9080')
-          .put('zosConnect/apis/dateApi')
-          .query({ status: 'stopped' })
-          .replyWithError('somthing fatal happened');
-      api.stop(function (error) {
-        should.exist(error);
-        done();
-      });
-    });
-  });
-
-  describe('#update', function () {
-    it('should update the API', function (done) {
-      nock('http://test:9080')
-          .put('/zosConnect/apis/dateApi')
-          .query({ status: 'stopped' })
-          .reply(200, {
-                        apiUrl: 'http://192.168.99.100:9080/dateTime',
-                        description: 'Date Time API',
-                        documentation: {
-                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
-                        },
-                        name: 'dateTime',
-                        status: 'stopped',
-                        version: '1.0.0',
-                      });
-      nock('http://test:9080')
-          .put('/zosConnect/apis/dateApi')
-          .query({ status: 'started' })
-          .reply(200, {
-                        apiUrl: 'http://192.168.99.100:9080/dateTime',
-                        description: 'Date Time API',
-                        documentation: {
-                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
-                        },
-                        name: 'dateTime',
-                        status: 'stopped',
-                        version: '1.0.0',
-                      });
-      api.update('foo', function (error) {
-        should.not.exist(error);
-        done();
-      });
-    });
-
-    it('should fail to stop the API', function (done) {
-      nock('http://test:9080')
-          .put('/zosConnect/apis/dateApi')
-          .query({ status: 'stopped' })
-          .reply(404);
-      api.update('foo', function (error) {
-        error.message.should.equal('Unable to stop API');
-        done();
-      });
-    });
-
-    it('should fail to stop the API due to error', function (done) {
+    it('should return an error', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'stopped' })
           .replyWithError('something fatal happened');
-      api.update('foo', function (error) {
-        error.message.should.equal('something fatal happened');
-        done();
-      });
+      api.stop().should.be.rejectedWith('something fatal happened');
+    });
+  });
+
+  describe('#update', function () {
+    it('should update the API', function () {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'started' })
+          .reply(200, {
+                        apiUrl: 'http://192.168.99.100:9080/dateTime',
+                        description: 'Date Time API',
+                        documentation: {
+                          swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+                        },
+                        name: 'dateTime',
+                        status: 'stopped',
+                        version: '1.0.0',
+                      });
+      return api.update('foo').should.be.fulfilled;
     });
 
-    it('should fail the update', function (done) {
+    it('should fail to stop the API', function () {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .reply(404);
+      api.update('foo').should.be.rejectedWith(404);
+    });
+
+    it('should fail to stop the API due to error', function () {
+      nock('http://test:9080')
+          .put('/zosConnect/apis/dateApi')
+          .query({ status: 'stopped' })
+          .replyWithError('something fatal happened');
+      api.update('foo').should.be.rejectedWith('something fatal happened');
+    });
+
+    it('should fail the update', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'stopped' })
@@ -331,13 +274,10 @@ describe('api', function () {
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'started' })
           .reply(404);
-      api.update('foo', function (error) {
-        should.exist(error);
-        done();
-      });
+      api.update('foo').should.be.rejectedWith(404);
     });
 
-    it('should fail the update due to error', function (done) {
+    it('should fail the update due to error', function () {
       nock('http://test:9080')
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'stopped' })
@@ -355,44 +295,32 @@ describe('api', function () {
           .put('/zosConnect/apis/dateApi')
           .query({ status: 'started' })
           .replyWithError('Something fatal happened');
-      api.update('foo', function (error) {
-        should.exist(error);
-        done();
-      });
+      api.update('foo').should.be.rejectedWith('Something fatal happened');
     });
   });
 
-  describe('#update', function () {
-    it('should delete the api', function (done) {
+  describe('#delete', function () {
+    it('should delete the api', function () {
       nock('http://test:9080')
           .delete('/zosConnect/apis/dateApi')
           .reply(200, {
                         name: 'dateTime',
                       });
-      api.delete(function (error) {
-        should.not.exist(error);
-        done();
-      });
+      return api.delete().should.be.fulfilled;
     });
 
-    it('should fail the delete', function (done) {
+    it('should fail the delete', function () {
       nock('http://test:9080')
           .delete('/zosConnect/apis/dateApi')
           .reply(403);
-      api.delete(function (error) {
-        should.exist(error);
-        done();
-      });
+      api.delete().should.be.rejectedWith(403);
     });
 
-    it('should fail due to error', function (done) {
+    it('should fail due to error', function () {
       nock('http://test:9080')
           .delete('/zosConnect/apis/dateApi')
           .replyWithError('Something fatal happened');
-      api.delete(function (error) {
-        should.exist(error);
-        done();
-      });
+      api.delete().should.be.rejectedWith('Something fatal happened');
     });
   });
 });
