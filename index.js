@@ -34,7 +34,7 @@ module.exports = function ZosConnect(options) {
 
   this.options = extend(defaultOptions, options);
 
-  if (this.options.uri === undefined) {
+  if (options.uri === undefined) {
     let uri = options.url.protocol;
     uri += '//';
     uri += options.url.host;
