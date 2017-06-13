@@ -96,91 +96,65 @@ var options = {
 ##### Retrieve a list of APIs
 
 ```js
-zosconnect.getApis(function(error, apis){
-  console.log(apis);
-})
+zosconnect.getApis().then(console.log);
 ```
 
 ##### Get an API
 
 ```js
-zosconnect.getApi('healthApi', function(error, api){
-  console.log(api);
-})
+zosconnect.getApi('healthApi').then(console.log);
 ```
 
 ##### Create an API
 
 ```js
-zosconnect.createApi(fs.readFileSync('api.aar'), function(error, api){
-  console.log(api);
-})
+zosconnect.createApi(fs.readFileSync('api.aar')).then(console.log);
 ```
 
 ##### Call an API
 
 ```js
-zosconnect.getApi('healthApi', function(error, api){
-  api.invoke('patient/12345', 'GET', null, function(error, response, body){
-    if(error){
-      console.log(error);
-    } else if(response.statusCode != 200) {
+zosconnect.getApi('healthApi').then((api) => {
+  api.invoke('patient/12345', 'GET', null).then((response) => {
+    if(response.statusCode != 200) {
       console.log('Invoke failed with respCode = ' + response.statusCode);
     } else {
-      console.log(body);
+      console.log(response.body);
     }
-  })
-})
+  }).catch(console.log);
+});
 ```
 
 ##### Get the Swagger document for an API
 
 ```js
-zosconnect.getApi('healthApi', function(error, api){
-  api.getApiDoc('swagger', function(error, swagger){
-    console.log(swagger);
-  })
-})
+zosconnect.getApi('healthApi').then((api) => {
+  api.getApiDoc('swagger').then(console.log);
+});
 ```
 
 ##### Start or Stop an API
 
 ```js
 zosconnect.getApi('healthApi', function(error, api){
-  api.stop(function(error){
-    if(error){
-      console.log(error);
-    }
-  });
-  api.start(function(error){
-    if(error){
-      console.log(error);
-    }
-  })
+  api.stop().catch(console.log);
+  api.start().catch(console.log);
 })
 ```
 
 ##### Update an API
 
 ```js
-zosconnect.getApi('healthApi', function(error, api){
-  api.update(fs.readFileSync('healthApi.aar'), function(error){
-    if(error){
-      console.log(error);
-    }
-  })
-})
+zosconnect.getApi('healthApi').then((api) => {
+  api.update(fs.readFileSync('healthApi.aar')).catch(console.log);
+});
 ```
 
 ##### Delete an API
 
 ```js
-zosconnect.getApi('healthApi', function(error, api){
-  api.delete(function(error){
-    if(error){
-      console.log(error);
-    }
-  })
+zosconnect.getApi('healthApi').then((api) => {
+  api.delete().catch(console.log);
 })
 ```
 
@@ -189,75 +163,51 @@ zosconnect.getApi('healthApi', function(error, api){
 ##### Retrieve a list of services
 
 ```js
-zosconnect.getServices(function(error, services){
-  console.log(services);
-});
+zosconnect.getServices().then(console.log);
 ```
 
 ##### Get a service
 
 ```js
-zosconnect.getService('dateTimeService', function(error, service){
-  console.log(service);
-  //normally this would then go on and work with the service
-});
+zosconnect.getService('dateTimeService').then(console.log);
+//normally this would then go on and work with the service
 ```
 
 ##### Invoke a service
 
 ```js
-zosconnect.getService('dateTimeService', function(error, service){
-  service.invoke({input:'data'}, function(error, response, body){
-    if(error){
-      console.log(error);
-    } else if(response.statusCode != 200) {
+zosconnect.getService('dateTimeService').then((service) => {
+  service.invoke({input:'data'}).then((response) => {
+    if(response.statusCode != 200) {
       console.log('Invoke failed with respCode = ' + response.statusCode);
     } else {
-      console.log(body);
+      console.log(response.body);
     }
-  });
+  }).catch(console.log);
 });
 ```
 
 ##### Get the request schema
 
 ```js
-zosconnect.getService('dateTimeService', function(error, service){
-  service.getRequestSchema(function(error, schema){
-    if(error){
-      console.log(error);
-    } else {
-      console.log(schema);
-    }
-  });
+zosconnect.getService('dateTimeService').then((service) => {
+  service.getRequestSchema().then(console.log).catch(console.log);
 });
 ```
 
 ##### Get the response schema
 
 ```js
-zosconnect.getService('dateTimeService', function(error, service){
-  service.getResponseSchema(function(error, schema){
-    if(error){
-      console.log(error);
-    } else {
-      console.log(schema);
-    }
-  });
+zosconnect.getService('dateTimeService').then((service) => {
+  service.getResponseSchema().then(console.log).catch(console.log);;
 });
 ```
 
 ##### Get the status of the service
 
 ```js
-zosconnect.getService('dateTimeService', function(error, service){
-  service.getStatus(function(error, status){
-    if(error){
-      console.log(error);
-    } else {
-      console.log(status);
-    }
-  });
+zosconnect.getService('dateTimeService').then((service) => {
+  service.getStatus().then(console.log).catch(console.log);
 });
 ```
 
