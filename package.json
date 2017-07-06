@@ -1,25 +1,29 @@
 {
   "name": "zosconnect-node",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Node zosconnect",
   "main": "index.js",
   "dependencies": {
-    "async": "1.4.2",
-    "request": "2.61.0",
+    "async": "2.4.1",
+    "request": "2.81.0",
     "extend": "^3.0.0"
   },
   "devDependencies": {
-    "codecov.io": "^0.1.6",
-    "doctoc": "0.15.0",
-    "istanbul": "^0.3.20",
-    "jscs": "^2.1.1",
-    "mocha": "2.3.0",
-    "mocha-jscs": "^3.0.0",
-    "nock": "2.10.0",
-    "should": "7.1.0"
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "codecov": "^2.2.0",
+    "doctoc": "1.3.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.3.0",
+    "istanbul": "0.4.5",
+    "mocha": "3.4.2",
+    "nock": "9.0.13"
   },
   "scripts": {
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js"
+    "lint": "eslint --ignore-path .gitignore .",
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && ./node_modules/.bin/codecov",
+    "posttest": "npm run lint"
   },
   "repository": {
     "type": "git",

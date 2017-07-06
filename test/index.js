@@ -14,279 +14,217 @@
  * limitations under the License.
  */
 
-require('mocha-jscs')();
+require('assert');
+const nock = require('nock');
+const url = require('url');
 
-var assert = require('assert');
-var nock = require('nock');
-var should = require('should');
-var url = require('url');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
-var ZosConnect = require('../index.js');
+chai.use(chaiAsPromised);
+chai.should();
 
-describe('zosconnect', function () {
-  describe('#ctor', function () {
-    it('should throw an error for no object', function (done) {
-      (function () {new ZosConnect();}).should.throw(new Error('An options object is required'));
-      done();
+const ZosConnect = require('../index.js');
+
+describe('zosconnect', () => {
+  describe('#ctor', () => {
+    it('should throw an error for no object', () => { (() => { ZosConnect(); }).should.Throw(); });
+
+    it('should throw an error if no uri or url specified', () => { (() => { ZosConnect({}); }).should.Throw(); });
+  });
+
+  describe('#getservices', () => {
+    it('should return a list of services', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+      nock('http://test:9080')
+        .get('/zosConnect/services')
+        .reply(200, {
+          zosConnectServices: [
+            {
+              ServiceDescription: 'Get the date and time from the server',
+              ServiceName: 'dateTimeService',
+              ServiceProvider: 'zOSConnect Reference Service Provider',
+              ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
+            },
+          ],
+        });
+      return zosconnect.getServices().should.eventually.have.members(['dateTimeService']);
     });
 
-    it('should throw an error if no uri or url specified', function (done) {
-      (function () {
-        new ZosConnect({});}).should.throw(new Error('Required uri or url not specified'));
-      done();
+    it('should return a list of services (url in ctor)', () => {
+      const zosconnect = new ZosConnect({ url: url.parse('http://test:9080') });
+      nock('http://test:9080')
+        .get('/zosConnect/services')
+        .reply(200, {
+          zosConnectServices: [
+            {
+              ServiceDescription: 'Get the date and time from the server',
+              ServiceName: 'dateTimeService',
+              ServiceProvider: 'zOSConnect Reference Service Provider',
+              ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
+            },
+          ],
+        });
+      return zosconnect.getServices().should.eventually.have.members(['dateTimeService']);
+    });
+
+    it('should return an error for a security problem', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+      nock('http://test:9080')
+        .get('/zosConnect/services')
+        .reply(403);
+      return zosconnect.getServices().should.be.rejectedWith(403);
+    });
+
+    it('should return an error', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+      nock('http://test:9080')
+        .get('/zosConnect/services')
+        .replyWithError('bad things occurred');
+      return zosconnect.getServices().should.be.rejectedWith('bad things occurred');
     });
   });
 
-  describe('#getservices', function () {
-    it('should return a list of services', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+  describe('#getservice', () => {
+    it('should return a service', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/services')
-                .reply(200, {
-                  zosConnectServices: [
-                    {
-                      ServiceDescription: 'Get the date and time from the server',
-                      ServiceName: 'dateTimeService',
-                      ServiceProvider: 'zOSConnect Reference Service Provider',
-                      ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
-                    },
-                  ],
-                });
-      zosconnect.getServices(function (error, services) {
-        services[0].should.equal('dateTimeService');
-        done(error);
-      });
-    });
-
-    it('should return a list of services (url in ctor)', function (done) {
-      var zosconnect = new ZosConnect({ url: url.parse('http://test:9080') });
-      nock('http://test:9080')
-          .get('/zosConnect/services')
-                .reply(200, {
-                  zosConnectServices: [
-                    {
-                      ServiceDescription: 'Get the date and time from the server',
-                      ServiceName: 'dateTimeService',
-                      ServiceProvider: 'zOSConnect Reference Service Provider',
-                      ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
-                    },
-                  ],
-                });
-      zosconnect.getServices(function (error, services) {
-        services[0].should.equal('dateTimeService');
-        done(error);
-      });
-    });
-
-    it('should return an error for a security problem', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
-      nock('http://test:9080')
-          .get('/zosConnect/services')
-          .reply(403);
-      zosconnect.getServices(function (error, services) {
-        error.should.not.be.null;
-        should(services).be.null;
-        done();
-      });
-    });
-
-    it('should return an error', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
-      nock('http://test:9080')
-          .get('/zosConnect/services')
-          .replyWithError('bad things occurred');
-      zosconnect.getServices(function (error, services) {
-        error.should.not.be.null;
-        should(services).be.null;
-        done();
-      });
-    });
-  });
-
-  describe('#getservice', function () {
-    it('should return a service', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
-      nock('http://test:9080')
-          .get('/zosConnect/services/dateTimeService')
-                .reply(200, {
-                  dateTimeService: {
-                    configParm: '',
-                  },
-                  zosConnect: {
-                    dataXformProvider: 'DATA_UNAVAILABLE',
-                    serviceDescription: 'Get the date and time from the server',
-                    serviceInvokeURL:
+        .get('/zosConnect/services/dateTimeService')
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
                       'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
-                    serviceName: 'dateTimeService',
-                    serviceProvider: 'zOSConnect Reference Service Provider',
-                    serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
-                  },
-                }
-            );
-      zosconnect.getService('dateTimeService', function (error, service) {
-        service.should.not.be.null;
-        done(error);
-      });
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+          },
+        }
+        );
+      return zosconnect.getService('dateTimeService').should.eventually.be.a('Object');
     });
 
-    it('should return an error for unknown service', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should return an error for unknown service', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/services/unknown')
-          .reply(404);
-      zosconnect.getService('unknown', function (error, service) {
-        should(service).be.null;
-        error.should.not.be.null;
-        done();
-      });
+        .get('/zosConnect/services/unknown')
+        .reply(404);
+      return zosconnect.getService('unknown').should.be.rejectedWith('Unable to get service (404)');
     });
 
-    it('should return an error for network error', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should return an error for network error', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/services/dateTimeService')
-          .replyWithError('something fatal occurred');
-      zosconnect.getService('dateTimeService', function (error, service) {
-        should(service).be.null;
-        error.should.not.be.null;
-        done();
-      });
+        .get('/zosConnect/services/dateTimeService')
+        .replyWithError('something fatal occurred');
+      return zosconnect.getService('dateTimeService').should.be
+        .rejectedWith('something fatal occurred');
     });
   });
 
-  describe('#getApis', function () {
-    it('should return a list of APIs', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+  describe('#getApis', () => {
+    it('should return a list of APIs', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/apis')
-          .reply(200, {
-            apis: [
-              {
-                adminUrl: 'http://winmvs24:19080/zosConnect/apis/healthApi',
-                description: 'Health API',
-                name: 'healthApi',
-                version: '1.0.0',
-              },
-            ],
-          });
-      zosconnect.getApis(function (error, apis) {
-        apis[0].should.equal('healthApi');
-        done(error);
-      });
+        .get('/zosConnect/apis')
+        .reply(200, {
+          apis: [
+            {
+              adminUrl: 'http://winmvs24:19080/zosConnect/apis/healthApi',
+              description: 'Health API',
+              name: 'healthApi',
+              version: '1.0.0',
+            },
+          ],
+        });
+      return zosconnect.getApis().should.eventually.have.members(['healthApi']);
     });
 
-    it('should return an error for a security problem', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should return an error for a security problem', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/apis')
-          .reply(403);
-      zosconnect.getApis(function (error, apis) {
-        error.should.not.be.null;
-        should(apis).be.null;
-        done();
-      });
+        .get('/zosConnect/apis')
+        .reply(403);
+      return zosconnect.getApis().should.be.rejectedWith('Unable to get list of APIs (403)');
     });
 
-    it('should return an error', function (done) {
-      var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should return an error', () => {
+      const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
-          .get('/zosConnect/apis')
-          .replyWithError('bad things occurred');
-      zosconnect.getApis(function (error, apis) {
-        error.should.not.be.null;
-        should(apis).be.null;
-        done();
-      });
+        .get('/zosConnect/apis')
+        .replyWithError('bad things occurred');
+      return zosconnect.getApis().should.be.rejectedWith('bad things occurred');
     });
   });
 
-  describe('#getApi', function () {
-    var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
-    it('should return an API', function (done) {
+  describe('#getApi', () => {
+    const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should return an API', () => {
       nock('http://test:9080')
-          .get('/zosConnect/apis/healthApi')
-          .reply(200, {
-                        apiUrl: 'http://192.168.99.100:9080/health',
-                        description: 'Health API',
-                        documentation: {
-                          swagger: 'http://192.168.99.100:9080/health/api-docs',
-                        },
-                        name: 'healthApi',
-                        status: 'started',
-                        version: '1.0.0',
-                      });
-      zosconnect.getApi('healthApi', function (error, api) {
-        should(error).be.null;
-        api.should.not.be.null;
-        done();
-      });
+        .get('/zosConnect/apis/healthApi')
+        .reply(200, {
+          apiUrl: 'http://192.168.99.100:9080/health',
+          description: 'Health API',
+          documentation: {
+            swagger: 'http://192.168.99.100:9080/health/api-docs',
+          },
+          name: 'healthApi',
+          status: 'started',
+          version: '1.0.0',
+        });
+      return zosconnect.getApi('healthApi').should.eventually.be.a('Object');
     });
 
-    it('should return an error for a security problem', function (done) {
+    it('should return an error for a security problem', () => {
       nock('http://test:9080')
-          .get('/zosConnect/apis/healthApi')
-          .reply(403);
-      zosconnect.getApi('healthApi', function (error, api) {
-        error.should.not.be.null;
-        should(api).be.null;
-        done();
-      });
+        .get('/zosConnect/apis/healthApi')
+        .reply(403);
+      zosconnect.getApi('healthApi').should.be.rejectedWith('Unable to get API information (403)');
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', () => {
       nock('http://test:9080')
-          .get('/zosConnect/apis/healthApi')
-          .replyWithError('bad things occurred');
-      zosconnect.getApi('healthApi', function (error, api) {
-        error.should.not.be.null;
-        should(api).be.null;
-        done();
-      });
+        .get('/zosConnect/apis/healthApi')
+        .replyWithError('bad things occurred');
+      zosconnect.getApi('healthApi').should.be.rejectedWith('bad things occurred');
     });
   });
 
-  describe('#createApi', function () {
-    var zosconnect = new ZosConnect({ uri: 'http://test:9080' });
-    it('should install an API', function (done) {
+  describe('#createApi', () => {
+    const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should install an API', () => {
       nock('http://test:9080')
-          .post('/zosConnect/apis')
-          .reply(201, {
-                        apiUrl: 'http://192.168.99.100:9080/health',
-                        description: 'Health API',
-                        documentation: {
-                          swagger: 'http://192.168.99.100:9080/health/api-docs',
-                        },
-                        name: 'healthApi',
-                        status: 'started',
-                        version: '1.0.0',
-                      });
-      zosconnect.createApi('foo', function (error, api) {
-        should(error).be.null;
-        api.should.not.be.null;
-        done();
-      });
+        .post('/zosConnect/apis')
+        .reply(201, {
+          apiUrl: 'http://192.168.99.100:9080/health',
+          description: 'Health API',
+          documentation: {
+            swagger: 'http://192.168.99.100:9080/health/api-docs',
+          },
+          name: 'healthApi',
+          status: 'started',
+          version: '1.0.0',
+        });
+      return zosconnect.createApi('foo').should.eventually.be.a('Object');
     });
 
-    it('should return an error for a conflict problem', function (done) {
+    it('should return an error for a conflict problem', () => {
       nock('http://test:9080')
-          .post('/zosConnect/apis')
-          .reply(409);
-      zosconnect.createApi('apiPackage', function (error, api) {
-        error.should.not.be.null;
-        should(api).be.null;
-        done();
-      });
+        .post('/zosConnect/apis')
+        .reply(409);
+      return zosconnect.createApi('apiPackage').should.be
+        .rejectedWith('Unable to create API (409)');
     });
 
-    it('should return an error', function (done) {
+    it('should return an error', () => {
       nock('http://test:9080')
-          .post('/zosConnect/apis')
-          .replyWithError('bad things occurred');
-      zosconnect.createApi('apiPackage', function (error, api) {
-        error.should.not.be.null;
-        should(api).be.null;
-        done();
-      });
+        .post('/zosConnect/apis')
+        .replyWithError('bad things occurred');
+      return zosconnect.createApi('apiPackage').should.be.rejectedWith('bad things occurred');
     });
   });
 });

@@ -1,5 +1,0 @@
-{
-	"preset": "airbnb",
-	"maxErrors": 200,
-	"excludeFiles": ["coverage/**"]
-}

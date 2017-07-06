@@ -14,128 +14,134 @@
  * limitations under the License.
  */
 
-var request = require('request');
-var extend = require('extend');
+const request = require('request');
+const extend = require('extend');
 
-module.exports = function (options, apiName, basePath, documentation) {
+module.exports = function API(options, apiName, basePath, documentation) {
   this.options = options;
   this.apiName = apiName;
   this.basePath = basePath;
   this.documentation = documentation;
 
-  this.getApiDoc = function (type, callback) {
-    var options = {};
-    var documentationUri = documentation[type];
-    if (documentationUri == undefined) {
-      callback(new Error('Documentation not available'), null);
-    } else {
-      options = extend(options, this.options);
-      options.uri = documentationUri;
-      request.get(options, function (error, response, body) {
-        if (error != null) {
-          callback(error, null);
-        } else if (response.statusCode != 200) {
-          callback(new Error('Unable to retrieve Swagger document (' + response.statusCode + ')'),
-                   null);
+  this.getApiDoc = (type) => {
+    let opOptions = {};
+    const documentationUri = documentation[type];
+    if (documentationUri === undefined) {
+      return Promise.reject('Documentation not available');
+    }
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri = documentationUri;
+    return new Promise(((resolve, reject) => {
+      request.get(opOptions, (error, response, body) => {
+        if (error !== null) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(`Unable to retrieve API documentation (${response.statusCode})`);
         } else {
-          callback(null, body);
+          resolve(body);
         }
       });
+    }));
+  };
+
+  this.invoke = (resource, method, content) => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri = `${basePath}/${resource}`;
+    opOptions.method = method;
+    if (content !== null) {
+      opOptions.body = content;
     }
-  };
 
-  this.invoke = function (resource, method, content, callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.uri = basePath + '/' + resource;
-    options.method = method;
-    if (content != null) {
-      options.body = content;
-    }
-
-    options.json = true;
-    request(options, callback);
-  };
-
-  this.start = function (callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.uri += '?status=started';
-    options.method = 'PUT';
-    delete options.body;
-    request(options, function (error, response, body) {
-      if (error) {
-        callback(error);
-      } else if (response.statusCode != 200) {
-        callback(response.statusCode);
-      } else {
-        callback(null);
-      }
-    });
-  };
-
-  this.stop = function (callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.uri += '?status=stopped';
-    options.method = 'PUT';
-    delete options.body;
-    request(options, function (error, response, body) {
-      if (error) {
-        callback(error);
-      } else if (response.statusCode != 200) {
-        callback(response.statusCode);
-      } else {
-        callback(null);
-      }
-    });
-  };
-
-  this.update = function (aarFile, callback) {
-    var options = {};
-    options = extend(options, this.options);
-    this.stop(function (error) {
-      if (error != null) {
-        if (error instanceof Error) {
-          callback(error);
+    opOptions.json = true;
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
         } else {
-          callback(new Error('Unable to stop API'));
+          resolve(response);
         }
-      } else {
-        options.method = 'PUT';
-        options.uri += '?status=started';
-        options.body = aarFile;
-        options.headers = {
-          'Content-Type': 'application/zip',
-        };
-        request(options, function (error, response, body) {
-          if (error) {
-            callback(error);
-          } else if (response.statusCode != 200) {
-            callback(new Error('Unable to create API (' + response.statusCode + ')'));
-          } else {
-            var json = JSON.parse(body);
-            this.basePath = json.apiUrl;
-            this.documentation = json.documentation;
-            callback(null);
-          }
-        });
-      }
-    });
+      });
+    }));
   };
 
-  this.delete = function (callback) {
-    var options = {};
-    options = extend(options, this.options);
-    options.method = 'DELETE';
-    request(options, function (error, response, body) {
-      if (error) {
-        callback(error);
-      } else if (response.statusCode != 200) {
-        callback(new Error('Unable to delete API (' + response.statusCode + ')'));
-      } else {
-        callback(null);
-      }
-    });
+  this.start = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?status=started';
+    opOptions.method = 'PUT';
+    delete opOptions.body;
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(response.statusCode);
+        } else {
+          resolve();
+        }
+      });
+    }));
+  };
+
+  this.stop = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?status=stopped';
+    opOptions.method = 'PUT';
+    delete opOptions.body;
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(response.statusCode);
+        } else {
+          resolve();
+        }
+      });
+    }));
+  };
+
+  this.update = (aarFile) => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    return this.stop().then(() => new Promise(((resolve, reject) => {
+      opOptions.method = 'PUT';
+      opOptions.uri += '?status=started';
+      opOptions.body = aarFile;
+      opOptions.headers = {
+        'Content-Type': 'application/zip',
+      };
+      request(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Unable to update API (${response.statusCode})`));
+        } else {
+          const json = JSON.parse(body);
+          this.basePath = json.apiUrl;
+          this.documentation = json.documentation;
+          resolve();
+        }
+      });
+    })));
+  };
+
+  this.delete = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = 'DELETE';
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(`Unable to delete API (${response.statusCode})`);
+        } else {
+          resolve();
+        }
+      });
+    }));
   };
 };
