@@ -18,6 +18,7 @@ const request = require('request');
 const extend = require('extend');
 const Service = require('./service.js');
 const Api = require('./api.js');
+const { URL } = require('url');
 
 const defaultOptions = {
   strictSSL: true,
@@ -100,7 +101,6 @@ module.exports = function ZosConnect(options) {
           for (const api of json.apis) {
             apis.push(api.name);
           }
-
           resolve(apis);
         }
       });
@@ -119,7 +119,9 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to get API information (${response.statusCode})`));
         } else {
           const json = JSON.parse(body);
-          resolve(new Api(opOptions, apiName, json.apiUrl, json.documentation));
+          const apiUrl = new URL(json.apiUrl);
+          resolve(new Api(opOptions, apiName, this.options.uri + apiUrl.pathname,
+            json.documentation));
         }
       });
     }));
@@ -142,7 +144,9 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to create API (${response.statusCode})`));
         } else {
           const json = JSON.parse(body);
-          resolve(new Api(opOptions, json.name, json.apiUrl, json.documentation));
+          const apiUrl = new URL(json.apiUrl);
+          resolve(new Api(opOptions, json.name, this.options.uri + apiUrl.pathname,
+            json.documentation));
         }
       });
     }));
