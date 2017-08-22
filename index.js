@@ -79,7 +79,9 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to get service (${response.statusCode})`));
         } else {
           const serviceData = JSON.parse(body);
-          resolve(new Service(opOptions, serviceName, serviceData.zosConnect.serviceInvokeURL));
+          const invokeUrl = new URL(serviceData.zosConnect.serviceInvokeURL);
+          resolve(new Service(opOptions, serviceName,
+            this.options.uri + invokeUrl.pathname + invokeUrl.search));
         }
       });
     }));

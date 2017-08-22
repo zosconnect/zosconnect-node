@@ -23,6 +23,7 @@ chai.use(chaiAsPromised);
 chai.should();
 
 const Service = require('../service.js');
+const ZosConnect = require('../index.js');
 
 describe('service', () => {
   const dateTimeService = new Service({ uri: 'http://test:9080/zosConnect/services/dateTimeService' },
@@ -52,6 +53,34 @@ describe('service', () => {
         .query({ action: 'invoke' })
         .replyWithError('something fatal happened');
       return dateTimeService.invoke('').should.be.rejectedWith('something fatal happened');
+    });
+
+    it('should work when invoked via a proxy', () => {
+      nock('http://testproxy:80')
+        .get('/zosConnect/services/dateTimeService')
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+          },
+        });
+      const proxyZConn = new ZosConnect({ uri: 'http://testproxy:80' });
+      nock('http://testproxy:80')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ action: 'invoke' })
+        .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      proxyZConn.getService('dateTimeService').then((service) => {
+        service.invoke('').should.eventually.have.property('body',
+          "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      });
     });
   });
 
