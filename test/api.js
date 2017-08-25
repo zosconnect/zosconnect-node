@@ -22,6 +22,7 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 const Api = require('../api.js');
+const ZosConnect = require('../index.js');
 
 describe('api', () => {
   const api = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
@@ -111,6 +112,16 @@ describe('api', () => {
     it('should return an error for unknown doc-type', () => {
       api.getApiDoc('raml').should.be.rejectedWith('Documentation not available');
     });
+
+    it('should return Swagger for z/OS Connect accessed via proxy', () => {
+      const proxyApi = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
+        'http://test:9080/dateTime',
+        { swagger: 'http://hiddenhost:9080/dateTime/api-docs' });
+      nock('http://test:9080')
+        .get('/dateTime/api-docs')
+        .reply(200, {});
+      return proxyApi.getApiDoc('swagger').should.be.fulfilled;
+    });
   });
 
   describe('#invoke', () => {
@@ -134,6 +145,29 @@ describe('api', () => {
         .post('/dateTime/info')
         .replyWithError('something fatal happened');
       return api.invoke('info', 'POST', '{}').should.be.rejectedWith('something fatal happened');
+    });
+
+    it('should invoke the API when accessed via proxy', () => {
+      const zosconn = new ZosConnect({ uri: 'http://testproxy:80' });
+      nock('http://testproxy:80')
+        .get('/zosConnect/apis/dateTime')
+        .reply(200, {
+          apiUrl: 'http://192.168.99.100:9080/dateTime',
+          description: 'Date Time API',
+          documentation: {
+            swagger: 'http://192.168.99.100:9080/dateTime/api-docs',
+          },
+          name: 'dateTime',
+          status: 'started',
+          version: '1.0.0',
+        });
+      zosconn.getApi('dateTime').then((dateTimeApi) => {
+        nock('http://testproxy:80')
+          .get('/dateTime/info')
+          .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+        return dateTimeApi.invoke('info', 'GET', null).should.eventually.have.deep.property('body',
+          "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      });
     });
   });
 

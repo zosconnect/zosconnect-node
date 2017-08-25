@@ -16,6 +16,7 @@
 
 const request = require('request');
 const extend = require('extend');
+const { URL } = require('url');
 
 module.exports = function API(options, apiName, basePath, documentation) {
   this.options = options;
@@ -29,8 +30,10 @@ module.exports = function API(options, apiName, basePath, documentation) {
     if (documentationUri === undefined) {
       return Promise.reject('Documentation not available');
     }
+    const docUrl = new URL(documentationUri);
+    const apiUrl = new URL(this.basePath);
     opOptions = extend(opOptions, this.options);
-    opOptions.uri = documentationUri;
+    opOptions.uri = `${apiUrl.origin}${docUrl.pathname}`;
     return new Promise(((resolve, reject) => {
       request.get(opOptions, (error, response, body) => {
         if (error !== null) {
