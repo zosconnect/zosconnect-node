@@ -22,7 +22,8 @@
         "valid-typeof": "warn",
         "no-console": "off",
         "no-restricted-syntax": "off",
-        "comma-dangle": "off"
+        "comma-dangle": "off",
+        "strict": "off"
     },
     "extends": "airbnb-base"
 }

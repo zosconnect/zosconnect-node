@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 require('assert');
 const nock = require('nock');
 const url = require('url');

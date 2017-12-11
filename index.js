@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+'use strict';
+
 const request = require('request');
 const extend = require('extend');
 const Service = require('./service.js');
 const Api = require('./api.js');
-const { URL } = require('url');
+const url = require('url');
 
 const defaultOptions = {
   strictSSL: true,
@@ -79,7 +81,7 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to get service (${response.statusCode})`));
         } else {
           const serviceData = JSON.parse(body);
-          const invokeUrl = new URL(serviceData.zosConnect.serviceInvokeURL);
+          const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
           resolve(new Service(opOptions, serviceName,
             this.options.uri + invokeUrl.pathname + invokeUrl.search));
         }
@@ -121,7 +123,7 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to get API information (${response.statusCode})`));
         } else {
           const json = JSON.parse(body);
-          const apiUrl = new URL(json.apiUrl);
+          const apiUrl = url.parse(json.apiUrl);
           resolve(new Api(opOptions, apiName, this.options.uri + apiUrl.pathname,
             json.documentation));
         }
@@ -146,7 +148,7 @@ module.exports = function ZosConnect(options) {
           reject(new Error(`Unable to create API (${response.statusCode})`));
         } else {
           const json = JSON.parse(body);
-          const apiUrl = new URL(json.apiUrl);
+          const apiUrl = url.parse(json.apiUrl);
           resolve(new Api(opOptions, json.name, this.options.uri + apiUrl.pathname,
             json.documentation));
         }

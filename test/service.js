@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 const nock = require('nock');
 
 const chai = require('chai');

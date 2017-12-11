@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+'use strict';
+
 const request = require('request');
 const extend = require('extend');
-const { URL } = require('url');
+const url = require('url');
 
 module.exports = function API(options, apiName, basePath, documentation) {
   this.options = options;
@@ -30,10 +32,10 @@ module.exports = function API(options, apiName, basePath, documentation) {
     if (documentationUri === undefined) {
       return Promise.reject('Documentation not available');
     }
-    const docUrl = new URL(documentationUri);
-    const apiUrl = new URL(this.basePath);
+    const docUrl = url.parse(documentationUri);
+    const apiUrl = url.parse(this.basePath);
     opOptions = extend(opOptions, this.options);
-    opOptions.uri = `${apiUrl.origin}${docUrl.pathname}`;
+    opOptions.uri = `${apiUrl.protocol}//${apiUrl.host}${docUrl.pathname}`;
     return new Promise(((resolve, reject) => {
       request.get(opOptions, (error, response, body) => {
         if (error !== null) {

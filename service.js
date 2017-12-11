@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 const request = require('request');
 const extend = require('extend');
 
