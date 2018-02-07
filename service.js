@@ -94,4 +94,50 @@ module.exports = function Service(options, serviceName, invokeUri) {
       });
     }));
   };
+
+  this.start = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?action=started';
+    return new Promise((resolve, reject) => {
+      request.put(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to start service (${response.statusCode})`));
+        } else {
+          const json = JSON.parse(body);
+          const status = json.zosConnect.serviceStatus;
+          resolve(status);
+        }
+      });
+    });
+  };
+
+  this.stop = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?action=stopped';
+    return new Promise((resolve, reject) => {
+      request.put(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to start service (${response.statusCode})`));
+        } else {
+          const json = JSON.parse(body);
+          const status = json.zosConnect.serviceStatus;
+          resolve(status);
+        }
+      });
+    });
+  };
+
+  this.update = (sarFile) => {
+
+  };
+
+  this.delete = () => {
+
+  };
 };
