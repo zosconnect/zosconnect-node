@@ -138,6 +138,19 @@ module.exports = function Service(options, serviceName, invokeUri) {
   };
 
   this.delete = () => {
-
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = 'DELETE';
+    return new Promise((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Unable to delete service (${response.statusCode})`));
+        } else {
+          resolve();
+        }
+      });
+    });
   };
 };

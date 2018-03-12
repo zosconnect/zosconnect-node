@@ -187,7 +187,7 @@ describe('service', () => {
   });
 
   describe('#start', () => {
-    it('should start the api', () => {
+    it('should start the service', () => {
       nock('http://test:9080')
         .put('/zosConnect/services/dateTimeService')
         .query({ action: 'started' })
@@ -224,7 +224,7 @@ describe('service', () => {
   });
 
   describe('#stop', () => {
-    it('should stop the api', () => {
+    it('should stop the service', () => {
       nock('http://test:9080')
         .put('/zosConnect/services/dateTimeService')
         .query({ action: 'stopped' })
@@ -257,6 +257,31 @@ describe('service', () => {
         .query({ action: 'stopped' })
         .replyWithError('something fatal happened');
       return dateTimeService.stop().should.be.rejectedWith('something fatal happened');
+    });
+  });
+
+  describe('#delete', () => {
+    it('should delete the service', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .reply(200, {
+          name: 'dateTime',
+        });
+      return dateTimeService.delete().should.be.fulfilled;
+    });
+
+    it('should fail the delete', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .reply(403);
+      return dateTimeService.delete().should.be.rejectedWith(403);
+    });
+
+    it('should fail due to error', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .replyWithError('Something fatal happened');
+      return dateTimeService.delete().should.be.rejectedWith('Something fatal happened');
     });
   });
 });
