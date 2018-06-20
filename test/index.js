@@ -229,4 +229,42 @@ describe('zosconnect', () => {
       return zosconnect.createApi('apiPackage').should.be.rejectedWith('bad things occurred');
     });
   });
+
+  describe('#createService', () => {
+    const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
+    it('should install an API', () => {
+      nock('http://test:9080')
+        .post('/zosConnect/services')
+        .reply(201, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+          },
+        });
+      return zosconnect.createService('foo').should.eventually.be.a('Object');
+    });
+
+    it('should return an error for a conflict problem', () => {
+      nock('http://test:9080')
+        .post('/zosConnect/services')
+        .reply(409);
+      return zosconnect.createService('sarFile').should.be
+        .rejectedWith('Unable to create Service (409)');
+    });
+
+    it('should return an error', () => {
+      nock('http://test:9080')
+        .post('/zosConnect/services')
+        .replyWithError('bad things occurred');
+      return zosconnect.createService('sarFile').should.be.rejectedWith('bad things occurred');
+    });
+  });
 });
