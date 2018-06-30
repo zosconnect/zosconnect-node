@@ -169,6 +169,12 @@ zosconnect.getApi('healthApi').then((api) => {
 zosconnect.getServices().then(console.log);
 ```
 
+##### Create a Service
+
+```js
+zosconnect.createService(fs.readFileSync('dateTimeService.sar')).then(console.log);
+```
+
 ##### Get a service
 
 ```js
@@ -206,12 +212,20 @@ zosconnect.getService('dateTimeService').then((service) => {
 });
 ```
 
-##### Get the status of the service
+##### Update a Service
 
 ```js
 zosconnect.getService('dateTimeService').then((service) => {
-  service.getStatus().then(console.log).catch(console.log);
+  service.update(fs.readFileSync('dateTimeService.sar')).catch(console.log);
 });
+```
+
+##### Delete a Service
+
+```js
+zosconnect.getService('dateTimeService').then((service) => {
+  service.delete().catch(console.log);
+})
 ```
 
 ### Module Long Term Support Policy
@@ -221,7 +235,6 @@ zosconnect.getService('dateTimeService').then((service) => {
   |------------------|--------------|-------------|--------------|---------|
   | V1.0.0	        | Jul 2017     | Dec 2019    | Node 8       | Current |
   
-
 ### License
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
