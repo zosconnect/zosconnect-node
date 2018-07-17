@@ -21,6 +21,7 @@
       - [Get the Swagger document for an API](#get-the-swagger-document-for-an-api)
       - [Start or Stop an API](#start-or-stop-an-api)
       - [Update an API](#update-an-api)
+      - [Delete an API](#delete-an-api)
     - [Services](#services)
       - [Retrieve a list of services](#retrieve-a-list-of-services)
       - [Get a service](#get-a-service)
@@ -28,6 +29,7 @@
       - [Get the request schema](#get-the-request-schema)
       - [Get the response schema](#get-the-response-schema)
       - [Get the status of the service](#get-the-status-of-the-service)
+  - [Module Long Term Support Policy](#module-long-term-support-policy)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
