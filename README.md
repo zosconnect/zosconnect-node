@@ -1,6 +1,7 @@
 [![Build status](https://travis-ci.org/zosconnect/zosconnect-node.svg?branch=master)](https://travis-ci.org/zosconnect/zosconnect-node)
-[![codecov.io](http://codecov.io/github/zosconnect/zosconnect-node/coverage.svg?branch=master)](http://codecov.io/github/zosconnect/zosconnect-node?branch=master)
+[![codecov.io](https://codecov.io/github/zosconnect/zosconnect-node/coverage.svg?branch=master)](http://codecov.io/github/zosconnect/zosconnect-node?branch=master)
 [![Dependencies](https://david-dm.org/zosconnect/zosconnect-node.svg)](https://david-dm.org/zosconnect/zosconnect-node)
+[![Module LTS Adopted'](https://img.shields.io/badge/Module%20LTS-Adopted-brightgreen.svg?style=flat)](http://github.com/CloudNativeJS/ModuleLTS)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -20,6 +21,7 @@
       - [Get the Swagger document for an API](#get-the-swagger-document-for-an-api)
       - [Start or Stop an API](#start-or-stop-an-api)
       - [Update an API](#update-an-api)
+      - [Delete an API](#delete-an-api)
     - [Services](#services)
       - [Retrieve a list of services](#retrieve-a-list-of-services)
       - [Get a service](#get-a-service)
@@ -27,6 +29,7 @@
       - [Get the request schema](#get-the-request-schema)
       - [Get the response schema](#get-the-response-schema)
       - [Get the status of the service](#get-the-status-of-the-service)
+  - [Module Long Term Support Policy](#module-long-term-support-policy)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -210,6 +213,14 @@ zosconnect.getService('dateTimeService').then((service) => {
   service.getStatus().then(console.log).catch(console.log);
 });
 ```
+
+### Module Long Term Support Policy
+  This module adopts the [Module Long Term Support (LTS)](http://github.com/CloudNativeJS/ModuleLTS) policy, with the following End Of Life (EOL) dates:
+
+  | Module Version   | Release Date | Minimum EOL | EOL With     | Status  |
+  |------------------|--------------|-------------|--------------|---------|
+  | V1.0.0	        | Jul 2017     | Dec 2019    | Node 8       | Current |
+  
 
 ### License
 ```
