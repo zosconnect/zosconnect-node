@@ -89,16 +89,14 @@ describe('service', () => {
   describe('#getRequestSchema', () => {
     it('should retrieve the request schema', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getRequestSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/request')
         .reply(200, {});
       return dateTimeService.getRequestSchema().should.eventually.equal('{}');
     });
 
     it('should return a security error', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getRequestSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/request')
         .reply(401);
       return dateTimeService.getRequestSchema().should.be
         .rejectedWith('Failed to get schema (401)');
@@ -106,8 +104,7 @@ describe('service', () => {
 
     it('should return an error', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getRequestSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/request')
         .replyWithError('something fatal happened');
       return dateTimeService.getRequestSchema().should.be.rejectedWith('something fatal happened');
     });
@@ -125,16 +122,14 @@ describe('service', () => {
         type: 'object',
       };
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getResponseSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/response')
         .reply(200, schema);
       return dateTimeService.getResponseSchema().should.eventually.equal(JSON.stringify(schema));
     });
 
     it('should return a security error', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getResponseSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/response')
         .reply(401);
       return dateTimeService.getResponseSchema().should.be
         .rejectedWith('Failed to get schema (401)');
@@ -142,18 +137,17 @@ describe('service', () => {
 
     it('should return an error', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'getResponseSchema' })
+        .get('/zosConnect/services/dateTimeService/schemas/response')
         .replyWithError('something fatal happened');
       return dateTimeService.getResponseSchema().should.be.rejectedWith('something fatal happened');
     });
   });
 
-  describe('#getStatus', () => {
-    it('should return the status', () => {
+  describe('#start', () => {
+    it('should start the service', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'status' })
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
         .reply(200, {
           zosConnect: {
             dataXformProvider: 'DATA_UNAVAILABLE',
@@ -166,23 +160,195 @@ describe('service', () => {
             serviceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
           },
         });
-      return dateTimeService.getStatus().should.eventually.equal('Started');
+      return dateTimeService.start().should.be.fulfilled;
     });
 
-    it('should return a security error', () => {
+    it('should return not found', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'status' })
-        .reply(401);
-      return dateTimeService.getStatus().should.be.rejectedWith('Failed to get status (401)');
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
+        .reply(404);
+      return dateTimeService.start().should.be.rejectedWith(404);
     });
 
     it('should return an error', () => {
       nock('http://test:9080')
-        .get('/zosConnect/services/dateTimeService')
-        .query({ action: 'status' })
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
         .replyWithError('something fatal happened');
-      return dateTimeService.getStatus().should.be.rejectedWith('something fatal happened');
+      return dateTimeService.start().should.be.rejectedWith('something fatal happened');
+    });
+  });
+
+  describe('#stop', () => {
+    it('should stop the service', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(200, {
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                'http://192.168.99.100:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceStatus: 'Started',
+            serviceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
+          }
+        });
+      return dateTimeService.stop().should.be.fulfilled;
+    });
+
+    it('should return not found', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(404);
+      return dateTimeService.stop().should.be.rejectedWith(404);
+    });
+
+    it('should return an error', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .replyWithError('something fatal happened');
+      return dateTimeService.stop().should.be.rejectedWith('something fatal happened');
+    });
+  });
+
+  describe('#update', () => {
+    it('should update the API', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+            serviceStatus: 'Stopped'
+          },
+        });
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+            serviceStatus: 'Stopped'
+          }
+        });
+      return dateTimeService.update('foo').should.be.fulfilled;
+    });
+
+    it('should fail to stop the API', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(404);
+      return dateTimeService.update('foo').should.be.rejectedWith(404);
+    });
+
+    it('should fail to stop the API due to error', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .replyWithError('something fatal happened');
+      return dateTimeService.update('foo').should.be.rejectedWith('something fatal happened');
+    });
+
+    it('should fail the update', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+            serviceStatus: 'Stopped'
+          }
+        });
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
+        .reply(404);
+      return dateTimeService.update('foo').should.be.rejectedWith(404);
+    });
+
+    it('should fail the update due to error', () => {
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'stopped' })
+        .reply(200, {
+          dateTimeService: {
+            configParm: '',
+          },
+          zosConnect: {
+            dataXformProvider: 'DATA_UNAVAILABLE',
+            serviceDescription: 'Get the date and time from the server',
+            serviceInvokeURL:
+                      'http://test:9080/zosConnect/services/dateTimeService?action=invoke',
+            serviceName: 'dateTimeService',
+            serviceProvider: 'zOSConnect Reference Service Provider',
+            serviceURL: 'http://test:9080/zosConnect/services/dateTimeService',
+            serviceStatus: 'Stopped'
+          }
+        });
+      nock('http://test:9080')
+        .put('/zosConnect/services/dateTimeService')
+        .query({ status: 'started' })
+        .replyWithError('Something fatal happened');
+      return dateTimeService.update('foo').should.be.rejectedWith('Something fatal happened');
+    });
+  });
+
+  describe('#delete', () => {
+    it('should delete the service', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .reply(200, {
+          name: 'dateTime',
+        });
+      return dateTimeService.delete().should.be.fulfilled;
+    });
+
+    it('should fail the delete', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .reply(403);
+      return dateTimeService.delete().should.be.rejectedWith(403);
+    });
+
+    it('should fail due to error', () => {
+      nock('http://test:9080')
+        .delete('/zosConnect/services/dateTimeService')
+        .replyWithError('Something fatal happened');
+      return dateTimeService.delete().should.be.rejectedWith('Something fatal happened');
     });
   });
 });

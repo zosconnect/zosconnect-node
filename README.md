@@ -24,26 +24,32 @@
       - [Delete an API](#delete-an-api)
     - [Services](#services)
       - [Retrieve a list of services](#retrieve-a-list-of-services)
+      - [Create a Service](#create-a-service)
       - [Get a service](#get-a-service)
       - [Invoke a service](#invoke-a-service)
       - [Get the request schema](#get-the-request-schema)
       - [Get the response schema](#get-the-response-schema)
+<<<<<<< HEAD
       - [Get the status of the service](#get-the-status-of-the-service)
   - [Module Long Term Support Policy](#module-long-term-support-policy)
+=======
+      - [Update a Service](#update-a-service)
+      - [Delete a Service](#delete-a-service)
+>>>>>>> Complete README updates
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Node zosconnect
 
-A wrapper service for z/OS&reg; Connect, enabling node applications to discover and access zSystems resources
-that are service enabled by z/OS&reg; Connect.
+A wrapper service for z/OS&reg; Connect EE, enabling node applications to discover and access zSystems resources
+that are service enabled by z/OS&reg; Connect. Version 2 of this module pre-reqs z/OS Connect EE V3.0.8 or later.
 
-Services are identified by name that is unique within the scope of the target z/OS&reg; Connect instance
-(or cluster). The node application uses pre-existing knowledge of the service name, or discovers it
-dynamically by retrieving a list of available services. The z/OS&reg; Connect node wrapper provides access
-to JSON request and response schemas for the specific z/OS&reg; Connect service, enabling the node
-application to invoke that service and process the response.
+Services and APIs are identified by name that is unique within the scope of the target z/OS&reg; Connect instance
+(or cluster). The node application uses pre-existing knowledge of the service or API name, or discovers it
+dynamically by retrieving a list of available services or APIs. The z/OS&reg; Connect node wrapper provides access
+to JSON request and response schemas for the specific z/OS&reg; Connect service and the Swagger document for APIs, 
+enabling the node application to invoke that service and process the response.
 
 ### Installing
 
@@ -169,6 +175,12 @@ zosconnect.getApi('healthApi').then((api) => {
 zosconnect.getServices().then(console.log);
 ```
 
+##### Create a Service
+
+```js
+zosconnect.createService(fs.readFileSync('dateTimeService.sar')).then(console.log);
+```
+
 ##### Get a service
 
 ```js
@@ -206,12 +218,20 @@ zosconnect.getService('dateTimeService').then((service) => {
 });
 ```
 
-##### Get the status of the service
+##### Update a Service
 
 ```js
 zosconnect.getService('dateTimeService').then((service) => {
-  service.getStatus().then(console.log).catch(console.log);
+  service.update(fs.readFileSync('dateTimeService.sar')).catch(console.log);
 });
+```
+
+##### Delete a Service
+
+```js
+zosconnect.getService('dateTimeService').then((service) => {
+  service.delete().catch(console.log);
+})
 ```
 
 ### Module Long Term Support Policy
@@ -221,7 +241,6 @@ zosconnect.getService('dateTimeService').then((service) => {
   |------------------|--------------|-------------|--------------|---------|
   | V1.0.0	        | Jul 2017     | Dec 2019    | Node 8       | Current |
   
-
 ### License
 ```
 Licensed under the Apache License, Version 2.0 (the "License");

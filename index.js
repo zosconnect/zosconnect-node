@@ -155,4 +155,29 @@ module.exports = function ZosConnect(options) {
       });
     }));
   };
+
+  this.createService = (sarFile) => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '/zosConnect/services';
+    opOptions.method = 'POST';
+    opOptions.body = sarFile;
+    opOptions.headers = {
+      'Content-Type': 'application/zip',
+    };
+    return new Promise(((resolve, reject) => {
+      request(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 201) {
+          reject(new Error(`Unable to create Service (${response.statusCode})`));
+        } else {
+          const serviceData = JSON.parse(body);
+          const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
+          resolve(new Service(opOptions, serviceData.ServiceName,
+            this.options.uri + invokeUrl.pathname + invokeUrl.search));
+        }
+      });
+    }));
+  };
 };

@@ -45,7 +45,7 @@ module.exports = function Service(options, serviceName, invokeUri) {
   this.getRequestSchema = () => {
     let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += '?action=getRequestSchema';
+    opOptions.uri += '/schemas/request';
     return new Promise(((resolve, reject) => {
       request.get(opOptions, (error, response, body) => {
         if (error) {
@@ -62,7 +62,7 @@ module.exports = function Service(options, serviceName, invokeUri) {
   this.getResponseSchema = () => {
     let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += '?action=getResponseSchema';
+    opOptions.uri += '/schemas/response';
     return new Promise(((resolve, reject) => {
       request.get(opOptions, (error, response, body) => {
         if (error) {
@@ -76,22 +76,80 @@ module.exports = function Service(options, serviceName, invokeUri) {
     }));
   };
 
-  this.getStatus = () => {
+  this.start = () => {
     let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += '?action=status';
-    return new Promise(((resolve, reject) => {
-      request.get(opOptions, (error, response, body) => {
+    opOptions.uri += '?status=started';
+    return new Promise((resolve, reject) => {
+      request.put(opOptions, (error, response, body) => {
         if (error) {
           reject(error);
         } else if (response.statusCode !== 200) {
-          reject(new Error(`Failed to get status (${response.statusCode})`));
+          reject(new Error(`Failed to start service (${response.statusCode})`));
         } else {
           const json = JSON.parse(body);
           const status = json.zosConnect.serviceStatus;
           resolve(status);
         }
       });
-    }));
+    });
+  };
+
+  this.stop = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += '?status=stopped';
+    return new Promise((resolve, reject) => {
+      request.put(opOptions, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Failed to start service (${response.statusCode})`));
+        } else {
+          const json = JSON.parse(body);
+          const status = json.zosConnect.serviceStatus;
+          resolve(status);
+        }
+      });
+    });
+  };
+
+  this.update = (sarFile) => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    return this.stop().then(() => new Promise(((resolve, reject) => {
+      opOptions.method = 'PUT';
+      opOptions.uri += '?status=started';
+      opOptions.body = sarFile;
+      opOptions.headers = {
+        'Content-Type': 'application/zip',
+      };
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Unable to update service (${response.statusCode})`));
+        } else {
+          resolve();
+        }
+      });
+    })));
+  };
+
+  this.delete = () => {
+    let opOptions = {};
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = 'DELETE';
+    return new Promise((resolve, reject) => {
+      request(opOptions, (error, response) => {
+        if (error) {
+          reject(error);
+        } else if (response.statusCode !== 200) {
+          reject(new Error(`Unable to delete service (${response.statusCode})`));
+        } else {
+          resolve();
+        }
+      });
+    });
   };
 };
