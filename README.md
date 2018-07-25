@@ -29,13 +29,9 @@
       - [Invoke a service](#invoke-a-service)
       - [Get the request schema](#get-the-request-schema)
       - [Get the response schema](#get-the-response-schema)
-<<<<<<< HEAD
-      - [Get the status of the service](#get-the-status-of-the-service)
-  - [Module Long Term Support Policy](#module-long-term-support-policy)
-=======
       - [Update a Service](#update-a-service)
       - [Delete a Service](#delete-a-service)
->>>>>>> Complete README updates
+  - [Module Long Term Support Policy](#module-long-term-support-policy)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -239,7 +235,8 @@ zosconnect.getService('dateTimeService').then((service) => {
 
   | Module Version   | Release Date | Minimum EOL | EOL With     | Status  |
   |------------------|--------------|-------------|--------------|---------|
-  | V1.0.0	        | Jul 2017     | Dec 2019    | Node 8       | Current |
+  | 2.x.x         | Jul 2018     | Dec 2019    | | Current
+  | 1.x.x	        | Jul 2017     | Dec 2019    | Node 8       | LTS |
   
 ### License
 ```
