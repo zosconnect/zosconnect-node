@@ -23,8 +23,8 @@ const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 chai.should();
-const Api = require('../api.js');
-const ZosConnect = require('../index.js');
+const Api = require('../lib/Api.js').Api;
+const ZosConnect = require('../lib/ZosConnect.js').ZosConnect;
 
 describe('api', () => {
   const api = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
@@ -131,15 +131,14 @@ describe('api', () => {
       nock('http://test:9080')
         .get('/dateTime/info')
         .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
-      return api.invoke('info', 'GET', null).should.eventually.have.deep.property('body',
-        "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+      return api.invoke('info', 'GET', null).should.eventually.equal("{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
     });
 
     it('should return a security error', () => {
       nock('http://test:9080')
         .get('/dateTime/info')
         .reply(401);
-      return api.invoke('info', 'GET', null).should.eventually.have.property('statusCode', 401);
+      return api.invoke('info', 'GET', null).should.eventually.be.rejectedWith(401);
     });
 
     it('should return an error', () => {
@@ -167,8 +166,7 @@ describe('api', () => {
         nock('http://testproxy:80')
           .get('/dateTime/info')
           .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
-        return dateTimeApi.invoke('info', 'GET', null).should.eventually.have.deep.property('body',
-          "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
+        return dateTimeApi.invoke('info', 'GET', null).should.eventually.be.equal("{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
       });
     });
   });

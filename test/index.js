@@ -18,7 +18,6 @@
 
 require('assert');
 const nock = require('nock');
-const url = require('url');
 
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
@@ -26,13 +25,13 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
-const ZosConnect = require('../index.js');
+const ZosConnect = require('../lib/ZosConnect.js').ZosConnect;
 
 describe('zosconnect', () => {
   describe('#ctor', () => {
-    it('should throw an error for no object', () => { (() => { ZosConnect(); }).should.Throw(); });
+    it('should throw an error for no object', () => { (() => { const zosConnect = new ZosConnect(); }).should.Throw(); }); //eslint-disable-line
 
-    it('should throw an error if no uri or url specified', () => { (() => { ZosConnect({}); }).should.Throw(); });
+    it('should throw an error if no uri or url specified', () => { (() => { const zosConnect = new ZosConnect({}); }).should.Throw(); }); //eslint-disable-line
   });
 
   describe('#getservices', () => {
@@ -53,29 +52,12 @@ describe('zosconnect', () => {
       return zosconnect.getServices().should.eventually.have.members(['dateTimeService']);
     });
 
-    it('should return a list of services (url in ctor)', () => {
-      const zosconnect = new ZosConnect({ url: url.parse('http://test:9080') });
-      nock('http://test:9080')
-        .get('/zosConnect/services')
-        .reply(200, {
-          zosConnectServices: [
-            {
-              ServiceDescription: 'Get the date and time from the server',
-              ServiceName: 'dateTimeService',
-              ServiceProvider: 'zOSConnect Reference Service Provider',
-              ServiceURL: 'http://192.168.99.100:9080/zosConnect/services/dateTimeService',
-            },
-          ],
-        });
-      return zosconnect.getServices().should.eventually.have.members(['dateTimeService']);
-    });
-
     it('should return an error for a security problem', () => {
       const zosconnect = new ZosConnect({ uri: 'http://test:9080' });
       nock('http://test:9080')
         .get('/zosConnect/services')
         .reply(403);
-      return zosconnect.getServices().should.be.rejectedWith(403);
+      return zosconnect.getServices().should.be.rejectedWith('403');
     });
 
     it('should return an error', () => {
@@ -115,7 +97,7 @@ describe('zosconnect', () => {
       nock('http://test:9080')
         .get('/zosConnect/services/unknown')
         .reply(404);
-      return zosconnect.getService('unknown').should.be.rejectedWith('Unable to get service (404)');
+      return zosconnect.getService('unknown').should.be.rejectedWith('404');
     });
 
     it('should return an error for network error', () => {
@@ -151,7 +133,7 @@ describe('zosconnect', () => {
       nock('http://test:9080')
         .get('/zosConnect/apis')
         .reply(403);
-      return zosconnect.getApis().should.be.rejectedWith('Unable to get list of APIs (403)');
+      return zosconnect.getApis().should.be.rejectedWith('403');
     });
 
     it('should return an error', () => {
@@ -185,7 +167,7 @@ describe('zosconnect', () => {
       nock('http://test:9080')
         .get('/zosConnect/apis/healthApi')
         .reply(403);
-      zosconnect.getApi('healthApi').should.be.rejectedWith('Unable to get API information (403)');
+      zosconnect.getApi('healthApi').should.be.rejectedWith('403');
     });
 
     it('should return an error', () => {
@@ -219,7 +201,7 @@ describe('zosconnect', () => {
         .post('/zosConnect/apis')
         .reply(409);
       return zosconnect.createApi('apiPackage').should.be
-        .rejectedWith('Unable to create API (409)');
+        .rejectedWith('409');
     });
 
     it('should return an error', () => {
@@ -257,7 +239,7 @@ describe('zosconnect', () => {
         .post('/zosConnect/services')
         .reply(409);
       return zosconnect.createService('sarFile').should.be
-        .rejectedWith('Unable to create Service (409)');
+        .rejectedWith('409');
     });
 
     it('should return an error', () => {

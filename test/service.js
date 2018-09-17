@@ -24,8 +24,8 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
-const Service = require('../service.js');
-const ZosConnect = require('../index.js');
+const Service = require('../lib/Service.js').Service;
+const ZosConnect = require('../lib/ZosConnect.js').ZosConnect;
 
 describe('service', () => {
   const dateTimeService = new Service({ uri: 'http://test:9080/zosConnect/services/dateTimeService' },
@@ -37,7 +37,7 @@ describe('service', () => {
         .put('/zosConnect/services/dateTimeService')
         .query({ action: 'invoke' })
         .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
-      return dateTimeService.invoke('').should.eventually.have.property('body',
+      return dateTimeService.invoke('').should.eventually.equal(
         "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
     });
 
@@ -46,7 +46,7 @@ describe('service', () => {
         .put('/zosConnect/services/dateTimeService')
         .query({ action: 'invoke' })
         .reply(401);
-      return dateTimeService.invoke('').should.eventually.have.property('statusCode', 401);
+      return dateTimeService.invoke('').should.eventually.be.rejectedWith('401');
     });
 
     it('should return an error', () => {
@@ -80,7 +80,7 @@ describe('service', () => {
         .query({ action: 'invoke' })
         .reply(200, "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
       proxyZConn.getService('dateTimeService').then((service) => {
-        service.invoke('').should.eventually.have.property('body',
+        service.invoke('').should.eventually.equal(
           "{ time: '2:32:01 PM', config: '', date: 'Sep 4, 2015' }");
       });
     });
@@ -99,7 +99,7 @@ describe('service', () => {
         .get('/zosConnect/services/dateTimeService/schemas/request')
         .reply(401);
       return dateTimeService.getRequestSchema().should.be
-        .rejectedWith('Failed to get schema (401)');
+        .rejectedWith('401');
     });
 
     it('should return an error', () => {
@@ -132,7 +132,7 @@ describe('service', () => {
         .get('/zosConnect/services/dateTimeService/schemas/response')
         .reply(401);
       return dateTimeService.getResponseSchema().should.be
-        .rejectedWith('Failed to get schema (401)');
+        .rejectedWith('401');
     });
 
     it('should return an error', () => {
