@@ -29,7 +29,7 @@ const ZosConnect = require('../lib/ZosConnect.js').ZosConnect;
 
 describe('service', () => {
   const dateTimeService = new Service({ uri: 'http://test:9080/zosConnect/services/dateTimeService' },
-    'dateTimeService',
+    'dateTimeService', 'Date Time Service', 'SampleServiceProvider',
     'http://test:9080/zosConnect/services/dateTimeService?action=invoke');
   describe('#invoke', () => {
     it('should invoke the service', () => {
@@ -350,5 +350,17 @@ describe('service', () => {
         .replyWithError('Something fatal happened');
       return dateTimeService.delete().should.be.rejectedWith('Something fatal happened');
     });
+  });
+
+  describe('getName', () => {
+    it('should return the service name', () => dateTimeService.getName().should.equal('dateTimeService'));
+  });
+
+  describe('getDescription', () => {
+    it('should return the service description', () => dateTimeService.getDescription().should.equal('Date Time Service'));
+  });
+
+  describe('getServiceProvider', () => {
+    it('should return the service provider name', () => dateTimeService.getServiceProvider().should.equal('SampleServiceProvider'));
   });
 });

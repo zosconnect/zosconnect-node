@@ -345,32 +345,26 @@ describe('api', () => {
       nock('http://test:9080')
         .delete('/zosConnect/apis/dateApi')
         .reply(403);
-      api.delete().should.be.rejectedWith(403);
+      return api.delete().should.be.rejectedWith(403);
     });
 
     it('should fail due to error', () => {
       nock('http://test:9080')
         .delete('/zosConnect/apis/dateApi')
         .replyWithError('Something fatal happened');
-      api.delete().should.be.rejectedWith('Something fatal happened');
+      return api.delete().should.be.rejectedWith('Something fatal happened');
     });
   });
 
   describe('#getApiName', () => {
-    it('should return the API Name', () => {
-      api.getApiName().should.equal('healthApi');
-    });
+    it('should return the API Name', () => api.getApiName().should.equal('healthApi'));
   });
 
   describe('#getVersion', () => {
-    it('should return the API Version', () => {
-      api.getVersion().should.equal('1.0');
-    });
+    it('should return the API Version', () => api.getVersion().should.equal('1.0'));
   });
 
   describe('#getDescription', () => {
-    it('should return the API Description', () => {
-      api.getDescription().should.equal('Health API');
-    });
+    it('should return the API Description', () => api.getDescription().should.equal('Health API'));
   });
 });

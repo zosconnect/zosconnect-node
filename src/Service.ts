@@ -22,11 +22,16 @@ export class Service {
 
   private options: request.OptionsWithUri;
   private serviceName: string;
+  private description: string;
+  private serviceProvider: string;
   private invokeUri: string;
 
-  constructor(options: request.OptionsWithUri, serviceName: string, invokeUri: string) {
+  constructor(options: request.OptionsWithUri, serviceName: string, description: string,
+              serviceProvider: string, invokeUri: string) {
     this.options = options;
     this.serviceName = serviceName;
+    this.description = description;
+    this.serviceProvider = serviceProvider;
     this.invokeUri = invokeUri;
   }
 
@@ -88,5 +93,17 @@ export class Service {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "DELETE";
     await request(opOptions);
+  }
+
+  public getName(): string {
+    return this.serviceName;
+  }
+
+  public getDescription(): string {
+    return this.description;
+  }
+
+  public getServiceProvider(): string {
+    return this.serviceProvider;
   }
 }
