@@ -28,7 +28,7 @@ const ZosConnect = require('../lib/ZosConnect.js').ZosConnect;
 
 describe('api', () => {
   const api = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
-    'http://test:9080/dateTime',
+    '1.0', 'Health API', 'http://test:9080/dateTime',
     { swagger: 'http://test:9080/dateTime/api-docs' });
   describe('#getApiDoc', () => {
     it('should retrieve the Swagger Doc', () => {
@@ -117,7 +117,7 @@ describe('api', () => {
 
     it('should return Swagger for z/OS Connect accessed via proxy', () => {
       const proxyApi = new Api({ uri: 'http://test:9080/zosConnect/apis/dateApi' }, 'healthApi',
-        'http://test:9080/dateTime',
+        '1.0.0', 'Health API', 'http://test:9080/dateTime',
         { swagger: 'http://hiddenhost:9080/dateTime/api-docs' });
       nock('http://test:9080')
         .get('/dateTime/api-docs')
@@ -353,6 +353,24 @@ describe('api', () => {
         .delete('/zosConnect/apis/dateApi')
         .replyWithError('Something fatal happened');
       api.delete().should.be.rejectedWith('Something fatal happened');
+    });
+  });
+
+  describe('#getApiName', () => {
+    it('should return the API Name', () => {
+      api.getApiName().should.equal('healthApi');
+    });
+  });
+
+  describe('#getVersion', () => {
+    it('should return the API Version', () => {
+      api.getVersion().should.equal('1.0');
+    });
+  });
+
+  describe('#getDescription', () => {
+    it('should return the API Description', () => {
+      api.getDescription().should.equal('Health API');
     });
   });
 });

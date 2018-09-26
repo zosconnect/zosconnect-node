@@ -22,12 +22,17 @@ export class Api {
 
   private options: request.OptionsWithUri;
   private apiName: string;
+  private version: string;
+  private description: string;
   private basePath: string;
   private documentation: any;
 
-  constructor(options: request.OptionsWithUri, apiName: string, basePath: string, documentation: any) {
+  constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string,
+              basePath: string, documentation: any) {
     this.options = options;
     this.apiName = apiName;
+    this.version = version;
+    this.description = description;
     this.basePath = basePath;
     this.documentation = documentation;
   }
@@ -76,7 +81,7 @@ export class Api {
     await request(opOptions);
   }
 
-  public async update(aarFile): Promise<void> {
+  public async update(aarFile: Buffer): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";
@@ -96,5 +101,17 @@ export class Api {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "DELETE";
     await request(opOptions);
+  }
+
+  public getApiName(): string {
+    return this.apiName;
+  }
+
+  public getDescription(): string {
+    return this.description;
+  }
+
+  public getVersion(): string {
+    return this.version;
   }
 }
