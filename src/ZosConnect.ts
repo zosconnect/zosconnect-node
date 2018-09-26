@@ -82,10 +82,11 @@ export class ZosConnect {
     opOptions.uri += `/zosConnect/apis/${apiName}`;
     const json = JSON.parse(await request(opOptions));
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, apiName, this.options.uri + apiUrl.pathname, json.documentation);
+    return new Api(opOptions, apiName, json.version, json.description, this.options.uri + apiUrl.pathname,
+      json.documentation);
   }
 
-  public async createApi(aarFile): Promise<Api> {
+  public async createApi(aarFile: Buffer): Promise<Api> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "/zosConnect/apis";
@@ -96,10 +97,11 @@ export class ZosConnect {
     };
     const json = JSON.parse(await request(opOptions));
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, json.name, this.options.uri + apiUrl.pathname, json.documentation);
+    return new Api(opOptions, json.name, json.version, json.description, this.options.uri + apiUrl.pathname,
+      json.documentation);
   }
 
-  public async createService(sarFile): Promise<Service> {
+  public async createService(sarFile: Buffer): Promise<Service> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "/zosConnect/services";
