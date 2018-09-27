@@ -33,7 +33,7 @@ export class ZosConnect {
       throw new Error("An options object is required");
     }
 
-    if (options.uri === undefined) {
+    if (options.uri === null || options.uri === undefined) {
       throw new Error("Required uri or url not specified");
     }
 
@@ -60,7 +60,8 @@ export class ZosConnect {
 
     const serviceData = JSON.parse(await request(opOptions));
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
-    return new Service(opOptions, serviceName, this.options.uri + invokeUrl.pathname + invokeUrl.search);
+    return new Service(opOptions, serviceName, serviceData.zosConnect.serviceDescription,
+      serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
   }
 
   public async getApis(): Promise<string[]> {
@@ -112,6 +113,7 @@ export class ZosConnect {
     };
     const serviceData = JSON.parse(await request(opOptions));
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
-    return new Service(opOptions, serviceData.ServiceName, this.options.uri + invokeUrl.pathname + invokeUrl.search);
+    return new Service(opOptions, serviceData.zosConnect.serviceName, serviceData.zosConnect.serviceDescription,
+      serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
   }
 }
