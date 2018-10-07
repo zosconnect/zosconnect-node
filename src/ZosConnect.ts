@@ -64,14 +64,17 @@ export class ZosConnect {
       serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
   }
 
-  public async getApis(): Promise<string[]> {
+  public async getApis(): Promise<Api[]> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "/zosConnect/apis";
     const json = JSON.parse(await request(opOptions));
     const apis = [];
     for (const api of json.apis) {
-      apis.push(api.name);
+      let apiOptions = {} as request.OptionsWithUri;
+      apiOptions = extend(apiOptions, opOptions);
+      apiOptions.uri += `/${api.name}`;
+      apis.push(new Api(apiOptions, api.name, api.version, api.description, null, null));
     }
     return apis;
 

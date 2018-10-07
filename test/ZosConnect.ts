@@ -18,6 +18,7 @@ import * as nock from "nock";
 
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
+import { Api } from "../src/Api";
 import { ZosConnect } from "../src/ZosConnect";
 
 before(() => {
@@ -118,14 +119,16 @@ describe("zosconnect", () => {
         .reply(200, {
           apis: [
             {
-              adminUrl: "http://winmvs24:19080/zosConnect/apis/healthApi",
+              adminUrl: "http://test:9080/zosConnect/apis/healthApi",
               description: "Health API",
               name: "healthApi",
               version: "1.0.0",
             },
           ],
         });
-      return zosconnect.getApis().should.eventually.have.members(["healthApi"]);
+      return zosconnect.getApis().should.eventually.deep.equal([
+        new Api({ uri: "http://test:9080/zosConnect/apis/healthApi", strictSSL: true },
+                "healthApi", "1.0.0", "Health API", null, null)]);
     });
 
     it("should return an error for a security problem", () => {
