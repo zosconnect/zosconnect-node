@@ -19,6 +19,7 @@ import * as nock from "nock";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import { Api } from "../src/Api";
+import { Service } from "../src/Service";
 import { ZosConnect } from "../src/ZosConnect";
 
 before(() => {
@@ -50,7 +51,9 @@ describe("zosconnect", () => {
             },
           ],
         });
-      return zosconnect.getServices().should.eventually.have.members(["dateTimeService"]);
+      return zosconnect.getServices().should.eventually.deep.equal(
+        [new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService", strictSSL: true },
+        "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider", null)]);
     });
 
     it("should return an error for a security problem", () => {

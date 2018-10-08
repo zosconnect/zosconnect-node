@@ -40,15 +40,19 @@ export class ZosConnect {
     this.options = extend(this.defaultOptions, options);
   }
 
-  public async getServices(): Promise<string[]> {
+  public async getServices(): Promise<Service[]> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "/zosConnect/services";
 
     const json = JSON.parse(await request(opOptions));
-    const services: string[] = [];
+    const services: Service[] = [];
     for (const service of json.zosConnectServices) {
-      services.push(service.ServiceName);
+      let serviceOptions = {} as request.OptionsWithUri;
+      serviceOptions = extend(serviceOptions, opOptions);
+      serviceOptions.uri += `/${service.ServiceName}`;
+      services.push(new Service(serviceOptions, service.ServiceName, service.ServiceDescription,
+        service.ServiceProvider, null));
     }
     return services;
   }
