@@ -75,7 +75,7 @@ export class Service {
     await request(opOptions);
   }
 
-  public async update(sarFile): Promise<void> {
+  public async update(sarFile: Buffer): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";

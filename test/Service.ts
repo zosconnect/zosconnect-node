@@ -254,7 +254,7 @@ describe("service", () => {
             serviceStatus: "Stopped",
           },
         });
-      return dateTimeService.update("foo").should.be.fulfilled;
+      return dateTimeService.update(new Buffer("foo")).should.be.fulfilled;
     });
 
     it("should fail to stop the API", () => {
@@ -262,7 +262,7 @@ describe("service", () => {
         .put("/zosConnect/services/dateTimeService")
         .query({ status: "stopped" })
         .reply(404);
-      return dateTimeService.update("foo").should.be.rejectedWith(Error);
+      return dateTimeService.update(new Buffer("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail to stop the API due to error", () => {
@@ -270,7 +270,7 @@ describe("service", () => {
         .put("/zosConnect/services/dateTimeService")
         .query({ status: "stopped" })
         .replyWithError("something fatal happened");
-      return dateTimeService.update("foo").should.be.rejectedWith("something fatal happened");
+      return dateTimeService.update(new Buffer("foo")).should.be.rejectedWith("something fatal happened");
     });
 
     it("should fail the update", () => {
@@ -296,7 +296,7 @@ describe("service", () => {
         .put("/zosConnect/services/dateTimeService")
         .query({ status: "started" })
         .reply(404);
-      return dateTimeService.update("foo").should.be.rejectedWith(Error);
+      return dateTimeService.update(new Buffer("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail the update due to error", () => {
@@ -322,7 +322,7 @@ describe("service", () => {
         .put("/zosConnect/services/dateTimeService")
         .query({ status: "started" })
         .replyWithError("Something fatal happened");
-      return dateTimeService.update("foo").should.be.rejectedWith("Something fatal happened");
+      return dateTimeService.update(new Buffer("foo")).should.be.rejectedWith("Something fatal happened");
     });
   });
 
