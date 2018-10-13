@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, 2016 IBM Corp. All Rights Reserved.
+ * Copyright 2018 IBM Corp. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 import extend = require("extend");
 import request = require("request-promise");
 import url = require("url");
-import {Api} from "./Api";
-import {Service} from "./Service";
+import { Api } from "./Api";
+import { ApiRequester } from "./ApiRequester";
+import { Service } from "./Service";
 
 export class ZosConnect {
 
@@ -122,5 +123,44 @@ export class ZosConnect {
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
     return new Service(opOptions, serviceData.zosConnect.serviceName, serviceData.zosConnect.serviceDescription,
       serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
+  }
+
+  public async getApiRequesters(): Promise<ApiRequester[]> {
+    let opOptions = {} as request.OptionsWithUri;
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += "/zosConnect/apiRequesters";
+    const json = JSON.parse(await request(opOptions));
+    const apis = [];
+    for (const apiRequester of json.apiRequesters) {
+      let apiRequesterOptions = {} as request.OptionsWithUri;
+      apiRequesterOptions = extend(apiRequesterOptions, opOptions);
+      apiRequesterOptions.uri += `/${apiRequester.name}`;
+      apis.push(new ApiRequester(apiRequesterOptions, apiRequester.name, apiRequester.version,
+        apiRequester.description, apiRequester.connectionRef));
+    }
+    return apis;
+  }
+
+  public async getApiRequester(name: string): Promise<ApiRequester> {
+    let opOptions = {} as request.OptionsWithUri;
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += `/zosConnect/apiRequesters/${name}`;
+    const json = JSON.parse(await request(opOptions));
+    return new ApiRequester(opOptions, json.name, json.version, json.description, json.connection);
+  }
+
+  public async createApiRequester(araFile: Buffer): Promise<ApiRequester> {
+    let opOptions = {} as request.OptionsWithUri;
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri += "/zosConnect/apiRequesters";
+    opOptions.method = "POST";
+    opOptions.body = araFile;
+    opOptions.headers = {
+      "Content-Type": "application/zip",
+    };
+    const apiRequester = JSON.parse(await request(opOptions));
+    opOptions.uri += apiRequester.name;
+    return new ApiRequester(opOptions, apiRequester.name, apiRequester.version,
+      apiRequester.description, apiRequester.connection);
   }
 }

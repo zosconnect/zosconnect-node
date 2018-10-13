@@ -19,6 +19,7 @@ import * as nock from "nock";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import { Api } from "../src/Api";
+import { ApiRequester } from "../src/ApiRequester";
 import { Service } from "../src/Service";
 import { ZosConnect } from "../src/ZosConnect";
 
@@ -253,6 +254,103 @@ describe("zosconnect", () => {
         .post("/zosConnect/services")
         .replyWithError("bad things occurred");
       return zosconnect.createService(new Buffer("sarFile")).should.be.rejectedWith("bad things occurred");
+    });
+  });
+
+  describe("#getApiRequesters", () => {
+    const zosconnect = new ZosConnect({uri: "http://test:9080"});
+    it("should return a list of API Requesters", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters")
+        .reply(200, {
+          apiRequesters: [
+            {
+              name: "Book_Inventory",
+              version: "1.0.0",
+              description: "API requester for Book_Inventory app",
+              status: "Started",
+              connectionRef: "BookConnref",
+            },
+          ],
+        });
+      return zosconnect.getApiRequesters().should.eventually.deep.equal([
+        new ApiRequester({ uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory", strictSSL: true },
+                "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref")]);
+    });
+
+    it("should return an error for a security problem", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters")
+        .reply(403);
+      return zosconnect.getApiRequesters().should.be.rejectedWith("403");
+    });
+
+    it("should return an error", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters")
+        .replyWithError("bad things occurred");
+      return zosconnect.getApiRequesters().should.be.rejectedWith("bad things occurred");
+    });
+  });
+
+  describe("#getApiRequester", () => {
+    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    it("should return an API Requester", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters/Book_Inventory")
+        .reply(200, {
+          name: "Book_Inventory",
+          version: "1.0.0",
+          description: "API requester for Book_Inventory app",
+          status: "Started",
+          connectionRef: "BookConnref",
+        });
+      return zosconnect.getApiRequester("Book_Inventory").should.eventually.be.a("Object");
+    });
+
+    it("should return an error for a security problem", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters/Book_Inventory")
+        .reply(403);
+      zosconnect.getApiRequester("Book_Inventory").should.be.rejectedWith("403");
+    });
+
+    it("should return an error", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apiRequesters/Book_Inventory")
+        .replyWithError("bad things occurred");
+      zosconnect.getApiRequester("Book_Inventory").should.be.rejectedWith("bad things occurred");
+    });
+  });
+
+  describe("#createApiRequester", () => {
+    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    it("should install an API Requester", () => {
+      nock("http://test:9080")
+        .post("/zosConnect/apiRequesters")
+        .reply(201, {
+          name: "Book_Inventory",
+          version: "1.0.0",
+          description: "API requester for Book_Inventory app",
+          status: "Started",
+          connectionRef: "BookConnref",
+        });
+      return zosconnect.createApiRequester(new Buffer("foo")).should.eventually.be.a("Object");
+    });
+
+    it("should return an error for a conflict problem", () => {
+      nock("http://test:9080")
+        .post("/zosConnect/apiRequesters")
+        .reply(409);
+      return zosconnect.createApiRequester(new Buffer("sarFile")).should.be
+        .rejectedWith("409");
+    });
+
+    it("should return an error", () => {
+      nock("http://test:9080")
+        .post("/zosConnect/apiRequesters")
+        .replyWithError("bad things occurred");
+      return zosconnect.createApiRequester(new Buffer("sarFile")).should.be.rejectedWith("bad things occurred");
     });
   });
 });
