@@ -24,39 +24,13 @@ export class Service {
   private serviceName: string;
   private description: string;
   private serviceProvider: string;
-  private invokeUri: string;
 
   constructor(options: request.OptionsWithUri, serviceName: string, description: string,
-              serviceProvider: string, invokeUri: string) {
+              serviceProvider: string) {
     this.options = options;
     this.serviceName = serviceName;
     this.description = description;
     this.serviceProvider = serviceProvider;
-    this.invokeUri = invokeUri;
-  }
-
-  public async invoke(data: any): Promise<any> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.method = "PUT";
-    opOptions.uri = this.invokeUri;
-    opOptions.json = true;
-    opOptions.body = data;
-    return await request(opOptions);
-  }
-
-  public async getRequestSchema(): Promise<any> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/schemas/request";
-    return await request(opOptions);
-  }
-
-  public async getResponseSchema(): Promise<any> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/schemas/response";
-    return await request(opOptions);
   }
 
   public async start(): Promise<void> {

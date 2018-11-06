@@ -24,43 +24,12 @@ export class Api {
   private apiName: string;
   private version: string;
   private description: string;
-  private basePath: string;
-  private documentation: any;
 
-  constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string,
-              basePath: string, documentation: any) {
+  constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string) {
     this.options = options;
     this.apiName = apiName;
     this.version = version;
     this.description = description;
-    this.basePath = basePath;
-    this.documentation = documentation;
-  }
-
-  public async getApiDoc(type: string): Promise<any> {
-    let opOptions = {} as request.OptionsWithUri;
-    const documentationUri = this.documentation[type];
-    if (documentationUri === undefined) {
-      return Promise.reject("Documentation not available");
-    }
-    const docUrl = url.parse(documentationUri);
-    const apiUrl = url.parse(this.basePath);
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri = `${apiUrl.protocol}//${apiUrl.host}${docUrl.pathname}`;
-    return await request(opOptions);
-  }
-
-  public async invoke(resource: string, method: string, content: any): Promise<any> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri = `${this.basePath}/${resource}`;
-    opOptions.method = method;
-    if (content !== null) {
-      opOptions.body = content;
-    }
-
-    opOptions.json = true;
-    return await request(opOptions);
   }
 
   public async start(): Promise<void> {
@@ -91,9 +60,7 @@ export class Api {
       "Content-Type": "application/zip",
     };
     await this.stop();
-    const json = JSON.parse(await request(opOptions));
-    this.basePath = json.apiUrl;
-    this.documentation = json.documentation;
+    await request(opOptions);
   }
 
   public async delete(): Promise<void> {

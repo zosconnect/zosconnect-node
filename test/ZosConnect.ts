@@ -54,7 +54,7 @@ describe("zosconnect", () => {
         });
       return zosconnect.getServices().should.eventually.deep.equal(
         [new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService", strictSSL: true },
-        "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider", null)]);
+        "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider")]);
     });
 
     it("should return an error for a security problem", () => {
@@ -132,7 +132,7 @@ describe("zosconnect", () => {
         });
       return zosconnect.getApis().should.eventually.deep.equal([
         new Api({ uri: "http://test:9080/zosConnect/apis/healthApi", strictSSL: true },
-                "healthApi", "1.0.0", "Health API", null, null)]);
+                "healthApi", "1.0.0", "Health API")]);
     });
 
     it("should return an error for a security problem", () => {

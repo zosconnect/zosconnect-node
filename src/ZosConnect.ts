@@ -53,7 +53,7 @@ export class ZosConnect {
       serviceOptions = extend(serviceOptions, opOptions);
       serviceOptions.uri += `/${service.ServiceName}`;
       services.push(new Service(serviceOptions, service.ServiceName, service.ServiceDescription,
-        service.ServiceProvider, null));
+        service.ServiceProvider));
     }
     return services;
   }
@@ -66,7 +66,7 @@ export class ZosConnect {
     const serviceData = JSON.parse(await request(opOptions));
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
     return new Service(opOptions, serviceName, serviceData.zosConnect.serviceDescription,
-      serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
+      serviceData.zosConnect.serviceProvider);
   }
 
   public async getApis(): Promise<Api[]> {
@@ -79,7 +79,7 @@ export class ZosConnect {
       let apiOptions = {} as request.OptionsWithUri;
       apiOptions = extend(apiOptions, opOptions);
       apiOptions.uri += `/${api.name}`;
-      apis.push(new Api(apiOptions, api.name, api.version, api.description, null, null));
+      apis.push(new Api(apiOptions, api.name, api.version, api.description));
     }
     return apis;
 
@@ -91,8 +91,7 @@ export class ZosConnect {
     opOptions.uri += `/zosConnect/apis/${apiName}`;
     const json = JSON.parse(await request(opOptions));
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, apiName, json.version, json.description, this.options.uri + apiUrl.pathname,
-      json.documentation);
+    return new Api(opOptions, apiName, json.version, json.description);
   }
 
   public async createApi(aarFile: Buffer): Promise<Api> {
@@ -106,8 +105,7 @@ export class ZosConnect {
     };
     const json = JSON.parse(await request(opOptions));
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, json.name, json.version, json.description, this.options.uri + apiUrl.pathname,
-      json.documentation);
+    return new Api(opOptions, json.name, json.version, json.description);
   }
 
   public async createService(sarFile: Buffer): Promise<Service> {
@@ -122,7 +120,7 @@ export class ZosConnect {
     const serviceData = JSON.parse(await request(opOptions));
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
     return new Service(opOptions, serviceData.zosConnect.serviceName, serviceData.zosConnect.serviceDescription,
-      serviceData.zosConnect.serviceProvider, this.options.uri + invokeUrl.pathname + invokeUrl.search);
+      serviceData.zosConnect.serviceProvider);
   }
 
   public async getApiRequesters(): Promise<ApiRequester[]> {
