@@ -69,7 +69,7 @@ export class Service {
       "Content-Type": "application/zip",
     };
     await this.stop();
-    const serviceData = await request(opOptions);
+    const serviceData = JSON.parse(await request(opOptions));
     this.description = serviceData.zosConnect.serviceDescription;
   }
 

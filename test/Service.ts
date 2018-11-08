@@ -27,7 +27,7 @@ before(() => {
 
 describe("service", () => {
   const dateTimeService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
-    "dateTimeService", "Date Time Service", "SampleServiceProvider");
+    "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
   describe("#start", () => {
     it("should start the service", () => {
       nock("http://test:9080")
@@ -243,7 +243,7 @@ describe("service", () => {
 
   describe("getDescription", () => {
     it("should return the service description",
-      () => dateTimeService.getDescription().should.equal("Date Time Service"));
+      () => dateTimeService.getDescription().should.equal("Get the date and time from the server"));
   });
 
   describe("getServiceProvider", () => {
