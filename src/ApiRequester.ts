@@ -33,6 +33,9 @@ export class ApiRequester {
         this.connection = connection;
     }
 
+    /**
+     * Mark the API Requester as started and available for requests.
+     */
     public async start() {
         let opOptions = {} as request.OptionsWithUri;
         opOptions = extend(opOptions, this.options);
@@ -41,6 +44,9 @@ export class ApiRequester {
         await request(opOptions);
     }
 
+    /**
+     * Mark the API Requester as stopped and unavailable for requests.
+     */
     public async stop() {
         let opOptions = {} as request.OptionsWithUri;
         opOptions = extend(opOptions, this.options);
@@ -49,6 +55,10 @@ export class ApiRequester {
         await request(opOptions);
     }
 
+    /**
+     * Update the API Requester with the new version.
+     * @param araFile The ARA file.
+     */
     public async update(araFile: Buffer) {
         let opOptions = {} as request.OptionsWithUri;
         opOptions = extend(opOptions, this.options);
@@ -65,6 +75,9 @@ export class ApiRequester {
         this.description = json.description;
     }
 
+    /**
+     * Delete the API Requester from the server.
+     */
     public async delete() {
         let opOptions = {} as request.OptionsWithUri;
         opOptions = extend(opOptions, this.options);
@@ -72,18 +85,30 @@ export class ApiRequester {
         await request(opOptions);
     }
 
+    /**
+     * @returns The name of the API Requester.
+     */
     public getName(): string {
         return this.name;
     }
 
+    /**
+     * @returns The description of the API Requester.
+     */
     public getDescription(): string {
         return this.description;
     }
 
+    /**
+     * @returns The version of the API Requester.
+     */
     public getVersion(): string {
         return this.version;
     }
 
+    /**
+     * @returns The connection used by the API Requester.
+     */
     public getConnection(): string {
         return this.connection;
     }

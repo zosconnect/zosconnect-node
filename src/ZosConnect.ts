@@ -21,6 +21,11 @@ import { Api } from "./Api";
 import { ApiRequester } from "./ApiRequester";
 import { Service } from "./Service";
 
+/**
+ * Object which represents a z/OS Connect EE server.
+ *
+ * Can be used to retrieve and create artifacts on the server.
+ */
 export class ZosConnect {
 
   private defaultOptions = {
@@ -29,6 +34,11 @@ export class ZosConnect {
 
   private options: request.OptionsWithUri;
 
+  /**
+   * Establish a connection to the server ready to work with APIs, Services and API Requesters.
+   *
+   * @param options A {@link request.OptionsWithUri} which describes the connection to the server
+   */
   constructor(options: request.OptionsWithUri) {
     if (options === null || options === undefined) {
       throw new Error("An options object is required");
@@ -41,6 +51,11 @@ export class ZosConnect {
     this.options = extend(this.defaultOptions, options);
   }
 
+  /**
+   * Retrieve all the Services that are installed in the server.
+   *
+   * @returns An array of all the Service objects.
+   */
   public async getServices(): Promise<Service[]> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -58,6 +73,12 @@ export class ZosConnect {
     return services;
   }
 
+  /**
+   * Retrieve the named Service from the server.
+   *
+   * @param serviceName The name of the service.
+   * @returns The {@link Service}
+   */
   public async getService(serviceName: string): Promise<Service> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -69,6 +90,11 @@ export class ZosConnect {
       serviceData.zosConnect.serviceProvider);
   }
 
+  /**
+   * Retrieve all the APIs that are intalled in the server.
+   *
+   * @returns An array of all the API objects.
+   */
   public async getApis(): Promise<Api[]> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -85,6 +111,12 @@ export class ZosConnect {
 
   }
 
+  /**
+   * Retrieve the named API from the server.
+   *
+   * @param apiName The name of the API to retrieve.
+   * @returns The {@link Api}
+   */
   public async getApi(apiName: string): Promise<Api> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -94,6 +126,12 @@ export class ZosConnect {
     return new Api(opOptions, apiName, json.version, json.description);
   }
 
+  /**
+   * Install a new API.
+   *
+   * @param aarFile The AAR file to install.
+   * @returns The {@link Api} that was installed
+   */
   public async createApi(aarFile: Buffer): Promise<Api> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -108,6 +146,12 @@ export class ZosConnect {
     return new Api(opOptions, json.name, json.version, json.description);
   }
 
+  /**
+   * Install a new Service.
+   *
+   * @param sarFile The SAR file to install.
+   * @returns The {@link Service} that was installed.
+   */
   public async createService(sarFile: Buffer): Promise<Service> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -118,11 +162,15 @@ export class ZosConnect {
       "Content-Type": "application/zip",
     };
     const serviceData = JSON.parse(await request(opOptions));
-    const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
     return new Service(opOptions, serviceData.zosConnect.serviceName, serviceData.zosConnect.serviceDescription,
       serviceData.zosConnect.serviceProvider);
   }
 
+  /**
+   * Retrieve all the API Requsters installed in the server.
+   *
+   * @returns An array of the API Requester objects.
+   */
   public async getApiRequesters(): Promise<ApiRequester[]> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -139,6 +187,11 @@ export class ZosConnect {
     return apis;
   }
 
+  /**
+   * Retrieve the named API Requester.
+   * @param name The name of the API Requester.
+   * @returns The {@link ApiRequester}
+   */
   public async getApiRequester(name: string): Promise<ApiRequester> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -147,6 +200,11 @@ export class ZosConnect {
     return new ApiRequester(opOptions, json.name, json.version, json.description, json.connection);
   }
 
+  /**
+   * Install a new API Requester.
+   * @param araFile The ARA file.
+   * @returns The {@link ApiRequester} that was installed.
+   */
   public async createApiRequester(araFile: Buffer): Promise<ApiRequester> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);

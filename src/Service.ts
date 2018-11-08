@@ -33,6 +33,9 @@ export class Service {
     this.serviceProvider = serviceProvider;
   }
 
+  /**
+   * Mark the Service as started and available to process requests.
+   */
   public async start(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -41,6 +44,9 @@ export class Service {
     await request(opOptions);
   }
 
+  /**
+   * Mark the Service as stopped and unavailable to process requests.
+   */
   public async stop(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -49,6 +55,10 @@ export class Service {
     await request(opOptions);
   }
 
+  /**
+   * Update the Service with a new version.
+   * @param sarFile The new SAR file for the Service
+   */
   public async update(sarFile: Buffer): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -59,9 +69,13 @@ export class Service {
       "Content-Type": "application/zip",
     };
     await this.stop();
-    await request(opOptions);
+    const serviceData = await request(opOptions);
+    this.description = serviceData.zosConnect.serviceDescription;
   }
 
+  /**
+   * Delete the Service from the server.
+   */
   public async delete(): Promise<void> {
     let opOptions = {} as UriOptions & CoreOptions;
     opOptions = extend(opOptions, this.options);
@@ -69,14 +83,23 @@ export class Service {
     await request(opOptions);
   }
 
+  /**
+   * @returns The name of the Service.
+   */
   public getName(): string {
     return this.serviceName;
   }
 
+  /**
+   * @returns The Services description.
+   */
   public getDescription(): string {
     return this.description;
   }
 
+  /**
+   * @returns The service provider for the Service.
+   */
   public getServiceProvider(): string {
     return this.serviceProvider;
   }

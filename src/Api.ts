@@ -32,6 +32,9 @@ export class Api {
     this.description = description;
   }
 
+  /**
+   * Mark the API as started and available for requests.
+   */
   public async start(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -41,6 +44,9 @@ export class Api {
     await request(opOptions);
   }
 
+  /**
+   * Mark the API as stopped and unavailable for requests.
+   */
   public async stop(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -50,6 +56,11 @@ export class Api {
     await request(opOptions);
   }
 
+  /**
+   * Update the API with a new version.
+   *
+   * @param aarFile The new AAR file
+   */
   public async update(aarFile: Buffer): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -63,6 +74,9 @@ export class Api {
     await request(opOptions);
   }
 
+  /**
+   * Delete the API.
+   */
   public async delete(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -70,14 +84,23 @@ export class Api {
     await request(opOptions);
   }
 
+  /**
+   * @returns The name of the API.
+   */
   public getApiName(): string {
     return this.apiName;
   }
 
+  /**
+   * @returns The description of the API.
+   */
   public getDescription(): string {
     return this.description;
   }
 
+  /**
+   * @returns The version of the API.
+   */
   public getVersion(): string {
     return this.version;
   }
