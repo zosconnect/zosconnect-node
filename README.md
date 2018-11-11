@@ -43,7 +43,7 @@ A wrapper service for z/OS&reg; Connect EE, enabling node applications to manage
 ### Installing
 
 ```
-npm install zosconnect-node
+npm install @zosconnect/zosconnect-node
 ```
 
 ### Usage
