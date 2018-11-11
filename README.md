@@ -38,14 +38,7 @@
 
 ## Node zosconnect
 
-A wrapper service for z/OS&reg; Connect EE, enabling node applications to discover and access zSystems resources
-that are service enabled by z/OS&reg; Connect. Version 2 of this module pre-reqs z/OS Connect EE V3.0.8 or later.
-
-Services and APIs are identified by name that is unique within the scope of the target z/OS&reg; Connect instance
-(or cluster). The node application uses pre-existing knowledge of the service or API name, or discovers it
-dynamically by retrieving a list of available services or APIs. The z/OS&reg; Connect node wrapper provides access
-to JSON request and response schemas for the specific z/OS&reg; Connect service and the Swagger document for APIs, 
-enabling the node application to invoke that service and process the response.
+A wrapper service for z/OS&reg; Connect EE, enabling node applications to manage z/OS Connect EE APIs, Services and API Requesters. Version 3 of this module pre-reqs z/OS Connect EE V3.0.14 or later.
 
 ### Installing
 
@@ -58,13 +51,12 @@ npm install zosconnect-node
 #### Connecting to z/OS Connect
 
 ```js
-var ZosConnect = require('zosconnect-node');
 var options = {
   uri:'http://mainframe:8080'
 }
 var zosconnect = new ZosConnect(options);
 ```
-The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri or url parameter must be specified.
+The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri parameter must be specified.
 
 ##### HTTPs Support
 Create the options object with locations for the CA certificate file and optionally the client certificate and client private key (if using client authentication). If the strictSSL option is set to false then invalid SSL certificates can be used which may be of use in development environments.
@@ -96,146 +88,16 @@ var options = {
 }
 ```
 
-#### APIs
-
-##### Retrieve a list of APIs
-
-```js
-zosconnect.getApis().then(console.log);
-```
-
-##### Get an API
-
-```js
-zosconnect.getApi('healthApi').then(console.log);
-```
-
-##### Create an API
-
-```js
-zosconnect.createApi(fs.readFileSync('api.aar')).then(console.log);
-```
-
-##### Call an API
-
-```js
-zosconnect.getApi('healthApi').then((api) => {
-  api.invoke('patient/12345', 'GET', null).then((response) => {
-    if(response.statusCode != 200) {
-      console.log('Invoke failed with respCode = ' + response.statusCode);
-    } else {
-      console.log(response.body);
-    }
-  }).catch(console.log);
-});
-```
-
-##### Get the Swagger document for an API
-
-```js
-zosconnect.getApi('healthApi').then((api) => {
-  api.getApiDoc('swagger').then(console.log);
-});
-```
-
-##### Start or Stop an API
-
-```js
-zosconnect.getApi('healthApi', function(error, api){
-  api.stop().catch(console.log);
-  api.start().catch(console.log);
-})
-```
-
-##### Update an API
-
-```js
-zosconnect.getApi('healthApi').then((api) => {
-  api.update(fs.readFileSync('healthApi.aar')).catch(console.log);
-});
-```
-
-##### Delete an API
-
-```js
-zosconnect.getApi('healthApi').then((api) => {
-  api.delete().catch(console.log);
-})
-```
-
-#### Services
-
-##### Retrieve a list of services
-
-```js
-zosconnect.getServices().then(console.log);
-```
-
-##### Create a Service
-
-```js
-zosconnect.createService(fs.readFileSync('dateTimeService.sar')).then(console.log);
-```
-
-##### Get a service
-
-```js
-zosconnect.getService('dateTimeService').then(console.log);
-//normally this would then go on and work with the service
-```
-
-##### Invoke a service
-
-```js
-zosconnect.getService('dateTimeService').then((service) => {
-  service.invoke({input:'data'}).then((response) => {
-    if(response.statusCode != 200) {
-      console.log('Invoke failed with respCode = ' + response.statusCode);
-    } else {
-      console.log(response.body);
-    }
-  }).catch(console.log);
-});
-```
-
-##### Get the request schema
-
-```js
-zosconnect.getService('dateTimeService').then((service) => {
-  service.getRequestSchema().then(console.log).catch(console.log);
-});
-```
-
-##### Get the response schema
-
-```js
-zosconnect.getService('dateTimeService').then((service) => {
-  service.getResponseSchema().then(console.log).catch(console.log);;
-});
-```
-
-##### Update a Service
-
-```js
-zosconnect.getService('dateTimeService').then((service) => {
-  service.update(fs.readFileSync('dateTimeService.sar')).catch(console.log);
-});
-```
-
-##### Delete a Service
-
-```js
-zosconnect.getService('dateTimeService').then((service) => {
-  service.delete().catch(console.log);
-})
-```
+#### Managing Items
+APIs, Services and API Requesters can be retrieved and managed either by getting a list of all the installed items, or by getting a particular item by name. Once the application as an Object representing that item it can be further managed by calling methods on that Object.
 
 ### Module Long Term Support Policy
   This module adopts the [Module Long Term Support (LTS)](http://github.com/CloudNativeJS/ModuleLTS) policy, with the following End Of Life (EOL) dates:
 
   | Module Version   | Release Date | Minimum EOL | EOL With     | Status  |
   |------------------|--------------|-------------|--------------|---------|
-  | 2.x.x         | Jul 2018     | Dec 2019    | | Current
+  | 3.x.x         | Nov 2018     | Apr 2021    | | Current |
+  | 2.x.x         | Jul 2018     | Apr 2021    | Node 10      | LTS |
   | 1.x.x	        | Jul 2017     | Dec 2019    | Node 8       | LTS |
   
 ### License
