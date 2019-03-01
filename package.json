@@ -8,29 +8,29 @@
         "lib"
     ],
     "dependencies": {
-        "@types/extend": "^3.0.0",
-        "@types/request": "^2.47.1",
+        "@types/extend": "^3.0.1",
+        "@types/request": "^2.48.1",
         "@types/request-promise": "^4.1.42",
-        "extend": "^3.0.0",
+        "extend": "^3.0.2",
         "request": "^2.88.0",
-        "request-promise": "^4.2.2"
+        "request-promise": "^4.2.4"
     },
     "devDependencies": {
-        "@types/chai": "^4.1.5",
+        "@types/chai": "^4.1.7",
         "@types/chai-as-promised": "^7.1.0",
-        "@types/mocha": "^5.2.5",
-        "@types/nock": "^9.3.0",
-        "chai": "^4.0.2",
+        "@types/mocha": "^5.2.6",
+        "@types/nock": "^9.3.1",
+        "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "codecov": "^3.0.4",
-        "doctoc": "^1.3.0",
+        "codecov": "^3.2.0",
+        "doctoc": "^1.4.0",
         "mocha": "^5.2.0",
-        "nock": "^9.0.13",
-        "nyc": "^12.0.2",
-        "source-map-support": "^0.5.9",
+        "nock": "^9.6.1",
+        "nyc": "^13.3.0",
+        "source-map-support": "^0.5.10",
         "ts-node": "^7.0.1",
-        "tslint": "^5.11.0",
-        "typescript": "^3.0.1"
+        "tslint": "^5.13.1",
+        "typescript": "^3.3.3333"
     },
     "scripts": {
         "build": "tsc",
