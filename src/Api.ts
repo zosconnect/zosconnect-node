@@ -24,6 +24,8 @@ export class Api {
   private apiName: string;
   private version: string;
   private description: string;
+  private apiUrl: string = "";
+  private documentation: {};
 
   constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string) {
     this.options = options;
@@ -71,7 +73,11 @@ export class Api {
       "Content-Type": "application/zip",
     };
     await this.stop();
-    await request(opOptions);
+    const apiJson = JSON.parse(await request(opOptions));
+    this.version = apiJson.version;
+    this.description = apiJson.description;
+    this.apiUrl = apiJson.apiUrl;
+    this.documentation = apiJson.documentation;
   }
 
   /**
@@ -103,5 +109,35 @@ export class Api {
    */
   public getVersion(): string {
     return this.version;
+  }
+
+  public async getApiUrl(): Promise<string> {
+    if (this.apiUrl === "") {
+      await this.getApiInfo();
+    }
+    return this.apiUrl;
+  }
+
+  public async getDocumentation(type: string): Promise<string> {
+    let opOptions = {} as request.OptionsWithUri;
+    if (this.documentation === undefined) {
+      await this.getApiInfo();
+    }
+    const docUrl = this.documentation[type];
+    if (docUrl === undefined) {
+      throw new Error(`Documentation of type ${type} not available`);
+    }
+    opOptions = extend(opOptions, this.options);
+    opOptions.uri = docUrl;
+    return await request(opOptions);
+  }
+
+  private async getApiInfo(): Promise<void> {
+    let opOptions = {} as request.OptionsWithUri;
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = "GET";
+    const apiJson = JSON.parse(await request(opOptions));
+    this.apiUrl = apiJson.apiUrl;
+    this.documentation = apiJson.documentation;
   }
 }

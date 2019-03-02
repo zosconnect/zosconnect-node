@@ -25,18 +25,18 @@ before(() => {
 });
 
 describe("api", () => {
-  const api = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "healthApi",
-    "1.0", "Health API");
+  const api = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+    "1.0.0", "Date Time API");
   describe("#start", () => {
     it("should start the api", () => {
       nock("http://test:9080")
         .put("/zosConnect/apis/dateApi")
         .query({ status: "started" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "started",
@@ -68,10 +68,10 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "stopped",
@@ -103,10 +103,10 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "stopped",
@@ -116,10 +116,10 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "started" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "stopped",
@@ -149,10 +149,10 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "stopped",
@@ -170,10 +170,10 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .reply(200, {
-          apiUrl: "http://192.168.99.100:9080/dateTime",
+          apiUrl: "http://test:9080/dateTime",
           description: "Date Time API",
           documentation: {
-            swagger: "http://192.168.99.100:9080/dateTime/api-docs",
+            swagger: "http://test:9080/dateTime/api-docs",
           },
           name: "dateTime",
           status: "stopped",
@@ -213,14 +213,61 @@ describe("api", () => {
   });
 
   describe("#getApiName", () => {
-    it("should return the API Name", () => api.getApiName().should.equal("healthApi"));
+    it("should return the API Name", () => api.getApiName().should.equal("dateTime"));
   });
 
   describe("#getVersion", () => {
-    it("should return the API Version", () => api.getVersion().should.equal("1.0"));
+    it("should return the API Version", () => api.getVersion().should.equal("1.0.0"));
   });
 
   describe("#getDescription", () => {
-    it("should return the API Description", () => api.getDescription().should.equal("Health API"));
+    it("should return the API Description", () => api.getDescription().should.equal("Date Time API"));
+  });
+
+  describe("#getApiUrl", () => {
+    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+      "1.0.0", "Date Time API");
+    it("should return the API URL", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apis/dateApi")
+        .reply(200, {
+          apiUrl: "http://test:9080/dateTime",
+          description: "Date Time API",
+          documentation: {
+            swagger: "http://test:9080/dateTime/api-docs",
+          },
+          name: "dateTime",
+          status: "started",
+          version: "1.0.0",
+        });
+      return localApi.getApiUrl().should.eventually.equal("http://test:9080/dateTime");
+    });
+  });
+
+  describe("#getDocumentation", () => {
+    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+      "1.0.0", "Date Time API");
+    it("should return the swagger", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apis/dateApi")
+        .reply(200, {
+          apiUrl: "http://test:9080/dateTime",
+          description: "Date Time API",
+          documentation: {
+            swagger: "http://test:9080/dateTime/api-docs",
+          },
+          name: "dateTime",
+          status: "started",
+          version: "1.0.0",
+        });
+      nock("http://test:9080")
+        .get("/dateTime/api-docs")
+        .reply(200, {version: 2});
+      return localApi.getDocumentation("swagger").should.eventually.equal("{\"version\":2}");
+    });
+
+    it("should fail to get RAML", () => {
+      return localApi.getDocumentation("RAML").should.be.rejected;
+    });
   });
 });
