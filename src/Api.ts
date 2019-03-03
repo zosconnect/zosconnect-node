@@ -128,7 +128,8 @@ export class Api {
       throw new Error(`Documentation of type ${type} not available`);
     }
     opOptions = extend(opOptions, this.options);
-    opOptions.uri = docUrl;
+    const baseURL = new URL(this.options.uri.toString());
+    opOptions.uri = `${baseURL.protocol}//${baseURL.host}${new URL(docUrl).pathname}`;
     return await request(opOptions);
   }
 
@@ -137,7 +138,8 @@ export class Api {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "GET";
     const apiJson = JSON.parse(await request(opOptions));
-    this.apiUrl = apiJson.apiUrl;
+    const baseURL = new URL(this.options.uri.toString());
+    this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
   }
 }
