@@ -275,7 +275,7 @@ describe("zosconnect", () => {
         });
       return zosconnect.getApiRequesters().should.eventually.deep.equal([
         new ApiRequester({ uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory", strictSSL: true },
-                "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref")]);
+                "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started")]);
     });
 
     it("should return an error for a security problem", () => {

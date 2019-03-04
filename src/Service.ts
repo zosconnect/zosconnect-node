@@ -17,6 +17,7 @@
 import extend = require("extend");
 import { CoreOptions, UriOptions } from "request";
 import request = require("request-promise");
+import url = require("url");
 
 export class Service {
 
@@ -24,6 +25,8 @@ export class Service {
   private serviceName: string;
   private description: string;
   private serviceProvider: string;
+  private serviceInvokeUrl: string = "";
+  private status: string = "";
 
   constructor(options: request.OptionsWithUri, serviceName: string, description: string,
               serviceProvider: string) {
@@ -41,7 +44,8 @@ export class Service {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";
     opOptions.uri += "?status=started";
-    await request(opOptions);
+    const response = JSON.parse(await request(opOptions));
+    this.status = response.zosConnect.serviceStatus;
   }
 
   /**
@@ -52,7 +56,8 @@ export class Service {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";
     opOptions.uri += "?status=stopped";
-    await request(opOptions);
+    const response = JSON.parse(await request(opOptions));
+    this.status = response.zosConnect.serviceStatus;
   }
 
   /**
@@ -71,6 +76,10 @@ export class Service {
     await this.stop();
     const serviceData = JSON.parse(await request(opOptions));
     this.description = serviceData.zosConnect.serviceDescription;
+    this.status = serviceData.zosConnect.serviceStatus;
+    const baseUrl = new url.URL(this.options.uri.toString());
+    this.serviceInvokeUrl =
+      `${baseUrl.protocol}//${baseUrl.host}${new url.URL(serviceData.zosConnect.serviceInvokeURL).pathname}`;
   }
 
   /**
@@ -102,5 +111,37 @@ export class Service {
    */
   public getServiceProvider(): string {
     return this.serviceProvider;
+  }
+
+  /**
+   * @returns The status of the Service.
+   */
+  public async getStatus(): Promise<string> {
+    if (this.status === "") {
+      await this.getServiceInfo();
+    }
+    return this.status;
+  }
+
+  /**
+   * @returns The URL that the Service can be invoked on.
+   */
+  public async getServiceInvokeUrl(): Promise<string> {
+    if (this.status === "") {
+      await this.getServiceInfo();
+    }
+    return this.serviceInvokeUrl;
+  }
+
+  private async getServiceInfo(): Promise<void> {
+    let opOptions = {} as request.OptionsWithUri;
+    opOptions = extend(opOptions, this.options);
+    opOptions.method = "GET";
+    const serviceJson = JSON.parse(await request(opOptions));
+    const baseUrl = new url.URL(this.options.uri.toString());
+    const invokeUrl = new url.URL(serviceJson.zosConnect.serviceInvokeURL);
+    this.serviceInvokeUrl =
+      `${baseUrl.protocol}//${baseUrl.host}${invokeUrl.pathname}${invokeUrl.search}`;
+    this.status = serviceJson.zosConnect.serviceStatus;
   }
 }

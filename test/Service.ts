@@ -250,4 +250,55 @@ describe("service", () => {
     it("should return the service provider name",
       () => dateTimeService.getServiceProvider().should.equal("SampleServiceProvider"));
   });
+
+  describe("#getStatus", () => {
+    const localService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
+      "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
+    it("should return the status of the service", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/services/dateTimeService")
+        .reply(200, {
+          dateTimeService: {
+            configParm: "",
+          },
+          zosConnect: {
+            dataXformProvider: "DATA_UNAVAILABLE",
+            serviceDescription: "Get the date and time from the server",
+            serviceInvokeURL:
+              "http://test:9080/zosConnect/services/dateTimeService?action=invoke",
+            serviceName: "dateTimeService",
+            serviceProvider: "zOSConnect Reference Service Provider",
+            serviceURL: "http://test:9080/zosConnect/services/dateTimeService",
+            serviceStatus: "Started",
+          },
+        });
+      return localService.getStatus().should.eventually.equal("Started");
+    });
+  });
+
+  describe("#getServiceInvokeUrl", () => {
+    const localService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
+      "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
+    it("should return the service invoke URL", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/services/dateTimeService")
+        .reply(200, {
+          dateTimeService: {
+            configParm: "",
+          },
+          zosConnect: {
+            dataXformProvider: "DATA_UNAVAILABLE",
+            serviceDescription: "Get the date and time from the server",
+            serviceInvokeURL:
+              "http://test:9080/zosConnect/services/dateTimeService?action=invoke",
+            serviceName: "dateTimeService",
+            serviceProvider: "zOSConnect Reference Service Provider",
+            serviceURL: "http://test:9080/zosConnect/services/dateTimeService",
+            serviceStatus: "Started",
+          },
+        });
+      return localService.getServiceInvokeUrl().should.eventually.equal(
+        "http://test:9080/zosConnect/services/dateTimeService?action=invoke");
+    });
+  });
 });
