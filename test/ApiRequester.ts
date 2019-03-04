@@ -27,7 +27,7 @@ before(() => {
 describe("apiRequester", () => {
   const apiRequester = new ApiRequester({ uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
                                           strictSSL: true },
-    "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref");
+    "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
   describe("#start", () => {
     it("should start the API Requester", () => {
@@ -211,5 +211,9 @@ describe("apiRequester", () => {
 
   describe("#getConnection", () => {
     it("should return the connection ref", () => apiRequester.getConnection().should.equal("BookConnref"));
+  });
+
+  describe("#getStatus", () => {
+    it("should return the API Requester status", () => apiRequester.getStatus().should.equal("Stopped"));
   });
 });

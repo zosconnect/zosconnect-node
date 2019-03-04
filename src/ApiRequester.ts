@@ -23,14 +23,16 @@ export class ApiRequester {
     private version: string;
     private description: string;
     private connection: string;
+    private status: string;
 
     constructor(options: request.OptionsWithUri, name: string, version: string, description: string,
-                connection: string) {
+                connection: string, status: string) {
         this.options = options;
         this.name = name;
         this.version = version;
         this.description = description;
         this.connection = connection;
+        this.status = status;
     }
 
     /**
@@ -41,7 +43,8 @@ export class ApiRequester {
         opOptions = extend(opOptions, this.options);
         opOptions.method = "PUT";
         opOptions.uri += "?status=started";
-        await request(opOptions);
+        const response = JSON.parse(await request(opOptions));
+        this.status = response.status;
     }
 
     /**
@@ -52,7 +55,8 @@ export class ApiRequester {
         opOptions = extend(opOptions, this.options);
         opOptions.method = "PUT";
         opOptions.uri += "?status=stopped";
-        await request(opOptions);
+        const response = JSON.parse(await request(opOptions));
+        this.status = response.status;
     }
 
     /**
@@ -73,6 +77,7 @@ export class ApiRequester {
         this.version = json.version;
         this.connection = json.connection;
         this.description = json.description;
+        this.status = json.status;
     }
 
     /**
@@ -111,5 +116,12 @@ export class ApiRequester {
      */
     public getConnection(): string {
         return this.connection;
+    }
+
+    /**
+     * @returns The status of the API Requester.
+     */
+    public getStatus(): string {
+        return this.status;
     }
 }
