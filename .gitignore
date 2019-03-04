@@ -3,3 +3,4 @@ coverage/
 .vscode/
 lib/
 .nyc_output/
+*.tgz
