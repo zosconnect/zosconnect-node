@@ -182,7 +182,7 @@ export class ZosConnect {
       apiRequesterOptions = extend(apiRequesterOptions, opOptions);
       apiRequesterOptions.uri += `/${apiRequester.name}`;
       apis.push(new ApiRequester(apiRequesterOptions, apiRequester.name, apiRequester.version,
-        apiRequester.description, apiRequester.connectionRef));
+        apiRequester.description, apiRequester.connectionRef, apiRequester.status));
     }
     return apis;
   }
@@ -197,7 +197,7 @@ export class ZosConnect {
     opOptions = extend(opOptions, this.options);
     opOptions.uri += `/zosConnect/apiRequesters/${name}`;
     const json = JSON.parse(await request(opOptions));
-    return new ApiRequester(opOptions, json.name, json.version, json.description, json.connection);
+    return new ApiRequester(opOptions, json.name, json.version, json.description, json.connection, json.status);
   }
 
   /**
@@ -217,6 +217,6 @@ export class ZosConnect {
     const apiRequester = JSON.parse(await request(opOptions));
     opOptions.uri += apiRequester.name;
     return new ApiRequester(opOptions, apiRequester.name, apiRequester.version,
-      apiRequester.description, apiRequester.connection);
+      apiRequester.description, apiRequester.connection, apiRequester.status);
   }
 }
