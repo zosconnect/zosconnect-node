@@ -125,7 +125,7 @@ describe("api", () => {
           status: "stopped",
           version: "1.0.0",
         });
-      return api.update(new Buffer("foo")).should.be.fulfilled;
+      return api.update(Buffer.from("foo")).should.be.fulfilled;
     });
 
     it("should fail to stop the API", () => {
@@ -241,6 +241,26 @@ describe("api", () => {
           version: "1.0.0",
         });
       return localApi.getApiUrl().should.eventually.equal("http://test:9080/dateTime");
+    });
+  });
+
+  describe("#getStatus", () => {
+    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+      "1.0.0", "Date Time API");
+    it("should return the status of the API", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apis/dateApi")
+        .reply(200, {
+          apiUrl: "http://test:9080/dateTime",
+          description: "Date Time API",
+          documentation: {
+            swagger: "http://test:9080/dateTime/api-docs",
+          },
+          name: "dateTime",
+          status: "Started",
+          version: "1.0.0",
+        });
+      return localApi.getStatus().should.eventually.equal("Started");
     });
   });
 
