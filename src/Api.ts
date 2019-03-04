@@ -79,7 +79,8 @@ export class Api {
     const apiJson = JSON.parse(await request(opOptions));
     this.version = apiJson.version;
     this.description = apiJson.description;
-    this.apiUrl = apiJson.apiUrl;
+    const baseURL = new url.URL(this.options.uri.toString());
+    this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new url.URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
     this.status = apiJson.status;
   }
@@ -115,6 +116,9 @@ export class Api {
     return this.version;
   }
 
+  /**
+   * @returns The base URL for the API.
+   */
   public async getApiUrl(): Promise<string> {
     if (this.apiUrl === "") {
       await this.getApiInfo();
@@ -122,6 +126,9 @@ export class Api {
     return this.apiUrl;
   }
 
+  /**
+   * @returns The status of the API.
+   */
   public async getStatus(): Promise<string> {
     if (this.status === "") {
       await this.getApiInfo();
@@ -129,6 +136,10 @@ export class Api {
     return this.status;
   }
 
+  /**
+   * @param type The type of documentation to retrieve, e.g. swagger
+   * @returns The documentation for the requested types.
+   */
   public async getDocumentation(type: string): Promise<string> {
     let opOptions = {} as request.OptionsWithUri;
     if (this.documentation === undefined) {
