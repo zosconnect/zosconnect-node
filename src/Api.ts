@@ -27,6 +27,7 @@ export class Api {
   private apiUrl: string = "";
   private documentation: {};
   private status: string = "";
+  private services: string[];
 
   constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string) {
     this.options = options;
@@ -83,6 +84,8 @@ export class Api {
     this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new url.URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
     this.status = apiJson.status;
+    this.services = [];
+    apiJson.services.forEach((service) => this.services.push(service.name));
   }
 
   /**
@@ -155,6 +158,13 @@ export class Api {
     return await request(opOptions);
   }
 
+  public async getServices(): Promise<string[]> {
+    if (this.services === undefined) {
+      await this.getApiInfo();
+    }
+    return this.services;
+  }
+
   private async getApiInfo(): Promise<void> {
     let opOptions = {} as request.OptionsWithUri;
     opOptions = extend(opOptions, this.options);
@@ -164,5 +174,7 @@ export class Api {
     this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new url.URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
     this.status = apiJson.status;
+    this.services = [];
+    apiJson.services.forEach((service) => this.services.push(service.name));
   }
 }
