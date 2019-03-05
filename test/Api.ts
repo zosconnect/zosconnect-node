@@ -41,6 +41,12 @@ describe("api", () => {
           name: "dateTime",
           status: "started",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       return api.start().should.be.fulfilled;
     });
@@ -76,6 +82,12 @@ describe("api", () => {
           name: "dateTime",
           status: "stopped",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       return api.stop().should.be.fulfilled;
     });
@@ -111,6 +123,12 @@ describe("api", () => {
           name: "dateTime",
           status: "stopped",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       nock("http://test:9080")
         .put("/zosConnect/apis/dateApi")
@@ -124,6 +142,12 @@ describe("api", () => {
           name: "dateTime",
           status: "stopped",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       return api.update(Buffer.from("foo")).should.be.fulfilled;
     });
@@ -157,6 +181,12 @@ describe("api", () => {
           name: "dateTime",
           status: "stopped",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       nock("http://test:9080")
         .put("/zosConnect/apis/dateApi")
@@ -178,6 +208,12 @@ describe("api", () => {
           name: "dateTime",
           status: "stopped",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       nock("http://test:9080")
         .put("/zosConnect/apis/dateApi")
@@ -239,6 +275,12 @@ describe("api", () => {
           name: "dateTime",
           status: "started",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       return localApi.getApiUrl().should.eventually.equal("http://test:9080/dateTime");
     });
@@ -259,6 +301,12 @@ describe("api", () => {
           name: "dateTime",
           status: "Started",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       return localApi.getStatus().should.eventually.equal("Started");
     });
@@ -279,6 +327,12 @@ describe("api", () => {
           name: "dateTime",
           status: "started",
           version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
         });
       nock("http://test:9080")
         .get("/dateTime/api-docs")
@@ -288,6 +342,32 @@ describe("api", () => {
 
     it("should fail to get RAML", () => {
       return localApi.getDocumentation("RAML").should.be.rejected;
+    });
+  });
+
+  describe("#getServices", () => {
+    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+      "1.0.0", "Date Time API");
+    it("should return the list of service names", () => {
+      nock("http://test:9080")
+        .get("/zosConnect/apis/dateApi")
+        .reply(200, {
+          apiUrl: "http://test:9080/dateTime",
+          description: "Date Time API",
+          documentation: {
+            swagger: "http://test:9080/dateTime/api-docs",
+          },
+          name: "dateTime",
+          status: "started",
+          version: "1.0.0",
+          services: [
+            {
+              name: "service1",
+              uri: "http://test:9080/zosConnect/services/service1",
+            },
+          ],
+        });
+      return localApi.getServices().should.eventually.have.members(["service1"]);
     });
   });
 });
