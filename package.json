@@ -10,28 +10,28 @@
   "dependencies": {
     "@types/extend": "^3.0.1",
     "@types/request": "^2.48.1",
-    "@types/request-promise": "^4.1.42",
+    "@types/request-promise": "^4.1.44",
     "extend": "^3.0.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "snyk": "^1.189.0"
+    "snyk": "^1.190.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^5.2.7",
     "@types/nock": "^9.3.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "codecov": "^3.2.0",
+    "codecov": "^3.5.0",
     "doctoc": "^1.4.0",
     "mocha": "^5.2.0",
     "nock": "^9.6.1",
-    "nyc": "^13.3.0",
-    "source-map-support": "^0.5.10",
+    "nyc": "^14.1.1",
+    "source-map-support": "^0.5.12",
     "ts-node": "^7.0.1",
-    "tslint": "^5.13.1",
-    "typescript": "^3.3.3333"
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.2"
   },
   "scripts": {
     "build": "tsc",
