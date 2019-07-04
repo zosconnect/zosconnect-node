@@ -1,67 +1,71 @@
 {
-    "name": "@zosconnect/zosconnect-node",
-    "version": "3.3.0",
-    "description": "Node module for managing z/OS Connect EE artefacts",
-    "main": "lib/ZosConnect.js",
-    "types": "lib/ZosConnect.d.ts",
-    "files": [
-        "lib"
+  "name": "@zosconnect/zosconnect-node",
+  "version": "3.3.0",
+  "description": "Node module for managing z/OS Connect EE artefacts",
+  "main": "lib/ZosConnect.js",
+  "types": "lib/ZosConnect.d.ts",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@types/extend": "^3.0.1",
+    "@types/request": "^2.48.1",
+    "@types/request-promise": "^4.1.42",
+    "extend": "^3.0.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "snyk": "^1.189.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^5.2.6",
+    "@types/nock": "^9.3.1",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "codecov": "^3.2.0",
+    "doctoc": "^1.4.0",
+    "mocha": "^5.2.0",
+    "nock": "^9.6.1",
+    "nyc": "^13.3.0",
+    "source-map-support": "^0.5.10",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint src/**/*.ts",
+    "test": "nyc mocha -r ts-node/register test/**/*.ts",
+    "posttest": "npm run lint",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
     ],
-    "dependencies": {
-        "@types/extend": "^3.0.1",
-        "@types/request": "^2.48.1",
-        "@types/request-promise": "^4.1.42",
-        "extend": "^3.0.2",
-        "request": "^2.88.0",
-        "request-promise": "^4.2.4"
-    },
-    "devDependencies": {
-        "@types/chai": "^4.1.7",
-        "@types/chai-as-promised": "^7.1.0",
-        "@types/mocha": "^5.2.6",
-        "@types/nock": "^9.3.1",
-        "chai": "^4.2.0",
-        "chai-as-promised": "^7.1.1",
-        "codecov": "^3.2.0",
-        "doctoc": "^1.4.0",
-        "mocha": "^5.2.0",
-        "nock": "^9.6.1",
-        "nyc": "^13.3.0",
-        "source-map-support": "^0.5.10",
-        "ts-node": "^7.0.1",
-        "tslint": "^5.13.1",
-        "typescript": "^3.3.3333"
-    },
-    "scripts": {
-        "build": "tsc",
-        "lint": "tslint src/**/*.ts",
-        "test": "nyc mocha -r ts-node/register test/**/*.ts",
-        "posttest": "npm run lint"
-    },
-    "nyc": {
-        "extension": [
-            ".ts",
-            ".tsx"
-        ],
-        "exclude": [
-            "**/*.d.ts",
-            "coverage",
-            "lib"
-        ],
-        "reporter": [
-            "text",
-            "html"
-        ],
-        "all": true
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/zosconnect/zosconnect-node.git"
-    },
-    "keywords": [
-        "z/OS",
-        "z/OS Connect"
+    "exclude": [
+      "**/*.d.ts",
+      "coverage",
+      "lib"
     ],
-    "author": "",
-    "license": "Apache-2.0"
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "all": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zosconnect/zosconnect-node.git"
+  },
+  "keywords": [
+    "z/OS",
+    "z/OS Connect"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "snyk": true
 }
