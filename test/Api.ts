@@ -284,6 +284,10 @@ describe("api", () => {
         });
       return localApi.getApiUrl().should.eventually.equal("http://test:9080/dateTime");
     });
+
+    it("should return API URL without calling the server", () => {
+      return localApi.getApiUrl().should.eventually.equal("http://test:9080/dateTime");
+    });
   });
 
   describe("#getStatus", () => {
@@ -308,6 +312,10 @@ describe("api", () => {
             },
           ],
         });
+      localApi.getStatus().should.eventually.equal("Started");
+    });
+
+    it("should return the status of the API without calling the server", () => {
       return localApi.getStatus().should.eventually.equal("Started");
     });
   });
@@ -367,6 +375,10 @@ describe("api", () => {
             },
           ],
         });
+      return localApi.getServices().should.eventually.have.members(["service1"]);
+    });
+
+    it("should return the list of service names without calling the server", () => {
       return localApi.getServices().should.eventually.have.members(["service1"]);
     });
   });

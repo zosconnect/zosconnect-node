@@ -274,6 +274,10 @@ describe("service", () => {
         });
       return localService.getStatus().should.eventually.equal("Started");
     });
+
+    it("should return the status of the service without calling the server", () => {
+      return localService.getStatus().should.eventually.equal("Started");
+    });
   });
 
   describe("#getServiceInvokeUrl", () => {
@@ -297,6 +301,11 @@ describe("service", () => {
             serviceStatus: "Started",
           },
         });
+      return localService.getServiceInvokeUrl().should.eventually.equal(
+        "http://test:9080/zosConnect/services/dateTimeService?action=invoke");
+    });
+
+    it("should return the service invoke URL without calling the server", () => {
       return localService.getServiceInvokeUrl().should.eventually.equal(
         "http://test:9080/zosConnect/services/dateTimeService?action=invoke");
     });
