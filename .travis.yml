@@ -1,11 +1,17 @@
 language: node_js
 before_script:
-  - npm run build
+- npm run build
 node_js:
-  - '6'
-  - '7'
-  - '8'
-  - '10'
-notifications:
-  slack:
-    secure: RSY8PZ9eoXjUNXdiUuhQygyIGV9FXhEUhvityXXE8wSCIaFe9US18iM0dyql6Q/bu3wWckfiD63wjki9lezs+L1qc0S003UDZz6/H8g9khGPZw2J1W9dsqn9q1A0fAUS/rHJGVgQ+tFZx2pS74WXUDyvlY5byxOnAEOsCjiEWOD+h7pB5ljP+vJvh4PnyzwL5joCk5wfcG6oQ4glHUIV335yMRSp6W0AfjHorrv6H5AvFrN3CM5xyGrJEv8+lXR2FVqmtMqZeEJsdAO0BqChQhpuC1L9wmueq1WyHJWywUxjri73m4DNi4GvwAD3Vcgkz2IDUQL5uUCs9/chY1BJ2LLfqWZDZTMeYYLr0lD7H6ENxYe7HwqsOPEjSVC53hwNBr3te+CLMmj8EyNeWjpU/sJb8qYYgek1a0N13hqszycnAp6yG2VXpJn6Tr6GK/pQcyW//XF0X7dv66iC6Chwyg8zMtdLypgx3pXwACU5ZCl8JI2YLZYK/6LzHcVYYWKTv23I3eplq3Fn+Gz75IaOrM/V8kCkL5VnoTzj93yw5tiWLvyOJ7uLhmM03L8IsGAjlftL9VZTqm4z2cnDfedhPyMAjoEJtR4qdooaOnGGFbjwF3Sww+I15owElO9DdgKjYFmwdJyXiWW+YgI7viANKx4eYBO5VGq327mxoEeoq2E=
+- '6'
+- '7'
+- '8'
+- '10'
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: smithson@uk.ibm.com
+  api_key:
+    secure: Rjwcx2kB2DBQbsSy+1HWdM9c8ter7bchgis/PIKSR6BSrCFl9D2K+RVI5FDuGLJxf4g2oU/4UYF9sFJ82fbtwJhWrwAzHVDpPg6hszlB/GCxaIGvzS92UtovBZ/EgqXMW2a6EfF4OrZ3XUBRpEwwyhKjEbBW2WKfCDil8qLGwsB5mHfCvMxk5XuGQlH0pswv25pgWfxX5wUxZyP1o0c8guHodRm6//WGtDzKwCDOUt+DM9uYgNb3eGteNLcFMe53OTnUpjHLthSJlGoBVki2cmPl72R3K50dC2sX0r/+xLS8BgBvSnX0tZ3vP5PMyLTmLoEyBCDaOc53DCFaDqw0uTizRePzQoTverg9/Kplw6fnbsJm5jKKcWOGtWP2Z2yVbxAFc3aZxQutY2ntwMhQvxeFqExEv7GnDIS7VD4mKtFdtzMwW9DMPTa6YzeLUClgASec/n3vfo11YW0AMnRbgE/DpV68bzWp3PX4bYZ2iES6n7NQQpu+eW8zbjQvEBRohncI01ChGVqOeRGK8/XvrhegJQU0vgGAXOPQiEmANTs5UgcczePIP3ISJjbIx3BD3LH9/1SyqNfa8aUYsPtNuFPkh89TSuA6sEZ9BiZptmDvzWxtHE27f7oa4d3Gl10HEQdcYfto+Hl2Pw64I+A3ZLnfFGF18o8LkJQsbZvDOeU=
+  on:
+    tags: true
+    repo: zosconnect/zosconnect-node

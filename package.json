@@ -7,6 +7,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@types/extend": "^3.0.1",
     "@types/request": "^2.48.1",
