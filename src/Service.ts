@@ -44,6 +44,9 @@ export class Service {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";
     opOptions.uri += "?status=started";
+    opOptions.headers = {
+      "Content-Type": "application/json",
+    };
     const response = JSON.parse(await request(opOptions));
     this.status = response.zosConnect.serviceStatus;
   }
@@ -56,6 +59,9 @@ export class Service {
     opOptions = extend(opOptions, this.options);
     opOptions.method = "PUT";
     opOptions.uri += "?status=stopped";
+    opOptions.headers = {
+      "Content-Type": "application/json",
+    };
     const response = JSON.parse(await request(opOptions));
     this.status = response.zosConnect.serviceStatus;
   }

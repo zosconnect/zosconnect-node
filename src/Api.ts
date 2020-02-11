@@ -44,6 +44,9 @@ export class Api {
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "?status=started";
     opOptions.method = "PUT";
+    opOptions.headers = {
+      "Content-Type": "application/json",
+    };
     delete opOptions.body;
     const apiJson = JSON.parse(await request(opOptions));
     this.status = apiJson.status;
@@ -57,6 +60,9 @@ export class Api {
     opOptions = extend(opOptions, this.options);
     opOptions.uri += "?status=stopped";
     opOptions.method = "PUT";
+    opOptions.headers = {
+      "Content-Type": "application/json",
+    };
     delete opOptions.body;
     const apiJson = JSON.parse(await request(opOptions));
     this.status = apiJson.status;

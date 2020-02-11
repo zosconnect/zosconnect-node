@@ -43,6 +43,9 @@ export class ApiRequester {
         opOptions = extend(opOptions, this.options);
         opOptions.method = "PUT";
         opOptions.uri += "?status=started";
+        opOptions.headers = {
+            "Content-Type": "application/json",
+        };
         const response = JSON.parse(await request(opOptions));
         this.status = response.status;
     }
@@ -55,6 +58,9 @@ export class ApiRequester {
         opOptions = extend(opOptions, this.options);
         opOptions.method = "PUT";
         opOptions.uri += "?status=stopped";
+        opOptions.headers = {
+            "Content-Type": "application/json",
+        };
         const response = JSON.parse(await request(opOptions));
         this.status = response.status;
     }
