@@ -15,18 +15,22 @@
  */
 
 import extend = require("extend");
-import request = require("request-promise");
+import got, { GotOptions } from "got";
+import * as http from "http";
+import * as https from "https";
 
 export class ApiRequester {
-    private options: request.OptionsWithUri;
+    private apiRequesterUrl: string;
+    private options: http.RequestOptions | https.RequestOptions;
     private name: string;
     private version: string;
     private description: string;
     private connection: string;
     private status: string;
 
-    constructor(options: request.OptionsWithUri, name: string, version: string, description: string,
-                connection: string, status: string) {
+    constructor(apiRequsterUrl: string, options: http.RequestOptions | https.RequestOptions, name: string,
+                version: string, description: string, connection: string, status: string) {
+        this.apiRequesterUrl = apiRequsterUrl;
         this.options = options;
         this.name = name;
         this.version = version;
@@ -39,14 +43,16 @@ export class ApiRequester {
      * Mark the API Requester as started and available for requests.
      */
     public async start() {
-        let opOptions = {} as request.OptionsWithUri;
-        opOptions = extend(opOptions, this.options);
-        opOptions.method = "PUT";
-        opOptions.uri += "?status=started";
-        opOptions.headers = {
+        let opOptions = {};
+        let requestOptions = {} as GotOptions;
+        requestOptions = extend(requestOptions, this.options);
+        requestOptions.method = "PUT";
+        const uri = this.apiRequesterUrl + "?status=started";
+        requestOptions.headers = {
             "Content-Type": "application/json",
         };
-        const response = JSON.parse(await request(opOptions));
+        opOptions = extend(opOptions, requestOptions);
+        const response = JSON.parse((await got(uri, opOptions)).body);
         this.status = response.status;
     }
 
@@ -54,14 +60,16 @@ export class ApiRequester {
      * Mark the API Requester as stopped and unavailable for requests.
      */
     public async stop() {
-        let opOptions = {} as request.OptionsWithUri;
-        opOptions = extend(opOptions, this.options);
-        opOptions.method = "PUT";
-        opOptions.uri += "?status=stopped";
-        opOptions.headers = {
+        let opOptions = {};
+        let requestOptions = {} as GotOptions;
+        requestOptions = extend(requestOptions, this.options);
+        requestOptions.method = "PUT";
+        const uri = this.apiRequesterUrl + "?status=stopped";
+        requestOptions.headers = {
             "Content-Type": "application/json",
         };
-        const response = JSON.parse(await request(opOptions));
+        opOptions = extend(opOptions, requestOptions);
+        const response = JSON.parse((await got(uri, opOptions)).body);
         this.status = response.status;
     }
 
@@ -70,16 +78,18 @@ export class ApiRequester {
      * @param araFile The ARA file.
      */
     public async update(araFile: Buffer) {
-        let opOptions = {} as request.OptionsWithUri;
-        opOptions = extend(opOptions, this.options);
-        opOptions.method = "PUT";
-        opOptions.uri += "?status=started";
-        opOptions.body = araFile;
-        opOptions.headers = {
+        let opOptions = {};
+        let requestOptions = {} as GotOptions;
+        requestOptions = extend(requestOptions, this.options);
+        requestOptions.method = "PUT";
+        const uri = this.apiRequesterUrl + "?status=started";
+        requestOptions.body = araFile;
+        requestOptions.headers = {
             "Content-Type": "application/zip",
         };
+        opOptions = extend(opOptions, requestOptions);
         await this.stop();
-        const json = JSON.parse(await request(opOptions));
+        const json = JSON.parse((await got(uri, opOptions)).body);
         this.version = json.version;
         this.connection = json.connection;
         this.description = json.description;
@@ -90,10 +100,9 @@ export class ApiRequester {
      * Delete the API Requester from the server.
      */
     public async delete() {
-        let opOptions = {} as request.OptionsWithUri;
+        let opOptions = {};
         opOptions = extend(opOptions, this.options);
-        opOptions.method = "DELETE";
-        await request(opOptions);
+        await got.delete(this.apiRequesterUrl, opOptions);
     }
 
     /**
