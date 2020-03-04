@@ -2,10 +2,8 @@ language: node_js
 before_script:
 - npm run build
 node_js:
-- '6'
-- '7'
-- '8'
 - '10'
+- '12'
 deploy:
   skip_cleanup: true
   provider: npm
