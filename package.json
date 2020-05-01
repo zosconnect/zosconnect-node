@@ -17,7 +17,7 @@
     "extend": "^3.0.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "snyk": "^1.278.2"
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
