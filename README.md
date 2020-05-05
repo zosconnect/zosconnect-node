@@ -14,6 +14,7 @@
       - [HTTPs Support](#https-support)
       - [Basic Authentication](#basic-authentication)
     - [Managing Items](#managing-items)
+  - [Migrating from Version 3](#migrating-from-version-3)
   - [Module Long Term Support Policy](#module-long-term-support-policy)
   - [License](#license)
 
@@ -39,7 +40,6 @@ var options = {
 }
 var zosconnect = new ZosConnect(options);
 ```
-The `options` object matches exactly the options described by the [request/request](https://github.com/request/request) module. The uri parameter must be specified.
 
 ##### HTTPs Support
 Create the options object with locations for the CA certificate file and optionally the client certificate and client private key (if using client authentication). If the strictSSL option is set to false then invalid SSL certificates can be used which may be of use in development environments.
@@ -73,6 +73,10 @@ var options = {
 
 #### Managing Items
 APIs, Services and API Requesters can be retrieved and managed either by getting a list of all the installed items, or by getting a particular item by name. Once the application as an Object representing that item it can be further managed by calling methods on that Object.
+
+### Migrating from Version 3
+
+With the deprecation of the request module the dependencies of this module have been updated. The only change is the type of the options object passed into the zosconnect has changed from a `request.optionsWithUri` to a `http.RequestOptions | https.RequestOptions` 
 
 ### Module Long Term Support Policy
   This module adopts the [Module Long Term Support (LTS)](http://github.com/CloudNativeJS/ModuleLTS) policy, with the following End Of Life (EOL) dates:
