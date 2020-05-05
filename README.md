@@ -79,7 +79,8 @@ APIs, Services and API Requesters can be retrieved and managed either by getting
 
   | Module Version   | Release Date | Minimum EOL | EOL With     | Status  |
   |------------------|--------------|-------------|--------------|---------|
-  | 3.x.x         | Nov 2018     | Apr 2021    | | Current |
+  | 4.x.x         | May 2020     | Apr 2022    | Node 12      | Current |
+  | 3.x.x         | Nov 2018     | Apr 2021    | Node 10      | LTS |
   | 2.x.x         | Jul 2018     | Apr 2021    | Node 10      | LTS |
   | 1.x.x	        | Jul 2017     | Dec 2019    | Node 8       | LTS |
   
