@@ -37,7 +37,7 @@ export class ZosConnect {
   /**
    * Establish a connection to the server ready to work with APIs, Services and API Requesters.
    *
-   * @param options A {@link request.OptionsWithUri} which describes the connection to the server
+   * @param options A {@link http.RequestOptions}|{@link https.RequestOptions} which describes the connection to the server
    */
   constructor(uri: string, options: http.RequestOptions | https.RequestOptions) {
     if (options === null || options === undefined) {
