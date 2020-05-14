@@ -31,15 +31,15 @@ before(() => {
 describe("zosconnect", () => {
   describe("#ctor", () => {
     it("should throw an error for no object",
-      () => { (() => { const zosConnect = new ZosConnect(null); }).should.Throw(); });
+      () => { (() => { const zosConnect = new ZosConnect("", null); }).should.Throw(); });
 
     it("should throw an error if no uri or url specified",
-      () => { (() => { const zosConnect = new ZosConnect({uri: null}); }).should.Throw(); });
+      () => { (() => { const zosConnect = new ZosConnect(null, {}); }).should.Throw(); });
   });
 
   describe("#getservices", () => {
     it("should return a list of services", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services")
         .reply(200, {
@@ -53,12 +53,12 @@ describe("zosconnect", () => {
           ],
         });
       return zosconnect.getServices().should.eventually.deep.equal(
-        [new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService", strictSSL: true },
+        [new Service("http://test:9080/zosConnect/services/dateTimeService", { },
         "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider")]);
     });
 
     it("should return an error for a security problem", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services")
         .reply(403);
@@ -66,7 +66,7 @@ describe("zosconnect", () => {
     });
 
     it("should return an error", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services")
         .replyWithError("bad things occurred");
@@ -76,7 +76,7 @@ describe("zosconnect", () => {
 
   describe("#getservice", () => {
     it("should return a service", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services/dateTimeService")
         .reply(200, {
@@ -98,7 +98,7 @@ describe("zosconnect", () => {
     });
 
     it("should return an error for unknown service", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services/unknown")
         .reply(404);
@@ -106,7 +106,7 @@ describe("zosconnect", () => {
     });
 
     it("should return an error for network error", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/services/dateTimeService")
         .replyWithError("something fatal occurred");
@@ -117,7 +117,7 @@ describe("zosconnect", () => {
 
   describe("#getApis", () => {
     it("should return a list of APIs", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", {});
       nock("http://test:9080")
         .get("/zosConnect/apis")
         .reply(200, {
@@ -131,12 +131,12 @@ describe("zosconnect", () => {
           ],
         });
       return zosconnect.getApis().should.eventually.deep.equal([
-        new Api({ uri: "http://test:9080/zosConnect/apis/healthApi", strictSSL: true },
+        new Api("http://test:9080/zosConnect/apis/healthApi", { },
                 "healthApi", "1.0.0", "Health API")]);
     });
 
     it("should return an error for a security problem", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", { });
       nock("http://test:9080")
         .get("/zosConnect/apis")
         .reply(403);
@@ -144,7 +144,7 @@ describe("zosconnect", () => {
     });
 
     it("should return an error", () => {
-      const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+      const zosconnect = new ZosConnect("http://test:9080", { });
       nock("http://test:9080")
         .get("/zosConnect/apis")
         .replyWithError("bad things occurred");
@@ -153,7 +153,7 @@ describe("zosconnect", () => {
   });
 
   describe("#getApi", () => {
-    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should return an API", () => {
       nock("http://test:9080")
         .get("/zosConnect/apis/healthApi")
@@ -186,7 +186,7 @@ describe("zosconnect", () => {
   });
 
   describe("#createApi", () => {
-    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should install an API", () => {
       nock("http://test:9080")
         .post("/zosConnect/apis")
@@ -220,7 +220,7 @@ describe("zosconnect", () => {
   });
 
   describe("#createService", () => {
-    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should install a Service", () => {
       nock("http://test:9080")
         .post("/zosConnect/services")
@@ -258,7 +258,7 @@ describe("zosconnect", () => {
   });
 
   describe("#getApiRequesters", () => {
-    const zosconnect = new ZosConnect({uri: "http://test:9080"});
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should return a list of API Requesters", () => {
       nock("http://test:9080")
         .get("/zosConnect/apiRequesters")
@@ -274,7 +274,7 @@ describe("zosconnect", () => {
           ],
         });
       return zosconnect.getApiRequesters().should.eventually.deep.equal([
-        new ApiRequester({ uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory", strictSSL: true },
+        new ApiRequester("http://test:9080/zosConnect/apiRequesters/Book_Inventory", { },
                 "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started")]);
     });
 
@@ -294,7 +294,7 @@ describe("zosconnect", () => {
   });
 
   describe("#getApiRequester", () => {
-    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should return an API Requester", () => {
       nock("http://test:9080")
         .get("/zosConnect/apiRequesters/Book_Inventory")
@@ -324,7 +324,7 @@ describe("zosconnect", () => {
   });
 
   describe("#createApiRequester", () => {
-    const zosconnect = new ZosConnect({ uri: "http://test:9080" });
+    const zosconnect = new ZosConnect("http://test:9080", { });
     it("should install an API Requester", () => {
       nock("http://test:9080")
         .post("/zosConnect/apiRequesters")

@@ -15,12 +15,15 @@
  */
 
 import extend = require("extend");
-import request = require("request-promise");
+import got, {GotOptions} from "got";
+import * as http from "http";
+import * as https from "https";
 import url = require("url");
 
 export class Api {
 
-  private options: request.OptionsWithUri;
+  private apiAdminUrl: string;
+  private options: http.RequestOptions | https.RequestOptions;
   private apiName: string;
   private version: string;
   private description: string;
@@ -29,7 +32,9 @@ export class Api {
   private status: string = "";
   private services: string[];
 
-  constructor(options: request.OptionsWithUri, apiName: string, version: string, description: string) {
+  constructor(apiAdminUrl: string, options: http.RequestOptions | https.RequestOptions, apiName: string,
+              version: string, description: string) {
+    this.apiAdminUrl = apiAdminUrl;
     this.options = options;
     this.apiName = apiName;
     this.version = version;
@@ -40,15 +45,16 @@ export class Api {
    * Mark the API as started and available for requests.
    */
   public async start(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "?status=started";
-    opOptions.method = "PUT";
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    const uri = this.apiAdminUrl + "?status=started";
+    requestOptions.method = "PUT";
+    requestOptions.headers = {
       "Content-Type": "application/json",
     };
-    delete opOptions.body;
-    const apiJson = JSON.parse(await request(opOptions));
+    opOptions = extend(opOptions, requestOptions);
+    const apiJson = JSON.parse((await got(uri, opOptions)).body);
     this.status = apiJson.status;
   }
 
@@ -56,15 +62,16 @@ export class Api {
    * Mark the API as stopped and unavailable for requests.
    */
   public async stop(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "?status=stopped";
-    opOptions.method = "PUT";
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    const uri = this.apiAdminUrl + "?status=stopped";
+    requestOptions.method = "PUT";
+    requestOptions.headers = {
       "Content-Type": "application/json",
     };
-    delete opOptions.body;
-    const apiJson = JSON.parse(await request(opOptions));
+    opOptions = extend(opOptions, requestOptions);
+    const apiJson = JSON.parse((await got(uri, opOptions)).body);
     this.status = apiJson.status;
   }
 
@@ -74,19 +81,21 @@ export class Api {
    * @param aarFile The new AAR file
    */
   public async update(aarFile: Buffer): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.method = "PUT";
-    opOptions.uri += "?status=started";
-    opOptions.body = aarFile;
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    requestOptions.method = "PUT";
+    const uri = this.apiAdminUrl + "?status=started";
+    requestOptions.body = aarFile;
+    requestOptions.headers = {
       "Content-Type": "application/zip",
     };
+    opOptions = extend(opOptions, requestOptions);
     await this.stop();
-    const apiJson = JSON.parse(await request(opOptions));
+    const apiJson = JSON.parse((await got(uri, opOptions)).body);
     this.version = apiJson.version;
     this.description = apiJson.description;
-    const baseURL = new url.URL(this.options.uri.toString());
+    const baseURL = new url.URL(this.apiAdminUrl);
     this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new url.URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
     this.status = apiJson.status;
@@ -98,10 +107,9 @@ export class Api {
    * Delete the API.
    */
   public async delete(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.method = "DELETE";
-    await request(opOptions);
+    await got.delete(this.apiAdminUrl, opOptions);
   }
 
   /**
@@ -150,7 +158,7 @@ export class Api {
    * @returns The documentation for the requested types.
    */
   public async getDocumentation(type: string): Promise<string> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     if (this.documentation === undefined) {
       await this.getApiInfo();
     }
@@ -159,9 +167,9 @@ export class Api {
       throw new Error(`Documentation of type ${type} not available`);
     }
     opOptions = extend(opOptions, this.options);
-    const baseURL = new url.URL(this.options.uri.toString());
-    opOptions.uri = `${baseURL.protocol}//${baseURL.host}${new url.URL(docUrl).pathname}`;
-    return await request(opOptions);
+    const baseURL = new url.URL(this.apiAdminUrl);
+    const uri = `${baseURL.protocol}//${baseURL.host}${new url.URL(docUrl).pathname}`;
+    return (await got(uri, opOptions)).body;
   }
 
   public async getServices(): Promise<string[]> {
@@ -172,11 +180,10 @@ export class Api {
   }
 
   private async getApiInfo(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.method = "GET";
-    const apiJson = JSON.parse(await request(opOptions));
-    const baseURL = new url.URL(this.options.uri.toString());
+    const apiJson = JSON.parse((await got.get(this.apiAdminUrl, opOptions)).body);
+    const baseURL = new url.URL(this.apiAdminUrl);
     this.apiUrl = `${baseURL.protocol}//${baseURL.host}${new url.URL(apiJson.apiUrl).pathname}`;
     this.documentation = apiJson.documentation;
     this.status = apiJson.status;

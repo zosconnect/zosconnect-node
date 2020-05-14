@@ -26,7 +26,7 @@ before(() => {
 });
 
 describe("service", () => {
-  const dateTimeService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
+  const dateTimeService = new Service("http://test:9080/zosConnect/services/dateTimeService", { },
     "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
   describe("#start", () => {
     it("should start the service", () => {
@@ -252,7 +252,7 @@ describe("service", () => {
   });
 
   describe("#getStatus", () => {
-    const localService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
+    const localService = new Service("http://test:9080/zosConnect/services/dateTimeService", { },
       "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
     it("should return the status of the service", () => {
       nock("http://test:9080")
@@ -281,7 +281,7 @@ describe("service", () => {
   });
 
   describe("#getServiceInvokeUrl", () => {
-    const localService = new Service({ uri: "http://test:9080/zosConnect/services/dateTimeService" },
+    const localService = new Service("http://test:9080/zosConnect/services/dateTimeService", { },
       "dateTimeService", "Get the date and time from the server", "SampleServiceProvider");
     it("should return the service invoke URL", () => {
       nock("http://test:9080")

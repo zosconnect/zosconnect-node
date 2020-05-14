@@ -15,7 +15,10 @@
  */
 
 import extend = require("extend");
-import request = require("request-promise");
+import got from "got";
+import { GotOptions } from "got";
+import * as http from "http";
+import * as https from "https";
 import url = require("url");
 import { Api } from "./Api";
 import { ApiRequester } from "./ApiRequester";
@@ -28,27 +31,26 @@ import { Service } from "./Service";
  */
 export class ZosConnect {
 
-  private defaultOptions = {
-    strictSSL: true,
-  };
-
-  private options: request.OptionsWithUri;
+  private options: http.RequestOptions | https.RequestOptions;
+  private uri: string;
 
   /**
    * Establish a connection to the server ready to work with APIs, Services and API Requesters.
    *
-   * @param options A {@link request.OptionsWithUri} which describes the connection to the server
+   * @param options A {@link http.RequestOptions}|{@link https.RequestOptions} which describes the
+   * connection to the server
    */
-  constructor(options: request.OptionsWithUri) {
+  constructor(uri: string, options: http.RequestOptions | https.RequestOptions) {
     if (options === null || options === undefined) {
       throw new Error("An options object is required");
     }
 
-    if (options.uri === null || options.uri === undefined) {
+    if (uri === null || uri === undefined) {
       throw new Error("Required uri or url not specified");
     }
 
-    this.options = extend(this.defaultOptions, options);
+    this.uri = uri;
+    this.options = options;
   }
 
   /**
@@ -57,17 +59,17 @@ export class ZosConnect {
    * @returns An array of all the Service objects.
    */
   public async getServices(): Promise<Service[]> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/services";
+    const requestUri = this.uri + "/zosConnect/services";
 
-    const json = JSON.parse(await request(opOptions));
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
     const services: Service[] = [];
     for (const service of json.zosConnectServices) {
-      let serviceOptions = {} as request.OptionsWithUri;
-      serviceOptions = extend(serviceOptions, opOptions);
-      serviceOptions.uri += `/${service.ServiceName}`;
-      services.push(new Service(serviceOptions, service.ServiceName, service.ServiceDescription,
+      let serviceOptions = {};
+      serviceOptions = extend(serviceOptions, this.options);
+      const serviceOptionsUri = requestUri + `/${service.ServiceName}`;
+      services.push(new Service(serviceOptionsUri, serviceOptions, service.ServiceName, service.ServiceDescription,
         service.ServiceProvider));
     }
     return services;
@@ -80,13 +82,13 @@ export class ZosConnect {
    * @returns The {@link Service}
    */
   public async getService(serviceName: string): Promise<Service> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += `/zosConnect/services/${serviceName}`;
+    const requestUri = this.uri + `/zosConnect/services/${serviceName}`;
 
-    const serviceData = JSON.parse(await request(opOptions));
+    const serviceData = JSON.parse((await got(requestUri, opOptions)).body);
     const invokeUrl = url.parse(serviceData.zosConnect.serviceInvokeURL);
-    return new Service(opOptions, serviceName, serviceData.zosConnect.serviceDescription,
+    return new Service(requestUri, opOptions, serviceName, serviceData.zosConnect.serviceDescription,
       serviceData.zosConnect.serviceProvider);
   }
 
@@ -96,16 +98,16 @@ export class ZosConnect {
    * @returns An array of all the API objects.
    */
   public async getApis(): Promise<Api[]> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/apis";
-    const json = JSON.parse(await request(opOptions));
+    const requestUri = this.uri + "/zosConnect/apis";
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
     const apis = [];
     for (const api of json.apis) {
-      let apiOptions = {} as request.OptionsWithUri;
-      apiOptions = extend(apiOptions, opOptions);
-      apiOptions.uri += `/${api.name}`;
-      apis.push(new Api(apiOptions, api.name, api.version, api.description));
+      let apiOptions = {};
+      apiOptions = extend(apiOptions, this.options);
+      const apiUri = requestUri + `/${api.name}`;
+      apis.push(new Api(apiUri, apiOptions, api.name, api.version, api.description));
     }
     return apis;
 
@@ -118,12 +120,12 @@ export class ZosConnect {
    * @returns The {@link Api}
    */
   public async getApi(apiName: string): Promise<Api> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += `/zosConnect/apis/${apiName}`;
-    const json = JSON.parse(await request(opOptions));
+    const requestUri = this.uri + `/zosConnect/apis/${apiName}`;
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, apiName, json.version, json.description);
+    return new Api(requestUri, opOptions, apiName, json.version, json.description);
   }
 
   /**
@@ -133,17 +135,19 @@ export class ZosConnect {
    * @returns The {@link Api} that was installed
    */
   public async createApi(aarFile: Buffer): Promise<Api> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/apis";
-    opOptions.method = "POST";
-    opOptions.body = aarFile;
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    const requestUri = this.uri + "/zosConnect/apis";
+    requestOptions.method = "POST";
+    requestOptions.body = aarFile;
+    requestOptions.headers = {
       "Content-Type": "application/zip",
     };
-    const json = JSON.parse(await request(opOptions));
+    opOptions = extend(opOptions, requestOptions);
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
     const apiUrl = url.parse(json.apiUrl);
-    return new Api(opOptions, json.name, json.version, json.description);
+    return new Api(requestUri + json.name, opOptions, json.name, json.version, json.description);
   }
 
   /**
@@ -153,17 +157,19 @@ export class ZosConnect {
    * @returns The {@link Service} that was installed.
    */
   public async createService(sarFile: Buffer): Promise<Service> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/services";
-    opOptions.method = "POST";
-    opOptions.body = sarFile;
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    const requestUri = this.uri + "/zosConnect/services";
+    requestOptions.method = "POST";
+    requestOptions.body = sarFile;
+    requestOptions.headers = {
       "Content-Type": "application/zip",
     };
-    const serviceData = JSON.parse(await request(opOptions));
-    return new Service(opOptions, serviceData.zosConnect.serviceName, serviceData.zosConnect.serviceDescription,
-      serviceData.zosConnect.serviceProvider);
+    opOptions = extend(opOptions, requestOptions);
+    const serviceData = JSON.parse((await got(requestUri, opOptions)).body);
+    return new Service(requestUri + serviceData.zosConnect.serviceName, opOptions, serviceData.zosConnect.serviceName,
+      serviceData.zosConnect.serviceDescription, serviceData.zosConnect.serviceProvider);
   }
 
   /**
@@ -172,16 +178,16 @@ export class ZosConnect {
    * @returns An array of the API Requester objects.
    */
   public async getApiRequesters(): Promise<ApiRequester[]> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/apiRequesters";
-    const json = JSON.parse(await request(opOptions));
+    const requestUri = this.uri + "/zosConnect/apiRequesters";
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
     const apis = [];
     for (const apiRequester of json.apiRequesters) {
-      let apiRequesterOptions = {} as request.OptionsWithUri;
-      apiRequesterOptions = extend(apiRequesterOptions, opOptions);
-      apiRequesterOptions.uri += `/${apiRequester.name}`;
-      apis.push(new ApiRequester(apiRequesterOptions, apiRequester.name, apiRequester.version,
+      let apiRequesterOptions = {};
+      apiRequesterOptions = extend(apiRequesterOptions, this.options);
+      const apiRequesterUri = requestUri + `/${apiRequester.name}`;
+      apis.push(new ApiRequester(apiRequesterUri, apiRequesterOptions, apiRequester.name, apiRequester.version,
         apiRequester.description, apiRequester.connectionRef, apiRequester.status));
     }
     return apis;
@@ -193,11 +199,12 @@ export class ZosConnect {
    * @returns The {@link ApiRequester}
    */
   public async getApiRequester(name: string): Promise<ApiRequester> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.uri += `/zosConnect/apiRequesters/${name}`;
-    const json = JSON.parse(await request(opOptions));
-    return new ApiRequester(opOptions, json.name, json.version, json.description, json.connection, json.status);
+    const requestUri = this.uri + `/zosConnect/apiRequesters/${name}`;
+    const json = JSON.parse((await got(requestUri, opOptions)).body);
+    return new ApiRequester(requestUri, opOptions, json.name, json.version, json.description, json.connection,
+      json.status);
   }
 
   /**
@@ -206,17 +213,19 @@ export class ZosConnect {
    * @returns The {@link ApiRequester} that was installed.
    */
   public async createApiRequester(araFile: Buffer): Promise<ApiRequester> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.uri += "/zosConnect/apiRequesters";
-    opOptions.method = "POST";
-    opOptions.body = araFile;
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    const requestUri = this.uri + "/zosConnect/apiRequesters";
+    requestOptions.method = "POST";
+    requestOptions.body = araFile;
+    requestOptions.headers = {
       "Content-Type": "application/zip",
     };
-    const apiRequester = JSON.parse(await request(opOptions));
-    opOptions.uri += apiRequester.name;
-    return new ApiRequester(opOptions, apiRequester.name, apiRequester.version,
+    opOptions = extend(opOptions, requestOptions);
+    const apiRequester = JSON.parse((await got(requestUri, opOptions)).body);
+    const apiRequesterUri = requestUri + "/" + apiRequester.name;
+    return new ApiRequester(apiRequesterUri, opOptions, apiRequester.name, apiRequester.version,
       apiRequester.description, apiRequester.connection, apiRequester.status);
   }
 }

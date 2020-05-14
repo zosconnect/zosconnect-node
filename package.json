@@ -1,6 +1,6 @@
 {
   "name": "@zosconnect/zosconnect-node",
-  "version": "3.3.5",
+  "version": "4.0.0",
   "description": "Node module for managing z/OS Connect EE artefacts",
   "main": "lib/ZosConnect.js",
   "types": "lib/ZosConnect.d.ts",
@@ -12,29 +12,27 @@
   },
   "dependencies": {
     "@types/extend": "^3.0.1",
-    "@types/request": "^2.48.1",
-    "@types/request-promise": "^4.1.44",
+    "@types/got": "^9.6.9",
     "extend": "^3.0.2",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
+    "got": "^10.6.0",
     "snyk": "^1.316.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/chai-as-promised": "^7.1.0",
+    "@types/chai": "^4.2.10",
+    "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^5.2.7",
     "@types/nock": "^9.3.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.5.0",
     "doctoc": "^1.4.0",
-    "mocha": "^5.2.0",
-    "nock": "^9.6.1",
+    "mocha": "^7.1.2",
+    "nock": "^11.0.0",
     "nyc": "^14.1.1",
-    "source-map-support": "^0.5.12",
+    "source-map-support": "^0.5.16",
     "ts-node": "^7.0.1",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "tslint": "^5.20.1",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "build": "tsc",

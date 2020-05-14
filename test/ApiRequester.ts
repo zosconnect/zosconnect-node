@@ -26,11 +26,9 @@ before(() => {
 
 describe("apiRequester", () => {
   describe("#start", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should start the API Requester", () => {
       nock("http://test:9080")
@@ -64,11 +62,9 @@ describe("apiRequester", () => {
   });
 
   describe("#stop", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should stop the API Requester", () => {
       nock("http://test:9080")
@@ -102,11 +98,9 @@ describe("apiRequester", () => {
   });
 
   describe("#update", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should update the API Requester", () => {
       nock("http://test:9080")
@@ -186,11 +180,9 @@ describe("apiRequester", () => {
   });
 
   describe("#delete", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should delete the API Requester", () => {
       nock("http://test:9080")
@@ -217,52 +209,42 @@ describe("apiRequester", () => {
   });
 
   describe("#getName", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should return the API Name", () => apiRequester.getName().should.equal("Book_Inventory"));
   });
 
   describe("#getVersion", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should return the API Version", () => apiRequester.getVersion().should.equal("1.0.0"));
   });
 
   describe("#getDescription", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should return the API Description", () => apiRequester.getDescription().should
       .equal("API requester for Book_Inventory app"));
   });
 
   describe("#getConnection", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should return the connection ref", () => apiRequester.getConnection().should.equal("BookConnref"));
   });
 
   describe("#getStatus", () => {
-    const apiRequester = new ApiRequester({
-      uri: "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
-      strictSSL: true,
-    },
-      "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
+    const apiRequester = new ApiRequester(
+      "http://test:9080/zosConnect/apiRequesters/Book_Inventory",
+      { }, "Book_Inventory", "1.0.0", "API requester for Book_Inventory app", "BookConnref", "Started");
 
     it("should return the API Requester status", () => apiRequester.getStatus().should.equal("Started"));
   });

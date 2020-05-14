@@ -15,21 +15,24 @@
  */
 
 import extend = require("extend");
-import { CoreOptions, UriOptions } from "request";
-import request = require("request-promise");
+import got, { GotOptions } from "got";
+import * as http from "http";
+import * as https from "https";
 import url = require("url");
 
 export class Service {
 
-  private options: request.OptionsWithUri;
+  private serviceUri: string;
+  private options: http.RequestOptions | https.RequestOptions;
   private serviceName: string;
   private description: string;
   private serviceProvider: string;
   private serviceInvokeUrl: string = "";
   private status: string = "";
 
-  constructor(options: request.OptionsWithUri, serviceName: string, description: string,
-              serviceProvider: string) {
+  constructor(serviceUri: string, options: http.RequestOptions | https.RequestOptions, serviceName: string,
+              description: string, serviceProvider: string) {
+    this.serviceUri = serviceUri;
     this.options = options;
     this.serviceName = serviceName;
     this.description = description;
@@ -40,14 +43,16 @@ export class Service {
    * Mark the Service as started and available to process requests.
    */
   public async start(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.method = "PUT";
-    opOptions.uri += "?status=started";
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    requestOptions.method = "PUT";
+    const uri = this.serviceUri + "?status=started";
+    requestOptions.headers = {
       "Content-Type": "application/json",
     };
-    const response = JSON.parse(await request(opOptions));
+    opOptions = extend(opOptions, requestOptions);
+    const response = JSON.parse((await got(uri, opOptions)).body);
     this.status = response.zosConnect.serviceStatus;
   }
 
@@ -55,14 +60,16 @@ export class Service {
    * Mark the Service as stopped and unavailable to process requests.
    */
   public async stop(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.method = "PUT";
-    opOptions.uri += "?status=stopped";
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    requestOptions.method = "PUT";
+    const uri = this.serviceUri + "?status=stopped";
+    requestOptions.headers = {
       "Content-Type": "application/json",
     };
-    const response = JSON.parse(await request(opOptions));
+    opOptions = extend(opOptions, requestOptions);
+    const response = JSON.parse((await got(uri, opOptions)).body);
     this.status = response.zosConnect.serviceStatus;
   }
 
@@ -71,19 +78,21 @@ export class Service {
    * @param sarFile The new SAR file for the Service
    */
   public async update(sarFile: Buffer): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
-    opOptions = extend(opOptions, this.options);
-    opOptions.method = "PUT";
-    opOptions.uri += "?status=started";
-    opOptions.body = sarFile;
-    opOptions.headers = {
+    let opOptions = {};
+    let requestOptions = {} as GotOptions;
+    requestOptions = extend(requestOptions, this.options);
+    requestOptions.method = "PUT";
+    const uri = this.serviceUri + "?status=started";
+    requestOptions.body = sarFile;
+    requestOptions.headers = {
       "Content-Type": "application/zip",
     };
+    opOptions = extend(opOptions, requestOptions);
     await this.stop();
-    const serviceData = JSON.parse(await request(opOptions));
+    const serviceData = JSON.parse((await got(uri, opOptions)).body);
     this.description = serviceData.zosConnect.serviceDescription;
     this.status = serviceData.zosConnect.serviceStatus;
-    const baseUrl = new url.URL(this.options.uri.toString());
+    const baseUrl = new url.URL(this.serviceUri);
     this.serviceInvokeUrl =
       `${baseUrl.protocol}//${baseUrl.host}${new url.URL(serviceData.zosConnect.serviceInvokeURL).pathname}`;
   }
@@ -92,10 +101,9 @@ export class Service {
    * Delete the Service from the server.
    */
   public async delete(): Promise<void> {
-    let opOptions = {} as UriOptions & CoreOptions;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.method = "DELETE";
-    await request(opOptions);
+    await got.delete(this.serviceUri, opOptions);
   }
 
   /**
@@ -140,11 +148,10 @@ export class Service {
   }
 
   private async getServiceInfo(): Promise<void> {
-    let opOptions = {} as request.OptionsWithUri;
+    let opOptions = {};
     opOptions = extend(opOptions, this.options);
-    opOptions.method = "GET";
-    const serviceJson = JSON.parse(await request(opOptions));
-    const baseUrl = new url.URL(this.options.uri.toString());
+    const serviceJson = JSON.parse((await got.get(this.serviceUri, opOptions)).body);
+    const baseUrl = new url.URL(this.serviceUri);
     const invokeUrl = new url.URL(serviceJson.zosConnect.serviceInvokeURL);
     this.serviceInvokeUrl =
       `${baseUrl.protocol}//${baseUrl.host}${invokeUrl.pathname}${invokeUrl.search}`;

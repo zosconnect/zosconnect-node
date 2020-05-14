@@ -25,7 +25,7 @@ before(() => {
 });
 
 describe("api", () => {
-  const api = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+  const api = new Api("http://test:9080/zosConnect/apis/dateApi", { }, "dateTime",
     "1.0.0", "Date Time API");
   describe("#start", () => {
     it("should start the api", () => {
@@ -261,7 +261,7 @@ describe("api", () => {
   });
 
   describe("#getApiUrl", () => {
-    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+    const localApi = new Api("http://test:9080/zosConnect/apis/dateApi", { }, "dateTime",
       "1.0.0", "Date Time API");
     it("should return the API URL", () => {
       nock("http://test:9080")
@@ -291,7 +291,7 @@ describe("api", () => {
   });
 
   describe("#getStatus", () => {
-    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+    const localApi = new Api("http://test:9080/zosConnect/apis/dateApi", { }, "dateTime",
       "1.0.0", "Date Time API");
     it("should return the status of the API", () => {
       nock("http://test:9080")
@@ -321,7 +321,7 @@ describe("api", () => {
   });
 
   describe("#getDocumentation", () => {
-    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+    const localApi = new Api("http://test:9080/zosConnect/apis/dateApi", { }, "dateTime",
       "1.0.0", "Date Time API");
     it("should return the swagger", () => {
       nock("http://test:9080")
@@ -354,7 +354,7 @@ describe("api", () => {
   });
 
   describe("#getServices", () => {
-    const localApi = new Api({ uri: "http://test:9080/zosConnect/apis/dateApi" }, "dateTime",
+    const localApi = new Api("http://test:9080/zosConnect/apis/dateApi", { }, "dateTime",
       "1.0.0", "Date Time API");
     it("should return the list of service names", () => {
       nock("http://test:9080")
