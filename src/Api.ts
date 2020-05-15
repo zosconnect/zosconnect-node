@@ -15,7 +15,7 @@
  */
 
 import extend = require("extend");
-import got, {GotOptions} from "got";
+import got from "got";
 import * as http from "http";
 import * as https from "https";
 import url = require("url");
@@ -46,7 +46,7 @@ export class Api {
    */
   public async start(): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     const uri = this.apiAdminUrl + "?status=started";
     requestOptions.method = "PUT";
@@ -63,7 +63,7 @@ export class Api {
    */
   public async stop(): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     const uri = this.apiAdminUrl + "?status=stopped";
     requestOptions.method = "PUT";
@@ -82,11 +82,12 @@ export class Api {
    */
   public async update(aarFile: Buffer): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     requestOptions.method = "PUT";
     const uri = this.apiAdminUrl + "?status=started";
-    requestOptions.body = aarFile;
+    // tslint:disable-next-line:no-string-literal
+    requestOptions["body"] = aarFile;
     requestOptions.headers = {
       "Content-Type": "application/zip",
     };

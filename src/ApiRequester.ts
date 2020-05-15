@@ -15,7 +15,7 @@
  */
 
 import extend = require("extend");
-import got, { GotOptions } from "got";
+import got from "got";
 import * as http from "http";
 import * as https from "https";
 
@@ -44,7 +44,7 @@ export class ApiRequester {
      */
     public async start() {
         let opOptions = {};
-        let requestOptions = {} as GotOptions;
+        let requestOptions = {} as https.RequestOptions;
         requestOptions = extend(requestOptions, this.options);
         requestOptions.method = "PUT";
         const uri = this.apiRequesterUrl + "?status=started";
@@ -61,7 +61,7 @@ export class ApiRequester {
      */
     public async stop() {
         let opOptions = {};
-        let requestOptions = {} as GotOptions;
+        let requestOptions = {} as https.RequestOptions;
         requestOptions = extend(requestOptions, this.options);
         requestOptions.method = "PUT";
         const uri = this.apiRequesterUrl + "?status=stopped";
@@ -79,11 +79,12 @@ export class ApiRequester {
      */
     public async update(araFile: Buffer) {
         let opOptions = {};
-        let requestOptions = {} as GotOptions;
+        let requestOptions = {} as https.RequestOptions;
         requestOptions = extend(requestOptions, this.options);
         requestOptions.method = "PUT";
         const uri = this.apiRequesterUrl + "?status=started";
-        requestOptions.body = araFile;
+        // tslint:disable-next-line:no-string-literal
+        requestOptions["body"] = araFile;
         requestOptions.headers = {
             "Content-Type": "application/zip",
         };
