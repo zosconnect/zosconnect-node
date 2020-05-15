@@ -16,7 +16,6 @@
 
 import extend = require("extend");
 import got from "got";
-import { GotOptions } from "got";
 import * as http from "http";
 import * as https from "https";
 import url = require("url");
@@ -136,11 +135,12 @@ export class ZosConnect {
    */
   public async createApi(aarFile: Buffer): Promise<Api> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     const requestUri = this.uri + "/zosConnect/apis";
     requestOptions.method = "POST";
-    requestOptions.body = aarFile;
+    // tslint:disable-next-line:no-string-literal
+    requestOptions["body"] = aarFile;
     requestOptions.headers = {
       "Content-Type": "application/zip",
     };
@@ -158,11 +158,12 @@ export class ZosConnect {
    */
   public async createService(sarFile: Buffer): Promise<Service> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     const requestUri = this.uri + "/zosConnect/services";
     requestOptions.method = "POST";
-    requestOptions.body = sarFile;
+    // tslint:disable-next-line:no-string-literal
+    requestOptions["body"] = sarFile;
     requestOptions.headers = {
       "Content-Type": "application/zip",
     };
@@ -214,11 +215,12 @@ export class ZosConnect {
    */
   public async createApiRequester(araFile: Buffer): Promise<ApiRequester> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     const requestUri = this.uri + "/zosConnect/apiRequesters";
     requestOptions.method = "POST";
-    requestOptions.body = araFile;
+    // tslint:disable-next-line:no-string-literal
+    requestOptions["body"] = araFile;
     requestOptions.headers = {
       "Content-Type": "application/zip",
     };

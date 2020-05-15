@@ -15,7 +15,7 @@
  */
 
 import extend = require("extend");
-import got, { GotOptions } from "got";
+import got from "got";
 import * as http from "http";
 import * as https from "https";
 import url = require("url");
@@ -44,7 +44,7 @@ export class Service {
    */
   public async start(): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     requestOptions.method = "PUT";
     const uri = this.serviceUri + "?status=started";
@@ -61,7 +61,7 @@ export class Service {
    */
   public async stop(): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     requestOptions.method = "PUT";
     const uri = this.serviceUri + "?status=stopped";
@@ -79,11 +79,12 @@ export class Service {
    */
   public async update(sarFile: Buffer): Promise<void> {
     let opOptions = {};
-    let requestOptions = {} as GotOptions;
+    let requestOptions = {} as https.RequestOptions;
     requestOptions = extend(requestOptions, this.options);
     requestOptions.method = "PUT";
     const uri = this.serviceUri + "?status=started";
-    requestOptions.body = sarFile;
+    // tslint:disable-next-line:no-string-literal
+    requestOptions["body"] = sarFile;
     requestOptions.headers = {
       "Content-Type": "application/zip",
     };
