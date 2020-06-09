@@ -23,7 +23,7 @@ import url = require("url");
 export class Api {
 
   private apiAdminUrl: string;
-  private options: http.RequestOptions | https.RequestOptions;
+  private options: {};
   private apiName: string;
   private version: string;
   private description: string;
@@ -32,7 +32,7 @@ export class Api {
   private status: string = "";
   private services: string[];
 
-  constructor(apiAdminUrl: string, options: http.RequestOptions | https.RequestOptions, apiName: string,
+  constructor(apiAdminUrl: string, options: {}, apiName: string,
               version: string, description: string) {
     this.apiAdminUrl = apiAdminUrl;
     this.options = options;

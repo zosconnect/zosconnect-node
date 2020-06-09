@@ -39,7 +39,7 @@ describe("zosconnect", () => {
 
   describe("#getservices", () => {
     it("should return a list of services", () => {
-      const zosconnect = new ZosConnect("http://test:9080", {});
+      const zosconnect = new ZosConnect("http://test:9080", {rejectUnauthorized: true});
       nock("http://test:9080")
         .get("/zosConnect/services")
         .reply(200, {
@@ -53,7 +53,7 @@ describe("zosconnect", () => {
           ],
         });
       return zosconnect.getServices().should.eventually.deep.equal(
-        [new Service("http://test:9080/zosConnect/services/dateTimeService", { },
+        [new Service("http://test:9080/zosConnect/services/dateTimeService", { https: { rejectUnauthorized: true}},
         "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider")]);
     });
 
@@ -200,14 +200,14 @@ describe("zosconnect", () => {
           status: "started",
           version: "1.0.0",
         });
-      return zosconnect.createApi(new Buffer("foo")).should.eventually.be.a("Object");
+      return zosconnect.createApi(Buffer.from("foo")).should.eventually.be.a("Object");
     });
 
     it("should return an error for a conflict problem", () => {
       nock("http://test:9080")
         .post("/zosConnect/apis")
         .reply(409);
-      return zosconnect.createApi(new Buffer("apiPackage")).should.be
+      return zosconnect.createApi(Buffer.from("apiPackage")).should.be
         .rejectedWith("409");
     });
 
@@ -215,7 +215,7 @@ describe("zosconnect", () => {
       nock("http://test:9080")
         .post("/zosConnect/apis")
         .replyWithError("bad things occurred");
-      return zosconnect.createApi(new Buffer("apiPackage")).should.be.rejectedWith("bad things occurred");
+      return zosconnect.createApi(Buffer.from("apiPackage")).should.be.rejectedWith("bad things occurred");
     });
   });
 
@@ -238,14 +238,14 @@ describe("zosconnect", () => {
             serviceURL: "http://test:9080/zosConnect/services/dateTimeService",
           },
         });
-      return zosconnect.createService(new Buffer("foo")).should.eventually.be.a("Object");
+      return zosconnect.createService(Buffer.from("foo")).should.eventually.be.a("Object");
     });
 
     it("should return an error for a conflict problem", () => {
       nock("http://test:9080")
         .post("/zosConnect/services")
         .reply(409);
-      return zosconnect.createService(new Buffer("sarFile")).should.be
+      return zosconnect.createService(Buffer.from("sarFile")).should.be
         .rejectedWith("409");
     });
 
@@ -253,7 +253,7 @@ describe("zosconnect", () => {
       nock("http://test:9080")
         .post("/zosConnect/services")
         .replyWithError("bad things occurred");
-      return zosconnect.createService(new Buffer("sarFile")).should.be.rejectedWith("bad things occurred");
+      return zosconnect.createService(Buffer.from("sarFile")).should.be.rejectedWith("bad things occurred");
     });
   });
 
@@ -335,14 +335,14 @@ describe("zosconnect", () => {
           status: "Started",
           connectionRef: "BookConnref",
         });
-      return zosconnect.createApiRequester(new Buffer("foo")).should.eventually.be.a("Object");
+      return zosconnect.createApiRequester(Buffer.from("foo")).should.eventually.be.a("Object");
     });
 
     it("should return an error for a conflict problem", () => {
       nock("http://test:9080")
         .post("/zosConnect/apiRequesters")
         .reply(409);
-      return zosconnect.createApiRequester(new Buffer("sarFile")).should.be
+      return zosconnect.createApiRequester(Buffer.from("sarFile")).should.be
         .rejectedWith("409");
     });
 
@@ -350,7 +350,7 @@ describe("zosconnect", () => {
       nock("http://test:9080")
         .post("/zosConnect/apiRequesters")
         .replyWithError("bad things occurred");
-      return zosconnect.createApiRequester(new Buffer("sarFile")).should.be.rejectedWith("bad things occurred");
+      return zosconnect.createApiRequester(Buffer.from("sarFile")).should.be.rejectedWith("bad things occurred");
     });
   });
 });

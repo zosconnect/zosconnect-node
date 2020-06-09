@@ -21,14 +21,14 @@ import * as https from "https";
 
 export class ApiRequester {
     private apiRequesterUrl: string;
-    private options: http.RequestOptions | https.RequestOptions;
+    private options: {};
     private name: string;
     private version: string;
     private description: string;
     private connection: string;
     private status: string;
 
-    constructor(apiRequsterUrl: string, options: http.RequestOptions | https.RequestOptions, name: string,
+    constructor(apiRequsterUrl: string, options: {}, name: string,
                 version: string, description: string, connection: string, status: string) {
         this.apiRequesterUrl = apiRequsterUrl;
         this.options = options;

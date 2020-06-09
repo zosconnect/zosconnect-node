@@ -23,14 +23,14 @@ import url = require("url");
 export class Service {
 
   private serviceUri: string;
-  private options: http.RequestOptions | https.RequestOptions;
+  private options: {};
   private serviceName: string;
   private description: string;
   private serviceProvider: string;
   private serviceInvokeUrl: string = "";
   private status: string = "";
 
-  constructor(serviceUri: string, options: http.RequestOptions | https.RequestOptions, serviceName: string,
+  constructor(serviceUri: string, options: {}, serviceName: string,
               description: string, serviceProvider: string) {
     this.serviceUri = serviceUri;
     this.options = options;

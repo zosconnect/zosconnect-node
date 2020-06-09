@@ -123,7 +123,7 @@ describe("apiRequester", () => {
           status: "Started",
           connection: "BookConnref",
         });
-      return apiRequester.update(new Buffer("foo")).should.be.fulfilled;
+      return apiRequester.update(Buffer.from("foo")).should.be.fulfilled;
     });
 
     it("should fail to stop the API Requester", () => {
@@ -131,7 +131,7 @@ describe("apiRequester", () => {
         .put("/zosConnect/apiRequesters/Book_Inventory")
         .query({ status: "stopped" })
         .reply(404);
-      apiRequester.update(new Buffer("foo")).should.be.rejectedWith(Error);
+      apiRequester.update(Buffer.from("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail to stop the API Requester due to error", () => {
@@ -139,7 +139,7 @@ describe("apiRequester", () => {
         .put("/zosConnect/apiRequesters/Book_Inventory")
         .query({ status: "stopped" })
         .replyWithError("something fatal happened");
-      apiRequester.update(new Buffer("foo")).should.be.rejectedWith("something fatal happened");
+      apiRequester.update(Buffer.from("foo")).should.be.rejectedWith("something fatal happened");
     });
 
     it("should fail the update", () => {
@@ -157,7 +157,7 @@ describe("apiRequester", () => {
         .put("/zosConnect/apiRequesters/Book_Inventory")
         .query({ status: "started" })
         .reply(404);
-      apiRequester.update(new Buffer("foo")).should.be.rejectedWith(Error);
+      apiRequester.update(Buffer.from("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail the update due to error", () => {
@@ -175,7 +175,7 @@ describe("apiRequester", () => {
         .put("/zosConnect/apiRequesters/Book_Inventory")
         .query({ status: "started" })
         .replyWithError("Something fatal happened");
-      apiRequester.update(new Buffer("foo")).should.be.rejectedWith("Something fatal happened");
+      apiRequester.update(Buffer.from("foo")).should.be.rejectedWith("Something fatal happened");
     });
   });
 
