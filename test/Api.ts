@@ -157,7 +157,7 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .reply(404);
-      api.update(new Buffer("foo")).should.be.rejectedWith(Error);
+      api.update(Buffer.from("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail to stop the API due to error", () => {
@@ -165,7 +165,7 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "stopped" })
         .replyWithError("something fatal happened");
-      api.update(new Buffer("foo")).should.be.rejectedWith("something fatal happened");
+      api.update(Buffer.from("foo")).should.be.rejectedWith("something fatal happened");
     });
 
     it("should fail the update", () => {
@@ -192,7 +192,7 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "started" })
         .reply(404);
-      api.update(new Buffer("foo")).should.be.rejectedWith(Error);
+      api.update(Buffer.from("foo")).should.be.rejectedWith(Error);
     });
 
     it("should fail the update due to error", () => {
@@ -219,7 +219,7 @@ describe("api", () => {
         .put("/zosConnect/apis/dateApi")
         .query({ status: "started" })
         .replyWithError("Something fatal happened");
-      api.update(new Buffer("foo")).should.be.rejectedWith("Something fatal happened");
+      api.update(Buffer.from("foo")).should.be.rejectedWith("Something fatal happened");
     });
   });
 

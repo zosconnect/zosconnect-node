@@ -30,7 +30,7 @@ import { Service } from "./Service";
  */
 export class ZosConnect {
 
-  private options: http.RequestOptions | https.RequestOptions;
+  private options: {};
   private uri: string;
 
   /**
@@ -49,7 +49,13 @@ export class ZosConnect {
     }
 
     this.uri = uri;
-    this.options = options;
+    this.options = extend(this.options, options);
+    if ("rejectUnauthorized" in this.options) {
+      this.options = Object.assign(this.options,
+        {https: {rejectUnauthorized: (options as https.RequestOptions).rejectUnauthorized}});
+      // tslint:disable-next-line:no-string-literal
+      delete this.options["rejectUnauthorized"];
+    }
   }
 
   /**
