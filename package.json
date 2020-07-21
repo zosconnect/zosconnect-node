@@ -1,6 +1,6 @@
 {
   "name": "@zosconnect/zosconnect-node",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Node module for managing z/OS Connect EE artefacts",
   "main": "lib/ZosConnect.js",
   "types": "lib/ZosConnect.d.ts",
