@@ -39,7 +39,7 @@ describe("zosconnect", () => {
 
   describe("#getservices", () => {
     it("should return a list of services", () => {
-      const zosconnect = new ZosConnect("http://test:9080", {rejectUnauthorized: true});
+      const zosconnect = new ZosConnect("http://test:9080", {rejectUnauthorized: true, auth: "foo:bar"});
       nock("http://test:9080")
         .get("/zosConnect/services")
         .reply(200, {
@@ -53,7 +53,8 @@ describe("zosconnect", () => {
           ],
         });
       return zosconnect.getServices().should.eventually.deep.equal(
-        [new Service("http://test:9080/zosConnect/services/dateTimeService", { https: { rejectUnauthorized: true}},
+        [new Service("http://test:9080/zosConnect/services/dateTimeService", { https: { rejectUnauthorized: true},
+        username: "foo", password: "bar"},
         "dateTimeService", "Get the date and time from the server", "zOSConnect Reference Service Provider")]);
     });
 

@@ -56,6 +56,13 @@ export class ZosConnect {
       // tslint:disable-next-line:no-string-literal
       delete this.options["rejectUnauthorized"];
     }
+    if ("auth" in this.options) {
+      const parts = (options as https.RequestOptions).auth.split(/:/);
+      this.options = Object.assign(this.options, {username : parts[0]});
+      this.options = Object.assign(this.options, {password : parts[1]});
+      // tslint:disable-next-line:no-string-literal
+      delete this.options["auth"];
+    }
   }
 
   /**
